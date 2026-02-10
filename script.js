@@ -1,10 +1,9 @@
-// Fill in your information below.
 const templateData = {
     profile: {
         name: "Jay Wang",
         title: "Finance & Data Science · Emory University",
         summary:
-            "BBA student at Emory's Goizueta Business School studying Finance and Data Science. I'm passionate about financial data analysis, exploring large datasets, and developing solutions that turn insights into real business impact.",
+            "Bachelor of Business Administration (BBA) student at Emory's Goizueta Business School studying Finance and Data Science. I'm passionate about financial data analysis, exploring large datasets, and developing solutions that turn insights into real business impact.",
         availability: "Open to opportunities",
         location: "Atlanta, GA",
         email: "jay.wang@emory.edu",
@@ -14,6 +13,8 @@ const templateData = {
         { label: "LinkedIn", href: "https://www.linkedin.com/in/wangjay17", svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>' },
         { label: "GitHub", href: "https://github.com/hpjay17", svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>' },
         { label: "Email", href: "mailto:jay.wang@emory.edu", svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/></svg>' },
+        { label: "CV", href: "#", svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg>' },
+        //remember to replace # with ./files/Website_Resume_Feb2026.pdf
     ],
     career: [
         {
@@ -21,23 +22,11 @@ const templateData = {
             role: "Student Data Analyst",
             period: "Jan 2026 – May 2026",
             location: "Atlanta, GA",
-            stack: ["Excel", "Python", "SQL", "Tableau", "Power BI"],
+            stack: ["Excel", "Python", "Tableau", "Power BI"],
             summary: "Performed data cleaning and visualization on Atlanta geographic datasets",
             highlights: [
                 "Handled missing values and creating interactive maps and statistical charts to reveal patterns in urban development.",
                 "Conducted geospatial analysis using Python (GeoPandas, Matplotlib) to analyze economic/development patterns, identifying key investment zones based on demographic trends",
-            ],
-        },
-        {
-            company: "Techbridge",
-            role: "Student Data Analyst",
-            period: "Jan 2025 – Present",
-            location: "Atlanta, GA",
-            stack: ["Excel", "Python"],
-            summary: "Conducted data analytics to tackle food demand issues for a nonprofit focused on technology for social impact and hunger relief.",
-            highlights: [
-                "Utilized data analysis and statistical modeling to predict food demand at the local level by category (vegetables, meat, beverages) and quantity using historical data.",
-                "Supported inventory planning and supply allocation decisions through predictive analytics.",
             ],
         },
         {
@@ -46,10 +35,22 @@ const templateData = {
             period: "Sep 2024 – Present",
             location: "Atlanta, GA",
             stack: ["Excel", "Hardware", "Software Deployment"],
-            summary: "Managing hardware setups, software imaging and deployment, and supporting robotics operations.",
+            summary: "Managed hardware setups, software imaging and deployment, and supported robotics operations.",
             highlights: [
                 "Managed hardware setups, software imaging and deployment, and supported robotics operations, ensuring minimal operational downtime.",
                 "Tracked and managed IT inventory and surplus equipment using Excel, improving asset utilization and operational efficiency.",
+            ],
+        },
+        {
+            company: "Techbridge",
+            role: "Student Data Analyst",
+            period: "Jan 2025 – May 2025",
+            location: "Atlanta, GA",
+            stack: ["Excel", "Python", "Tableau", "Power BI"],
+            summary: "Conducted data analytics to tackle food demand issues for a nonprofit focused on technology for social impact and hunger relief.",
+            highlights: [
+                "Utilized data analysis and statistical modeling to predict food demand at the local level by category (vegetables, meat, beverages) and quantity using historical data.",
+                "Supported inventory planning and supply allocation decisions through predictive analytics.",
             ],
         },
     ],
@@ -60,10 +61,22 @@ const templateData = {
             period: "Jan 2026 – Present",
             location: "Atlanta, GA",
             stack: ["Excel", "Python", "SQL", "Tableau", "Power BI"],
-            summary: "Leading technical support across 10+ research teams, ensuring quantitative deliverables meet professional standards.",
+            summary: "Led technical support across 10+ research teams, ensuring quantitative deliverables meet professional standards.",
             highlights: [
-                "Held 'technical office hours' to help teams with Excel regression models, debug Python and SQL workflows, and refine Tableau and Power BI dashboards.",
+                "Held technical office hours to help teams with Excel regression models, debug Python and SQL workflows, and refine Tableau and Power BI dashboards.",
                 "Graded teams' quantitative deliverables, ensuring data collection, regression analysis, and final visualizations meet professional standards.",
+            ],
+        },
+        {
+            company: "Global Research & Consulting",
+            role: "Consulting Analyst",
+            period: "Jan 2026 – Present",
+            location: "Atlanta, GA",
+            stack: ["Communication", "Presentation", "Problem Solving"],
+            summary: "...",
+            highlights: [
+                "...",
+                "...",
             ],
         },
         {
@@ -71,11 +84,22 @@ const templateData = {
             role: "Research & Investment Analyst",
             period: "Sep 2025 – Present",
             location: "Atlanta, GA",
-            stack: ["Python", "Excel", "Research"],
-            summary: "Researching legal frameworks and crypto infrastructure shaping cross-border digital asset transfers.",
+            stack: ["Research"],
+            summary: "Researched legal frameworks and crypto infrastructure shaping cross-border digital asset transfers.",
             highlights: [
                 "Researched how legal frameworks and crypto infrastructure shape cross-border digital asset transfers.",
                 "Conducted both qualitative and quantitative analysis developing industry reports and investment pitches.",
+            ],
+        },
+        {
+            company: "Residence Hall Association",
+            role: "Sustainability Chair",
+            period: "Aug 2025 – Present",
+            location: "Atlanta, GA",
+            stack: ["Sustainability Strategy"],
+            summary: "Led sustainability initiatives within residence halls, promoting energy efficiency and waste reduction.",
+            highlights: [
+                "Coordinated educational campaigns and collaborate with campus facilities to implement recycling drives.",
             ],
         },
     ],
@@ -86,39 +110,39 @@ const templateData = {
     skills: [
         { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" },
         { name: "SQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azuresqldatabase/azuresqldatabase-original.svg" },
-        { name: "R", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/r/r-original.svg" },
+        { name: "R", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rstudio/rstudio-original.svg" },
         { name: "Java", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" },
         { name: "C++", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" },
-        { name: "Excel", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/microsoftsqlserver/microsoftsqlserver-original.svg" },
-        { name: "Tableau", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/graphql/graphql-plain.svg" },
-        { name: "Power BI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azure/azure-original.svg" },
+        { name: "Tableau", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/minitab/minitab-original.svg" },
+        { name: "Excel", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/windows11/windows11-original.svg" },
+        { name: "Power BI", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/windows11/windows11-original.svg" },
         { name: "Photoshop", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg" },
-        { name: "Illustrator", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/illustrator/illustrator-plain.svg" },
+        { name: "Illustrator", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/illustrator/illustrator-original.svg" },
     ],
     projects: [
         {
             name: "Employee Attrition Analysis",
             summary: "Analyzed the key workplace factors that influence employee turnover and provides data-driven recommendations to reduce attrition risk.",
-            image: "./project-placeholder.svg",
-            href: "#",
+            image: "./images/project-placeholder.svg",
+            href: "https://github.com/hpjay17/employee-attrition-analysis",
         },
         {
             name: "Food Demand Prediction",
             summary: "Built statistical models to predict local food demand by category and quantity for Techbridge, supporting nonprofit hunger relief inventory planning.",
-            image: "./project-placeholder.svg",
-            href: "#",
+            image: "./images/project-placeholder.svg",
+            href: "https://github.com/emmacarr23/techbridge24",
         },
         {
             name: "Cross-Border Digital Asset Research",
             summary: "Analyzed legal frameworks and crypto infrastructure shaping cross-border digital asset transfers, producing industry reports and investment pitches.",
-            image: "./project-placeholder.svg",
+            image: "./images/project-placeholder.svg",
             href: "#",
         },
     ],
     certifications: [
         { name: "Dean's List", issuer: "Emory University", date: "Spring 2025", href: "#" },
-        { name: "Senatorial Nomination to U.S. Naval Academy", issuer: "Marco Rubio", date: "Dec 2023", href: "#" },
-        { name: "Private Pilot License", issuer: "Federal Aviation Administration", date: "March 2023", href: "#" },
+        { name: "Senatorial Nomination to the U.S. Naval Academy", issuer: "Marco Rubio", date: "Dec 2023", href: "./files/senatenomination.pdf" },
+        { name: "Private Pilot License", issuer: "Federal Aviation Administration", date: "March 2023", href: "https://amsrvs.registry.faa.gov/airmeninquiry/" },
     ],
 };
 
@@ -148,9 +172,9 @@ function applyProfile() {
     const profile = templateData.profile;
 
     const profileImage = document.getElementById("profile-image");
-    profileImage.src = profile.profileImage || "./profile-placeholder.svg";
+    profileImage.src = profile.profileImage || "./images/profile.jpeg";
     profileImage.addEventListener("error", () => {
-        profileImage.src = "./profile-placeholder.svg";
+        profileImage.src = "./images/profile.jpeg";
     });
 
     document.getElementById("profile-name").textContent = profile.name;
@@ -516,7 +540,10 @@ function renderProjects() {
         const imgWrap = document.createElement("div");
         imgWrap.className = "project-image-wrap";
         const img = document.createElement("img");
-        img.src = project.image;
+        const currentTheme = document.documentElement.getAttribute("data-theme") || "blue";
+        img.src = project.image === "./images/project-placeholder.svg"
+            ? `./images/project-placeholder-${currentTheme}.svg`
+            : project.image;
         img.alt = project.name;
         imgWrap.appendChild(img);
 
@@ -634,4 +661,28 @@ function revealSectionsOnScroll() {
     });
 }
 
+function wireThemeSwitcher() {
+    const buttons = document.querySelectorAll(".theme-btn");
+    const saved = localStorage.getItem("theme") || "blue";
+    document.documentElement.setAttribute("data-theme", saved);
+    buttons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.setTheme === saved);
+    });
+
+    buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const theme = btn.dataset.setTheme;
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+            buttons.forEach((b) => b.classList.toggle("active", b === btn));
+            document.querySelectorAll(".project-image-wrap img").forEach((img) => {
+                if (img.src.includes("project-placeholder")) {
+                    img.src = `./images/project-placeholder-${theme}.svg`;
+                }
+            });
+        });
+    });
+}
+
 init();
+wireThemeSwitcher();

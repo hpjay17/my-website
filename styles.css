@@ -1,13 +1,47 @@
-:root {
-    --bg-base: #070711;
-    --bg-panel: rgba(13, 14, 30, 0.92);
+:root,
+[data-theme="blue"] {
+    --bg-base: #0b1128;
+    --bg-panel: rgba(12, 20, 48, 0.94);
+    --bg-card: rgba(10, 18, 42, 0.7);
+    --bg-topbar: rgba(8, 14, 36, 0.95);
     --text-main: #ffffff;
-    --text-soft: #d4daf0;
-    --text-muted: #a0aac8;
-    --line: rgba(255, 255, 255, 0.08);
-    --line-hover: rgba(177, 197, 255, 0.35);
-    --accent-a: #425fda;
-    --accent-b: #6c42e0;
+    --text-soft: #c8daf5;
+    --text-muted: #7b93b8;
+    --line: rgba(0, 180, 255, 0.1);
+    --line-hover: rgba(0, 212, 255, 0.35);
+    --accent-a: #00c6fb;
+    --accent-b: #0ef6cc;
+    --accent-warm: #5ce8d4;
+    --glow-a: rgba(0, 198, 251, 0.25);
+    --glow-a-strong: rgba(0, 198, 251, 0.4);
+    --glow-warm: rgba(92, 232, 212, 0.25);
+    --glow-subtle: rgba(0, 198, 251, 0.1);
+    --pill-bg: rgba(0, 180, 255, 0.06);
+    --active-bg: rgba(0, 198, 251, 0.07);
+    --card-grad: linear-gradient(135deg, #0d1a3a, #122250, #163060, #1a3a5c);
+}
+
+/* temp1 — Olive Dark + Chartreuse (inspired by temp2.jpg) */
+[data-theme="green"] {
+    --bg-base: #111308;
+    --bg-panel: rgba(17, 19, 8, 0.96);
+    --bg-card: rgba(22, 26, 10, 0.7);
+    --bg-topbar: rgba(14, 16, 6, 0.96);
+    --text-main: #e2eab8;
+    --text-soft: #b5c278;
+    --text-muted: #6e7a42;
+    --line: rgba(200, 230, 20, 0.2);
+    --line-hover: rgba(200, 230, 20, 0.45);
+    --accent-a: #c8e620;
+    --accent-b: #a8d410;
+    --accent-warm: #c8e620;
+    --glow-a: rgba(200, 230, 20, 0.1);
+    --glow-a-strong: rgba(200, 230, 20, 0.18);
+    --glow-warm: rgba(200, 230, 20, 0.1);
+    --glow-subtle: rgba(200, 230, 20, 0.04);
+    --pill-bg: rgba(200, 230, 20, 0.06);
+    --active-bg: rgba(200, 230, 20, 0.08);
+    --card-grad: linear-gradient(135deg, #141808, #181e0a, #1c220e, #1e2610);
 }
 
 * {
@@ -41,6 +75,7 @@ body {
     position: relative;
     border: 1px solid var(--line);
     background: var(--bg-panel);
+    box-shadow: 0 0 40px var(--glow-a), 0 0 80px var(--glow-subtle);
     overflow: hidden;
     animation: reveal-shell 0.5s cubic-bezier(0.2, 0.7, 0.15, 1) both;
 }
@@ -66,14 +101,14 @@ body {
     gap: 10px;
     padding: 14px 18px;
     border-bottom: 1px solid var(--line);
-    background: rgba(7, 8, 20, 0.95);
+    background: var(--bg-topbar);
     backdrop-filter: blur(10px);
 }
 
 .brand {
     border: 0;
     background: transparent;
-    color: #f8fbff;
+    color: var(--text-main);
     font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -100,7 +135,7 @@ body {
 }
 
 .top-nav button:hover {
-    color: #ffffff;
+    color: var(--accent-a);
     border-color: var(--line-hover);
 }
 
@@ -126,6 +161,16 @@ body {
     font-size: clamp(1.5rem, 3.4vw, 2rem);
 }
 
+.section-heading h2::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 3px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+    border-radius: 2px;
+}
+
 .hero {
     border-top: 0;
     min-height: 300px;
@@ -141,7 +186,8 @@ body {
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     padding: 4px;
-    border: 2px solid rgba(185, 160, 255, 0.3);
+    border: 2px solid var(--line-hover);
+    box-shadow: 0 0 20px var(--glow-a), 0 0 40px var(--glow-subtle);
     overflow: hidden;
 }
 
@@ -150,7 +196,7 @@ body {
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    background: #0a0b16;
+    background: var(--bg-base);
 }
 
 .hero-content {
@@ -167,7 +213,7 @@ h1 {
 
 .hero-title {
     margin: 0;
-    color: var(--text-soft);
+    color: var(--accent-warm);
     font-size: clamp(0.95rem, 2vw, 1.2rem);
     font-weight: 600;
     line-height: 1.35;
@@ -200,13 +246,15 @@ h1 {
 }
 
 .btn-primary {
-    color: #f8fbff;
+    color: var(--bg-base);
     background: linear-gradient(130deg, var(--accent-a), var(--accent-b));
-    border-color: rgba(184, 203, 255, 0.3);
+    border-color: var(--line-hover);
+    box-shadow: 0 0 12px var(--glow-a);
 }
 
 .btn-primary:hover {
     transform: translateY(-1px);
+    box-shadow: 0 0 20px var(--glow-a-strong), 0 4px 16px var(--glow-a);
 }
 
 .btn-ghost {
@@ -217,12 +265,14 @@ h1 {
 
 .btn-ghost:hover {
     transform: translateY(-1px);
-    border-color: var(--line-hover);
+    color: var(--accent-warm);
+    border-color: var(--accent-warm);
+    box-shadow: 0 0 12px var(--glow-warm);
 }
 
 .meta-line {
     margin: 0;
-    color: var(--text-muted);
+    color: var(--accent-a);
     font-size: 0.8rem;
 }
 
@@ -248,8 +298,9 @@ h1 {
 }
 
 .social-link:hover {
-    color: #ffffff;
+    color: var(--accent-a);
     border-color: var(--line-hover);
+    box-shadow: 0 0 8px var(--glow-subtle);
 }
 
 .social-icon {
@@ -308,13 +359,14 @@ h1 {
 }
 
 .career-item:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--line-hover);
 }
 
 .career-item.active {
     border-left-color: var(--accent-a);
-    border-color: rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--line-hover);
+    background: var(--active-bg);
+    box-shadow: inset 0 0 12px var(--pill-bg), 0 0 8px var(--glow-subtle);
 }
 
 .career-details {
@@ -323,7 +375,7 @@ h1 {
     overflow: hidden;
     border-radius: 8px;
     border: 1px solid var(--line);
-    background: rgba(10, 11, 24, 0.7);
+    background: var(--bg-card);
 }
 
 .career-panel {
@@ -375,7 +427,8 @@ h1 {
     border-radius: 999px;
     padding: 4px 8px;
     border: 1px solid var(--line);
-    color: var(--text-soft);
+    color: var(--accent-a);
+    background: var(--pill-bg);
     font-size: 0.7rem;
     font-weight: 600;
 }
@@ -407,15 +460,16 @@ h1 {
     border: 1px solid var(--line);
     border-radius: 999px;
     color: var(--text-soft);
-    background: transparent;
+    background: var(--pill-bg);
     padding: 7px 12px 7px 9px;
     font-size: 0.8rem;
     font-weight: 600;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .skill-pill:hover {
     border-color: var(--line-hover);
+    box-shadow: 0 0 10px var(--glow-subtle);
 }
 
 .skill-pill img {
@@ -436,8 +490,9 @@ h1 {
     width: 100%;
     border-radius: 14px;
     overflow: hidden;
-    background: linear-gradient(135deg, #1a1040, #2d1860, #4a1a6b, #6b2048);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-grad);
+    border: 1px solid var(--line-hover);
+    box-shadow: 0 4px 24px var(--glow-a), 0 0 48px var(--pill-bg);
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -489,7 +544,7 @@ h1 {
 }
 
 .project-source:hover {
-    color: #ffffff;
+    color: var(--accent-a);
 }
 
 .carousel-arrow {
@@ -499,10 +554,10 @@ h1 {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--line-hover);
+    background: var(--bg-card);
     backdrop-filter: blur(6px);
-    color: var(--text-soft);
+    color: var(--accent-a);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -512,8 +567,9 @@ h1 {
 }
 
 .carousel-arrow:hover {
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: var(--accent-a);
     color: #ffffff;
+    box-shadow: 0 0 14px var(--glow-a);
 }
 
 .carousel-arrow svg {
@@ -538,7 +594,7 @@ h1 {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border: 1.5px solid var(--line-hover);
     background: transparent;
     cursor: pointer;
     padding: 0;
@@ -546,8 +602,9 @@ h1 {
 }
 
 .carousel-dot.active {
-    background: #ffffff;
-    border-color: #ffffff;
+    background: var(--accent-a);
+    border-color: var(--accent-a);
+    box-shadow: 0 0 6px var(--glow-a);
 }
 
 .carousel-show-all {
@@ -602,10 +659,135 @@ h1 {
     flex-shrink: 0;
 }
 
-.cert-row:hover h3,
-.cert-row:hover .arrow {
-    color: #ffffff;
+.cert-row:hover h3 {
+    color: var(--accent-a);
 }
+
+.cert-row:hover .arrow {
+    color: var(--accent-warm);
+}
+
+.theme-switcher {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.theme-switcher-label {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.theme-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.theme-btn:hover {
+    transform: scale(1.2);
+}
+
+.theme-btn.active {
+    border-color: var(--text-main);
+    box-shadow: 0 0 8px var(--glow-a);
+}
+
+.theme-btn[data-set-theme="blue"] {
+    background: linear-gradient(135deg, #00c6fb, #0ef6cc);
+}
+
+.theme-btn[data-set-theme="green"] {
+    background: linear-gradient(135deg, #c8e620, #8ab800);
+}
+
+/* temp1 structural overrides — sharp corners, flat/matte, prominent borders */
+[data-theme="green"] .template-shell {
+    box-shadow: 0 0 20px rgba(200, 230, 20, 0.06);
+}
+
+[data-theme="green"] .top-nav button {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .btn {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .career-item {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .career-details {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .social-link {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .skill-pill {
+    border-radius: 3px;
+}
+
+[data-theme="green"] .stack-pill {
+    border-radius: 3px;
+}
+
+[data-theme="green"] .project-card {
+    border-radius: 4px;
+    box-shadow: none;
+}
+
+[data-theme="green"] .project-image-wrap {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .carousel-arrow {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .carousel-dot {
+    border-radius: 2px;
+}
+
+[data-theme="green"] .profile-ring {
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+[data-theme="green"] .profile-image {
+    border-radius: 4px;
+}
+
+[data-theme="green"] .btn-primary {
+    box-shadow: none;
+}
+
+[data-theme="green"] .btn-primary:hover {
+    box-shadow: 0 0 12px rgba(200, 230, 20, 0.2);
+}
+
+[data-theme="green"] .btn-ghost:hover {
+    box-shadow: none;
+}
+
+[data-theme="green"] .career-item.active {
+    box-shadow: none;
+}
+
+[data-theme="green"] .section-heading h2::before {
+    border-radius: 0;
+}
+
+
 
 @media (max-width: 960px) {
     .hero {
