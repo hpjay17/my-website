@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jay Wang | Portfolio</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="template-page">
+        <main class="template-shell">
+            <header class="top-bar" id="top">
+                <button class="brand js-scroll" data-target="top" type="button">Jay Wang</button>
+                <nav class="top-nav" aria-label="Section navigation">
+                    <button class="js-scroll" data-target="career" type="button">Career</button>
+                    <button class="js-scroll" data-target="organizations" type="button">Orgs</button>
+                    <button class="js-scroll" data-target="skills" type="button">Skills</button>
+                    <button class="js-scroll" data-target="projects" type="button">Projects</button>
+                    <button class="js-scroll" data-target="certifications" type="button">Certs</button>
+                </nav>
+            </header>
+
+            <section class="section hero is-visible" id="hero">
+                <div class="profile-ring">
+                    <img id="profile-image" class="profile-image" src="./profile-placeholder.svg" alt="Profile image">
+                </div>
+                <div class="hero-content">
+                    <h1 id="profile-name">Jay Wang</h1>
+                    <p id="profile-title" class="hero-title"></p>
+                    <p id="profile-summary" class="hero-summary"></p>
+                    <div class="hero-actions">
+                        <a id="email-link" class="btn btn-primary" href="mailto:jay.wang@emory.edu">Email Me</a>
+                        <button class="btn btn-ghost js-scroll" data-target="career" type="button">View Career</button>
+                    </div>
+                    <p id="profile-meta" class="meta-line"></p>
+                    <div id="social-links" class="social-links" aria-label="Social links"></div>
+                </div>
+            </section>
+
+            <section class="section" id="career">
+                <div class="section-heading">
+                    <h2>Career</h2>
+                </div>
+                <div class="career-layout">
+                    <div id="career-list" class="career-list" role="tablist" aria-label="Career timeline"></div>
+                    <div id="career-detail" class="career-details" aria-live="polite"></div>
+                </div>
+            </section>
+
+            <section class="section" id="organizations">
+                <div class="section-heading">
+                    <h2>Organizations</h2>
+                </div>
+                <div class="career-layout">
+                    <div id="org-list" class="career-list" role="tablist" aria-label="Organizations"></div>
+                    <div id="org-detail" class="career-details" aria-live="polite"></div>
+                </div>
+            </section>
+
+            <section class="section" id="skills">
+                <div class="section-heading">
+                    <h2>Skills</h2>
+                </div>
+                <div id="skills-grid" class="skills-grid"></div>
+            </section>
+
+            <section class="section" id="projects">
+                <div class="section-heading">
+                    <h2>Projects</h2>
+                </div>
+                <div id="project-grid" class="project-grid"></div>
+            </section>
+
+            <section class="section" id="certifications">
+                <div class="section-heading">
+                    <h2>Certifications</h2>
+                </div>
+                <div id="cert-list" class="cert-list"></div>
+            </section>
+        </main>
+    </div>
+    <script src="./script.js"></script>
+</body>
+</html>
