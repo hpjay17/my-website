@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jay Wang | Beyond Work</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="template-page">
+        <main class="template-shell">
+            <header class="top-bar" id="top">
+                <a class="brand" href="./index.html">Jay Wang</a>
+                <nav class="top-nav" aria-label="Section navigation">
+                    <a class="nav-link-page" href="./index.html">Portfolio</a>
+                    <button class="js-scroll" data-target="interests" type="button">Interests</button>
+                    <button class="js-scroll" data-target="aviation" type="button">Aviation</button>
+                    <button class="js-scroll" data-target="travel" type="button">Travel</button>
+                    <button class="js-scroll" data-target="gallery" type="button">Gallery</button>
+                </nav>
+                <div class="theme-switcher" aria-label="Theme switcher">
+                    <span class="theme-switcher-label">Theme</span>
+                    <button class="theme-btn active" data-set-theme="blue" type="button" title="Cyan"></button>
+                    <button class="theme-btn" data-set-theme="green" type="button" title="Neon Green"></button>
+                </div>
+            </header>
+
+            <section class="section beyond-hero is-visible" id="beyond-hero">
+                <h1>Beyond Work</h1>
+                <p class="hero-summary">When I'm not working with data or finance, here's what keeps me going.</p>
+            </section>
+
+            <section class="section" id="interests">
+                <div class="section-heading">
+                    <h2>Interests & Hobbies</h2>
+                </div>
+                <div id="interests-grid" class="interests-grid"></div>
+            </section>
+
+            <section class="section" id="aviation">
+                <div class="section-heading">
+                    <h2>Aviation</h2>
+                </div>
+                <div id="aviation-content" class="aviation-content"></div>
+            </section>
+
+            <section class="section" id="travel">
+                <div class="section-heading">
+                    <h2>Travel</h2>
+                </div>
+                <div id="travel-map" class="travel-map"></div>
+                <div id="travel-grid" class="travel-grid"></div>
+            </section>
+
+            <section class="section" id="gallery">
+                <div class="section-heading">
+                    <h2>Photo Gallery</h2>
+                </div>
+                <div id="gallery-filters" class="gallery-filters"></div>
+                <div id="gallery-grid" class="gallery-grid"></div>
+            </section>
+        </main>
+    </div>
+    <script src="./beyond.js"></script>
+</body>
+</html>
