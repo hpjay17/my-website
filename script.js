@@ -73,10 +73,10 @@ const templateData = {
             period: "Jan 2026 – Present",
             location: "Atlanta, GA",
             stack: ["Communication", "Presentation", "Problem Solving"],
-            summary: "...",
+            summary: "Coming soon...",
             highlights: [
-                "...",
-                "...",
+                "Coming soon...",
+                "Coming soon...",
             ],
         },
         {

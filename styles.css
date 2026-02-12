@@ -953,6 +953,12 @@ a.brand {
     box-shadow: 0 0 16px var(--glow-subtle);
 }
 
+.interest-card--no-icon {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 .interest-icon {
     width: 36px;
     height: 36px;

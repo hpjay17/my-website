@@ -8,8 +8,20 @@ const beyondData = {
         },
         {
             name: "GeoGuessr",
-            icon: "./images/beyond/geoguessr.jpeg",
+            icon: "",
             note: "Exploring the world virtually one street at a time",
+            link: "",
+        },
+        {
+            name: "Tennis & Pickleball",
+            icon: "",
+            note: "You only live once, but you get to serve twice",
+            link: "",
+        },
+        {
+            name: "Fishing",
+            icon: "",
+            note: "If I'm not fishing, I'm thinking about it",
             link: "",
         },
     ],
@@ -92,8 +104,28 @@ const beyondData = {
 
     gallery: [
         {
-            src: "./images/beyond/iceland2.jpg",
-            alt: "Description of photo",
+            src: "./images/beyond/gallery/flying.jpg",
+            alt: "Piloting",
+            category: "aviation",
+        },
+        {
+            src: "./images/beyond/gallery/iceland2.jpg",
+            alt: "Iceland Cliff",
+            category: "travel",
+        },
+        {
+            src: "./images/beyond/gallery/iceland3.jpg",
+            alt: "Sunset",
+            category: "travel",
+        },
+        {
+            src: "./images/beyond/gallery/lisbon2.jpeg",
+            alt: "Cliff",
+            category: "travel",
+        },
+        {
+            src: "./images/beyond/gallery/lisbon3.jpg",
+            alt: "Hiking",
             category: "travel",
         },
     ],
@@ -115,13 +147,16 @@ function renderInterests() {
 
     beyondData.interests.forEach((item) => {
         const card = document.createElement("div");
-        card.className = "interest-card";
+        card.className = "interest-card" + (item.icon ? "" : " interest-card--no-icon");
 
-        const iconEl = document.createElement("img");
-        iconEl.className = "interest-icon";
-        iconEl.src = item.icon;
-        iconEl.alt = item.name;
-        iconEl.loading = "lazy";
+        if (item.icon) {
+            const iconEl = document.createElement("img");
+            iconEl.className = "interest-icon";
+            iconEl.src = item.icon;
+            iconEl.alt = item.name;
+            iconEl.loading = "lazy";
+            card.appendChild(iconEl);
+        }
 
         const nameEl = document.createElement("h3");
         nameEl.className = "interest-name";
@@ -131,7 +166,7 @@ function renderInterests() {
         noteEl.className = "interest-note";
         noteEl.textContent = item.note;
 
-        card.append(iconEl, nameEl, noteEl);
+        card.append(nameEl, noteEl);
 
         if (item.link) {
             const linkEl = document.createElement("a");
