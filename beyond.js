@@ -51,7 +51,7 @@ const beyondData = {
         goals: [
             "Instrument Rating",
             "Commercial Pilot License",
-            "Take my future family flying"
+            "Take my family flying"
         ],
         photos: [
             { src: "./images/beyond/aviation1.jpeg", alt: "Cockpit" },
