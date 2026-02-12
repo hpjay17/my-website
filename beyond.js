@@ -114,7 +114,7 @@ const beyondData = {
             category: "travel",
         },
         {
-            src: "./images/beyond/gallery/iceland3.jpg",
+            src: "./images/beyond/gallery/iceland3.JPG",
             alt: "Sunset",
             category: "travel",
         },
