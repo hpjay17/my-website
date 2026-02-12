@@ -944,6 +944,8 @@ a.brand {
     padding: 18px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 8px;
     transition: all 0.2s ease;
 }
