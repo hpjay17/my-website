@@ -47,7 +47,7 @@ const templateData = {
             period: "Jan 2025 – May 2025",
             location: "Atlanta, GA",
             stack: ["Excel", "Python", "Tableau", "Power BI"],
-            summary: "Conducted data analytics to tackle food demand issues for a nonprofit focused on technology for social impact and hunger relief.",
+            summary: "Conducted data analytics to tackle food demand issues for social impact and hunger relief.",
             highlights: [
                 "Utilized data analysis and statistical modeling to predict food demand at the local level by category (vegetables, meat, beverages) and quantity using historical data.",
                 "Supported inventory planning and supply allocation decisions through predictive analytics.",
@@ -73,7 +73,7 @@ const templateData = {
             period: "Jan 2026 – Present",
             location: "Atlanta, GA",
             stack: ["Communication", "Presentation", "Problem Solving"],
-            summary: "Coming soon...",
+            summary: "Conducted market research and data analysis to support client-facing strategy projects.",
             highlights: [
                 "Coming soon...",
                 "Coming soon...",

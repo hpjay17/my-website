@@ -16,7 +16,7 @@ const beyondData = {
             name: "Tennis & Pickleball",
             icon: "",
             note: "You only live once, but you get to serve twice",
-            link: "https://www.espn.com/tennis/scoreboard",
+            link: "https://www.atptour.com/en",
         },
         {
             name: "Fishing",
@@ -51,9 +51,11 @@ const beyondData = {
         goals: [
             "Instrument Rating",
             "Commercial Pilot License",
+            "Take my future family flying"
         ],
         photos: [
             { src: "./images/beyond/aviation1.jpeg", alt: "Cockpit" },
+            { src: "./images/beyond/plane.jpeg", alt: "Airplane" },
         ],
     },
 
