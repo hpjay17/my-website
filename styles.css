@@ -21,27 +21,26 @@
     --card-grad: linear-gradient(135deg, #0d1a3a, #122250, #163060, #1a3a5c);
 }
 
-/* temp1 — Olive Dark + Chartreuse (inspired by temp2.jpg) */
 [data-theme="green"] {
-    --bg-base: #111308;
-    --bg-panel: rgba(17, 19, 8, 0.96);
-    --bg-card: rgba(22, 26, 10, 0.7);
-    --bg-topbar: rgba(14, 16, 6, 0.96);
-    --text-main: #e2eab8;
-    --text-soft: #b5c278;
-    --text-muted: #6e7a42;
-    --line: rgba(200, 230, 20, 0.2);
-    --line-hover: rgba(200, 230, 20, 0.45);
-    --accent-a: #c8e620;
-    --accent-b: #a8d410;
-    --accent-warm: #c8e620;
-    --glow-a: rgba(200, 230, 20, 0.1);
-    --glow-a-strong: rgba(200, 230, 20, 0.18);
-    --glow-warm: rgba(200, 230, 20, 0.1);
-    --glow-subtle: rgba(200, 230, 20, 0.04);
-    --pill-bg: rgba(200, 230, 20, 0.06);
-    --active-bg: rgba(200, 230, 20, 0.08);
-    --card-grad: linear-gradient(135deg, #141808, #181e0a, #1c220e, #1e2610);
+    --bg-base: #0a0a0a;
+    --bg-panel: rgba(8, 12, 8, 0.96);
+    --bg-card: rgba(10, 16, 10, 0.7);
+    --bg-topbar: rgba(6, 10, 6, 0.96);
+    --text-main: #55d930;
+    --text-soft: #3fb520;
+    --text-muted: #287816;
+    --line: rgba(0, 220, 58, 0.15);
+    --line-hover: rgba(0, 220, 58, 0.37);
+    --accent-a: #00e03c;
+    --accent-b: #00b42d;
+    --accent-warm: #30ca30;
+    --glow-a: rgba(0, 220, 58, 0.13);
+    --glow-a-strong: rgba(0, 220, 58, 0.27);
+    --glow-warm: rgba(0, 220, 58, 0.13);
+    --glow-subtle: rgba(0, 220, 58, 0.05);
+    --pill-bg: rgba(0, 220, 58, 0.05);
+    --active-bg: rgba(0, 220, 58, 0.07);
+    --card-grad: linear-gradient(135deg, #0a0f0a, #0c120c, #0e150e, #101810);
 }
 
 * {
@@ -706,12 +705,18 @@ h1 {
 }
 
 .theme-btn[data-set-theme="green"] {
-    background: linear-gradient(135deg, #c8e620, #8ab800);
+    background: linear-gradient(135deg, #00ff41, #00cc33);
 }
 
-/* temp1 structural overrides — sharp corners, flat/matte, prominent borders */
+[data-theme="green"] body,
+[data-theme="green"] button,
+[data-theme="green"] a {
+    font-family: "Courier New", "Lucida Console", "Consolas", monospace;
+}
+
+/* temp1 structural overrides */
 [data-theme="green"] .template-shell {
-    box-shadow: 0 0 20px rgba(200, 230, 20, 0.06);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.08);
 }
 
 [data-theme="green"] .top-nav button {
@@ -773,7 +778,7 @@ h1 {
 }
 
 [data-theme="green"] .btn-primary:hover {
-    box-shadow: 0 0 12px rgba(200, 230, 20, 0.2);
+    box-shadow: 0 0 12px rgba(0, 255, 65, 0.25);
 }
 
 [data-theme="green"] .btn-ghost:hover {
@@ -876,9 +881,7 @@ h1 {
     }
 }
 
-/* ============================================
-   BEYOND WORK PAGE
-   ============================================ */
+/* BEYOND WORK PAGE */
 
 /* Cross-page nav link (styled like top-nav buttons but as <a>) */
 .nav-link-page {
@@ -930,7 +933,7 @@ a.brand {
     font-style: italic;
 }
 
-/* --- Interests Grid --- */
+/* Interests Grid */
 .interests-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -995,7 +998,7 @@ a.brand {
     border-radius: 2px;
 }
 
-/* --- Aviation Section --- */
+/* Aviation Section */
 .aviation-content {
     display: flex;
     flex-direction: column;
@@ -1131,7 +1134,7 @@ a.brand {
     border-radius: 2px;
 }
 
-/* --- Travel Map --- */
+/* Travel Map */
 .travel-map {
     height: 400px;
     border-radius: 10px;
@@ -1173,7 +1176,7 @@ a.brand {
     border-radius: 2px !important;
 }
 
-/* --- Travel Grid --- */
+/* Travel Grid */
 .travel-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1241,7 +1244,7 @@ a.brand {
     border-radius: 2px;
 }
 
-/* --- Photo Gallery --- */
+/* Photo Gallery */
 .gallery-filters {
     display: flex;
     flex-wrap: wrap;
@@ -1313,7 +1316,7 @@ a.brand {
     border-radius: 2px;
 }
 
-/* --- Lightbox --- */
+/* Lightbox */
 .lightbox-overlay {
     position: fixed;
     inset: 0;
@@ -1348,7 +1351,6 @@ a.brand {
     padding: 4px 10px;
 }
 
-/* --- Beyond page responsive --- */
 @media (max-width: 640px) {
     .interests-grid {
         grid-template-columns: 1fr;

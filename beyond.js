@@ -121,13 +121,13 @@ const beyondData = {
             category: "travel",
         },
         {
-            src: "./images/beyond/gallery/lisbon2.jpeg",
-            alt: "Cliff",
+            src: "./images/beyond/gallery/lisbon3.jpg",
+            alt: "Hiking",
             category: "travel",
         },
         {
-            src: "./images/beyond/gallery/lisbon3.jpg",
-            alt: "Hiking",
+            src: "./images/beyond/gallery/lisbon2.jpeg",
+            alt: "Cliff",
             category: "travel",
         },
     ],
