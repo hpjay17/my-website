@@ -541,9 +541,54 @@ function wireThemeSwitcher() {
             document.documentElement.setAttribute("data-theme", theme);
             localStorage.setItem("theme", theme);
             buttons.forEach((b) => b.classList.toggle("active", b === btn));
+            runHackerTyping();
         });
     });
 }
 
+/* typewriter effect (note to self: this is only for green theme) */
+let typingTimers = [];
+const beyondSummaryText = "When I'm not working with data or finance, here's what keeps me going.";
+
+function clearTyping() {
+    typingTimers.forEach(id => clearTimeout(id));
+    typingTimers = [];
+}
+
+function typeText(element, text, speed, callback) {
+    element.textContent = "";
+    element.classList.add("typing", "typing-cursor");
+    let i = 0;
+    function tick() {
+        if (i < text.length) {
+            element.textContent += text[i];
+            i++;
+            const id = setTimeout(tick, speed);
+            typingTimers.push(id);
+        } else {
+            element.classList.remove("typing-cursor");
+            element.classList.remove("typing");
+            if (callback) callback();
+        }
+    }
+    tick();
+}
+
+function runHackerTyping() {
+    clearTyping();
+    const theme = document.documentElement.getAttribute("data-theme");
+    const summaryEl = document.querySelector(".beyond-hero .hero-summary");
+    if (!summaryEl) return;
+
+    if (theme !== "green") {
+        summaryEl.textContent = beyondSummaryText;
+        summaryEl.classList.remove("typing", "typing-cursor");
+        return;
+    }
+
+    typeText(summaryEl, beyondSummaryText, 25);
+}
+
 init();
 wireThemeSwitcher();
+runHackerTyping();

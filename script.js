@@ -679,9 +679,59 @@ function wireThemeSwitcher() {
                     img.src = `./images/project-placeholder-${theme}.svg`;
                 }
             });
+            runHackerTyping();
         });
     });
 }
 
+/* typewriter effect (this is only for green theme) */
+let typingTimers = [];
+
+function clearTyping() {
+    typingTimers.forEach(id => clearTimeout(id));
+    typingTimers = [];
+}
+
+function typeText(element, text, speed, callback) {
+    element.textContent = "";
+    element.classList.add("typing", "typing-cursor");
+    let i = 0;
+    function tick() {
+        if (i < text.length) {
+            element.textContent += text[i];
+            i++;
+            const id = setTimeout(tick, speed);
+            typingTimers.push(id);
+        } else {
+            element.classList.remove("typing-cursor");
+            element.classList.remove("typing");
+            if (callback) callback();
+        }
+    }
+    tick();
+}
+
+function runHackerTyping() {
+    clearTyping();
+    const theme = document.documentElement.getAttribute("data-theme");
+    const titleEl = document.getElementById("profile-title");
+    const summaryEl = document.getElementById("profile-summary");
+
+    const titleText = templateData.profile.title;
+    const summaryText = templateData.profile.summary;
+
+    if (theme !== "green") {
+        titleEl.textContent = titleText;
+        summaryEl.textContent = summaryText;
+        titleEl.classList.remove("typing", "typing-cursor");
+        summaryEl.classList.remove("typing", "typing-cursor");
+        return;
+    }
+
+    summaryEl.textContent = summaryText;
+    typeText(titleEl, titleText, 35);
+}
+
 init();
 wireThemeSwitcher();
+runHackerTyping();
