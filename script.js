@@ -81,10 +81,10 @@ const templateData = {
         },
         {
             company: "Blockchain at Emory",
-            role: "Research & Investment Analyst",
+            role: "Director of Investments & Operations",
             period: "Sep 2025 – Present",
             location: "Atlanta, GA",
-            stack: ["Research"],
+            stack: ["Web3", "Crypto", "Research"],
             summary: "Researched legal frameworks and crypto infrastructure shaping cross-border digital asset transfers.",
             highlights: [
                 "Researched how legal frameworks and crypto infrastructure shape cross-border digital asset transfers.",
