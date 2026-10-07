@@ -3,7 +3,7 @@ const beyondData = {
         {
             name: "Duolingo",
             icon: "./images/beyond/duolingo.jpeg",
-            note: "Currently learning Japanese w/ 650 days streak",
+            note: "Currently learning Japanese w/ 820 days streak",
             link: "https://www.duolingo.com/",
         },
         {
@@ -136,7 +136,6 @@ const beyondData = {
 function init() {
     renderInterests();
     renderAviation();
-    renderTravelMap();
     renderTravel();
     renderGallery();
     wireSmoothScrollButtons();
@@ -304,63 +303,6 @@ function renderAviation() {
             photosSection.appendChild(wrap);
         });
         root.appendChild(photosSection);
-    }
-}
-
-function renderTravelMap() {
-    const mapRoot = document.getElementById("travel-map");
-    const placesWithCoords = beyondData.travel.filter((t) => t.coords);
-
-    if (!placesWithCoords.length) {
-        mapRoot.style.display = "none";
-        return;
-    }
-
-    mapRoot.style.display = "";
-
-    const map = L.map("travel-map", {
-        scrollWheelZoom: false,
-    }).setView([20, 0], 2);
-
-    L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-            attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-            subdomains: "abcd",
-            maxZoom: 19,
-        }
-    ).addTo(map);
-
-    const accentColor = getComputedStyle(document.documentElement)
-        .getPropertyValue("--accent-a")
-        .trim();
-    const glowColor = getComputedStyle(document.documentElement)
-        .getPropertyValue("--glow-a")
-        .trim();
-
-    const markerIcon = L.divIcon({
-        className: "travel-marker",
-        html: `<span style="background:${accentColor};box-shadow:0 0 10px ${glowColor}"></span>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7],
-        popupAnchor: [0, -10],
-    });
-
-    const bounds = [];
-
-    placesWithCoords.forEach((item) => {
-        const marker = L.marker(item.coords, { icon: markerIcon }).addTo(map);
-        marker.bindPopup(
-            `<strong>${item.place}</strong><br><span style="opacity:0.7">${item.date}</span><br>${item.note}`
-        );
-        bounds.push(item.coords);
-    });
-
-    if (bounds.length > 1) {
-        map.fitBounds(bounds, { padding: [40, 40] });
-    } else {
-        map.setView(bounds[0], 5);
     }
 }
 
