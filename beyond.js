@@ -490,7 +490,7 @@ function wireThemeSwitcher() {
 
 /* typewriter effect (note to self: this is only for green theme) */
 let typingTimers = [];
-const beyondSummaryText = "When I'm not working with data or finance, here's what keeps me going.";
+const beyondSummaryText = "When I'm not working with data or finance, here's what keeps me going";
 
 function clearTyping() {
     typingTimers.forEach(id => clearTimeout(id));

@@ -26,7 +26,6 @@ const templateData = {
             summary: "Will do something data analysis related in the FinTech space",
             highlights: [
                 "Selected through Capital One’s Analyst Summit and Power Day (case and behavioral interviews) for the Summer 2027 analyst intern class",
-                "Coming soon..."
             ],
         },
         {
@@ -47,10 +46,10 @@ const templateData = {
             period: "Sep 2024 – May 2026",
             location: "Atlanta, GA",
             stack: ["Excel", "Hardware", "Software Deployment"],
-            summary: "Managed hardware setups, software imaging and deployment, and supported robotics operations.",
+            summary: "Managed hardware setups, software imaging and deployment, and supported robotics operations",
             highlights: [
-                "Managed hardware setups, software imaging and deployment, and supported robotics operations, ensuring minimal operational downtime.",
-                "Tracked and managed IT inventory and surplus equipment using Excel, improving asset utilization and operational efficiency.",
+                "Managed hardware setups, software imaging and deployment, and supported robotics operations, ensuring minimal operational downtime",
+                "Tracked and managed IT inventory and surplus equipment using Excel, improving asset utilization and operational efficiency",
             ],
         },
         {
@@ -59,7 +58,7 @@ const templateData = {
             period: "Jan 2025 – May 2025",
             location: "Atlanta, GA",
             stack: ["Excel", "Python", "Tableau"],
-            summary: "Conducted data analytics to tackle food demand issues for social impact and hunger relief.",
+            summary: "Conducted data analytics to tackle food demand issues for social impact and hunger relief",
             highlights: [
                 "Utilized data analysis and statistical modeling to predict food demand at the local level by category (vegetables, meat, beverages) and quantity using historical data, supporting inventory planning and supply allocation decisions",
             ],
@@ -72,7 +71,7 @@ const templateData = {
             period: "Sep 2025 – Present",
             location: "Atlanta, GA",
             stack: ["Web3", "Crypto", "Research"],
-            summary: "Researched legal frameworks and crypto infrastructure shaping cross-border digital asset transfers.",
+            summary: "Researched legal frameworks and crypto infrastructure shaping cross-border digital asset transfers",
             highlights: [
                 "Researched how legal frameworks and crypto infrastructure shape cross-border digital asset transfers; produced industry reports and investment pitches",
             ],
@@ -83,7 +82,7 @@ const templateData = {
             period: "Jan 2026 – May 2026",
             location: "Atlanta, GA",
             stack: ["Excel", "Python", "SQL", "Tableau", "Power BI"],
-            summary: "Led technical support across 10+ research teams, ensuring quantitative deliverables meet professional standards.",
+            summary: "Led technical support across 10+ research teams, ensuring quantitative deliverables meet professional standards",
             highlights: [
                 "Led technical support for 10+ research teams through weekly office hours on Excel regression, Python/SQL debugging, and Tableau/Power BI dashboards; reviewed all quantitative deliverables before publication",
             ],
@@ -94,7 +93,7 @@ const templateData = {
             period: "Jan 2026 – May 2026",
             location: "Atlanta, GA",
             stack: ["Communication", "Presentation", "Problem Solving"],
-            summary: "Conducted market research and data analysis to support client-facing strategy projects.",
+            summary: "Conducted market research and data analysis to support client-facing strategy projects",
             highlights: [
                 "Advised Denver nonprofit REVEL on social enterprise strategy, evaluating alternative revenue streams and building a prioritized implementation roadmap to reduce reliance on external funding",
             ],
@@ -105,9 +104,9 @@ const templateData = {
             period: "Aug 2025 – May 2026",
             location: "Atlanta, GA",
             stack: ["Sustainability Strategy"],
-            summary: "Led sustainability initiatives within residence halls, promoting energy efficiency and waste reduction.",
+            summary: "Led sustainability initiatives within residence halls, promoting energy efficiency and waste reduction",
             highlights: [
-                "Coordinated educational campaigns and collaborate with campus facilities to implement recycling drives.",
+                "Coordinated educational campaigns and collaborate with campus facilities to implement recycling drives",
             ],
         },
     ],
