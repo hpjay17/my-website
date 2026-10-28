@@ -1,9 +1,9 @@
 const templateData = {
     profile: {
         name: "Jay Wang",
-        title: "Finance, ISOM, & Data Science Minor · Emory University",
+        title: "Finance, ISOM, & Data Science · Emory University",
         summary:
-            "Bachelor of Business Administration (BBA) student at Emory's Goizueta Business School studying Finance, ISOM, and Data Science. I'm passionate about financial data analysis, exploring large datasets, and developing solutions that turn insights into real business impact.",
+            "Pursuing a Bachelor of Business Administration (BBA) in Finance & Information Systems and Operations Management (ISOM) with a Minor in Data Science at Emory University's Goizueta Business School. I work with SQL, Python, R, and Excel to analyze large datasets, uncover trends, and solve real business problems.",
         availability: "Open to opportunities",
         location: "Atlanta, GA",
         email: "jay.wang@emory.edu",
@@ -23,9 +23,9 @@ const templateData = {
             period: "Jun 2027 – Aug 2027",
             location: "Richmond, VA",
             stack: ["SQL", "Python", "Tableau", "Power BI"],
-            summary: "Will do something data analysis related in the FinTech space",
+            summary: "Will work with data in the FinTech space",
             highlights: [
-                "Selected through Capital One’s Analyst Summit and Power Day (case and behavioral interviews) for the Summer 2027 analyst intern class",
+                "Selected through Capital One’s Analyst Summit and Power Day (case and behavioral interviews) for Summer 2027",
             ],
         },
         {
@@ -41,7 +41,7 @@ const templateData = {
             ],
         },
         {
-            company: "Emory College IT Business Operations",
+            company: "Emory College",
             role: "IT Technician",
             period: "Sep 2024 – May 2026",
             location: "Atlanta, GA",
@@ -71,7 +71,7 @@ const templateData = {
             period: "Sep 2025 – Present",
             location: "Atlanta, GA",
             stack: ["Web3", "Crypto", "Research"],
-            summary: "Researched legal frameworks and crypto infrastructure shaping cross-border digital asset transfers",
+            summary: "Researched legal frameworks and crypto infrastructure",
             highlights: [
                 "Researched how legal frameworks and crypto infrastructure shape cross-border digital asset transfers; produced industry reports and investment pitches",
             ],
@@ -82,7 +82,7 @@ const templateData = {
             period: "Jan 2026 – May 2026",
             location: "Atlanta, GA",
             stack: ["Excel", "Python", "SQL", "Tableau", "Power BI"],
-            summary: "Led technical support across 10+ research teams, ensuring quantitative deliverables meet professional standards",
+            summary: "Led technical support across 10+ research teams",
             highlights: [
                 "Led technical support for 10+ research teams through weekly office hours on Excel regression, Python/SQL debugging, and Tableau/Power BI dashboards; reviewed all quantitative deliverables before publication",
             ],
@@ -104,7 +104,7 @@ const templateData = {
             period: "Aug 2025 – May 2026",
             location: "Atlanta, GA",
             stack: ["Sustainability Strategy"],
-            summary: "Led sustainability initiatives within residence halls, promoting energy efficiency and waste reduction",
+            summary: "Led sustainability initiatives within residence halls",
             highlights: [
                 "Coordinated educational campaigns and collaborate with campus facilities to implement recycling drives",
             ],
@@ -125,19 +125,16 @@ const templateData = {
         {
             name: "Employee Attrition Analysis",
             summary: "Analyzed the key workplace factors that influence employee turnover and provides data-driven recommendations to reduce attrition risk.",
-            image: "./images/project-placeholder.svg",
             href: "https://github.com/hpjay17/employee-attrition-analysis",
         },
         {
             name: "Food Demand Prediction",
             summary: "Built statistical models to predict local food demand by category and quantity for Techbridge, supporting nonprofit hunger relief inventory planning.",
-            image: "./images/project-placeholder.svg",
             href: "https://github.com/emmacarr23/techbridge24",
         },
         {
             name: "Cross-Border Digital Asset Research",
             summary: "Analyzed legal frameworks and crypto infrastructure shaping cross-border digital asset transfers, producing industry reports and investment pitches.",
-            image: "./images/project-placeholder.svg",
             href: "#",
         },
     ],
@@ -527,12 +524,6 @@ function renderProjects() {
     });
     carousel.appendChild(dots);
 
-    const showAll = document.createElement("button");
-    showAll.type = "button";
-    showAll.className = "btn btn-ghost carousel-show-all";
-    showAll.textContent = "Show All Projects";
-    carousel.appendChild(showAll);
-
     root.appendChild(carousel);
 
     function fillCard(index) {
@@ -543,9 +534,7 @@ function renderProjects() {
         imgWrap.className = "project-image-wrap";
         const img = document.createElement("img");
         const currentTheme = document.documentElement.getAttribute("data-theme") || "blue";
-        img.src = project.image === "./images/project-placeholder.svg"
-            ? `./images/project-placeholder-${currentTheme}.svg`
-            : project.image;
+        img.src = project.image || `./images/project-placeholder-${currentTheme}.svg`;
         img.alt = project.name;
         imgWrap.appendChild(img);
 

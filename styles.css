@@ -26,20 +26,20 @@
     --bg-panel: rgba(0, 0, 0, 0.98);
     --bg-card: rgba(0, 5, 0, 0.85);
     --bg-topbar: rgba(0, 0, 0, 0.98);
-    --text-main: #00cc44;
-    --text-soft: #00e04a;
-    --text-muted: #009930;
-    --line: rgba(0, 204, 68, 0.18);
-    --line-hover: rgba(0, 204, 68, 0.4);
-    --accent-a: #00ff55;
-    --accent-b: #00dd3b;
-    --accent-warm: #00cc44;
-    --glow-a: rgba(0, 255, 85, 0.12);
-    --glow-a-strong: rgba(0, 255, 85, 0.3);
-    --glow-warm: rgba(0, 255, 85, 0.12);
-    --glow-subtle: rgba(0, 255, 85, 0.05);
-    --pill-bg: rgba(0, 255, 85, 0.06);
-    --active-bg: rgba(0, 255, 85, 0.08);
+    --text-main: #33ff66;
+    --text-soft: #00ff41;
+    --text-muted: #1fcc4a;
+    --line: rgba(0, 255, 65, 0.22);
+    --line-hover: rgba(0, 255, 65, 0.5);
+    --accent-a: #39ff14;
+    --accent-b: #00ff41;
+    --accent-warm: #33ff66;
+    --glow-a: rgba(0, 255, 65, 0.18);
+    --glow-a-strong: rgba(0, 255, 65, 0.4);
+    --glow-warm: rgba(0, 255, 65, 0.18);
+    --glow-subtle: rgba(0, 255, 65, 0.07);
+    --pill-bg: rgba(0, 255, 65, 0.07);
+    --active-bg: rgba(0, 255, 65, 0.1);
     --card-grad: linear-gradient(135deg, #000000, #000500, #000a00, #000f00);
 }
 
@@ -607,10 +607,6 @@ h1 {
     box-shadow: 0 0 6px var(--glow-a);
 }
 
-.carousel-show-all {
-    margin-top: 4px;
-}
-
 @media (max-width: 640px) {
     .project-card {
         padding: 16px;
@@ -705,7 +701,7 @@ h1 {
 }
 
 .theme-btn[data-set-theme="green"] {
-    background: linear-gradient(135deg, #00ff55, #00cc44);
+    background: linear-gradient(135deg, #39ff14, #00ff41);
 }
 
 [data-theme="green"] body,
@@ -714,9 +710,14 @@ h1 {
     font-family: "Courier New", "Lucida Console", "Consolas", monospace;
 }
 
+/* phosphor glow */
+[data-theme="green"] body {
+    text-shadow: 0 0 4px rgba(0, 255, 65, 0.45);
+}
+
 /* temp1 structural overrides */
 [data-theme="green"] .template-shell {
-    box-shadow: 0 0 30px rgba(0, 204, 68, 0.1);
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.12);
 }
 
 [data-theme="green"] .top-nav button {
@@ -778,7 +779,7 @@ h1 {
 }
 
 [data-theme="green"] .btn-primary:hover {
-    box-shadow: 0 0 15px rgba(0, 204, 68, 0.35);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.45);
 }
 
 [data-theme="green"] .btn-ghost:hover {
@@ -1220,6 +1221,142 @@ a.brand {
     border-radius: 2px;
 }
 
+/* Travel map */
+.travel-map {
+    position: relative;
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg-card);
+}
+
+[data-theme="green"] .travel-map {
+    border-radius: 2px;
+}
+
+.travel-map-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.map-land {
+    fill: none;
+    stroke: var(--text-muted);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    opacity: 0.35;
+}
+
+.map-web {
+    fill: none;
+    stroke: var(--accent-a);
+    stroke-width: 0.8;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.map-pin {
+    cursor: pointer;
+    outline: none;
+}
+
+.map-pin-dot {
+    fill: var(--accent-a);
+    stroke: var(--bg-base);
+    stroke-width: 1;
+    filter: drop-shadow(0 0 3px var(--accent-a));
+    transition: transform 0.2s ease;
+}
+
+.map-pin--home .map-pin-dot {
+    fill: var(--accent-b);
+    filter: drop-shadow(0 0 3px var(--accent-b));
+}
+
+.map-pin:hover .map-pin-dot,
+.map-pin:focus-visible .map-pin-dot,
+.map-pin.is-active .map-pin-dot {
+    transform: scale(1.5);
+}
+
+.map-pin-pulse {
+    fill: none;
+    stroke: var(--accent-a);
+    stroke-width: 1;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: map-pulse 2.4s ease-out infinite;
+    animation-delay: inherit;
+}
+
+.map-pin.is-active .map-pin-pulse {
+    stroke-width: 1.6;
+}
+
+@keyframes map-pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(3.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-pin-pulse {
+        animation: none;
+        opacity: 0;
+    }
+}
+
+.map-tooltip {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 10px));
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg-panel);
+    color: var(--text-main);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    box-shadow: 0 0 16px var(--glow-a);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.map-tooltip.is-visible {
+    opacity: 1;
+}
+
+.map-tooltip span {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+
+.travel-map-btn {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--accent-a);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.travel-map-btn:hover {
+    text-decoration: underline;
+}
+
+.travel-card.is-highlighted {
+    border-color: var(--accent-a);
+    box-shadow: 0 0 20px var(--glow-a-strong);
+}
+
 /* Photo Gallery */
 .gallery-filters {
     display: flex;
@@ -1305,13 +1442,61 @@ a.brand {
     cursor: pointer;
 }
 
+.lightbox-figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
 .lightbox-overlay img {
     max-width: 90vw;
-    max-height: 85vh;
+    max-height: 80vh;
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 0 40px var(--glow-a);
     cursor: default;
+}
+
+.lightbox-caption {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    text-align: center;
+    cursor: default;
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-size: 2.2rem;
+    line-height: 1;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-prev {
+    left: 16px;
+}
+
+.lightbox-next {
+    right: 16px;
+}
+
+.aviation-photo-wrap,
+.travel-image-wrap {
+    cursor: zoom-in;
 }
 
 .lightbox-close {

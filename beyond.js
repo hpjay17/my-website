@@ -3,7 +3,7 @@ const beyondData = {
         {
             name: "Duolingo",
             icon: "./images/beyond/duolingo.jpeg",
-            note: "Currently learning Japanese w/ 820 days streak",
+            note: "Currently learning Japanese w/ 830 days streak",
             link: "https://www.duolingo.com/",
         },
         {
@@ -29,7 +29,6 @@ const beyondData = {
     aviation: {
         headline: "Private Pilot",
         license: "Private Pilot License (PPL)",
-        dateEarned: "March 2023",
         summary:
             "Earned my Private Pilot License at 17. Flying gives me a unique perspective on the world ~ from above.",
         aircraftFlown: [
@@ -59,6 +58,19 @@ const beyondData = {
         ],
     },
 
+    home: [
+        {
+            place: "Tallahassee, Florida",
+            coords: [30.438, -84.281],
+            date: "Hometown",
+        },
+        {
+            place: "Atlanta, Georgia",
+            coords: [33.749, -84.388],
+            date: "School",
+        },
+    ],
+
     travel: [
         {
             place: "Tokyo, Japan",
@@ -72,7 +84,7 @@ const beyondData = {
             coords: [34.685, 135.843],
             date: "June 2024",
             image: "./images/beyond/nara_japan.jpeg",
-            note: "Explored Nara Park with the sika deers",
+            note: "Explored Nara Park with the sika deer",
         },
         {
             place: "Shanghai, China",
@@ -83,7 +95,7 @@ const beyondData = {
         },
         {
             place: "Reykjavík, Iceland",
-            coords: [64.411, -21.239],
+            coords: [64.146, -21.942],
             date: "August 2025",
             image: "./images/beyond/iceland1.jpg",
             note: "Explored the nature in Iceland",
@@ -101,6 +113,20 @@ const beyondData = {
             date: "January 2026",
             image: "./images/beyond/lisbon1.jpeg",
             note: "Had fun in Lisbon for winter break",
+        },
+        {
+            place: "Hong Kong, China",
+            coords: [22.319, 114.169],
+            date: "July 2026",
+            image: "./images/beyond/hongkong1.jpeg",
+            note: "Went to Hong Kong after summer internship",
+        },
+        {
+            place: "Fukuoka, Japan",
+            coords: [33.590, 130.401],
+            date: "August 2026",
+            image: "./images/beyond/fukuoka1.jpeg",
+            note: "Traveled to Fukuoka after visiting Shanghai",
         },
     ],
 
@@ -137,6 +163,7 @@ function init() {
     renderInterests();
     renderAviation();
     renderTravel();
+    renderTravelMap();
     renderGallery();
     wireSmoothScrollButtons();
     revealSectionsOnScroll();
@@ -290,9 +317,10 @@ function renderAviation() {
     if (data.photos.length) {
         const photosSection = document.createElement("div");
         photosSection.className = "aviation-photos";
-        data.photos.forEach((photo) => {
+        data.photos.forEach((photo, i) => {
             const wrap = document.createElement("div");
             wrap.className = "aviation-photo-wrap";
+            wrap.addEventListener("click", () => openLightbox(data.photos, i));
 
             const img = document.createElement("img");
             img.src = photo.src;
@@ -318,9 +346,15 @@ function renderTravel() {
         return;
     }
 
-    beyondData.travel.forEach((item) => {
+    const travelPhotos = beyondData.travel.map((item) => ({
+        src: item.image,
+        alt: `${item.place} \u2014 ${item.date}`,
+    }));
+
+    beyondData.travel.forEach((item, i) => {
         const card = document.createElement("div");
         card.className = "travel-card";
+        card.id = `travel-card-${i}`;
 
         const imgWrap = document.createElement("div");
         imgWrap.className = "travel-image-wrap";
@@ -329,6 +363,7 @@ function renderTravel() {
         img.alt = item.place;
         img.loading = "lazy";
         imgWrap.appendChild(img);
+        imgWrap.addEventListener("click", () => openLightbox(travelPhotos, i));
 
         const info = document.createElement("div");
         info.className = "travel-info";
@@ -344,9 +379,176 @@ function renderTravel() {
         note.textContent = item.note;
 
         info.append(place, date, note);
+
+        if (item.coords) {
+            const mapBtn = document.createElement("button");
+            mapBtn.type = "button";
+            mapBtn.className = "travel-map-btn";
+            mapBtn.textContent = "View on map";
+            mapBtn.addEventListener("click", () => focusTravelPin(i));
+            info.appendChild(mapBtn);
+        }
+
         card.append(imgWrap, info);
         root.appendChild(card);
     });
+}
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+const MAP_CELL = 5;
+let travelPins = [];
+
+function projectToMap([lat, lon]) {
+    return [
+        ((lon + 180) / worldDots.step) * MAP_CELL,
+        ((worldDots.latTop - lat) / worldDots.step) * MAP_CELL,
+    ];
+}
+
+function svgEl(tag, attrs) {
+    const el = document.createElementNS(SVG_NS, tag);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+}
+
+function renderTravelMap() {
+    const root = document.getElementById("travel-map");
+    if (!root) return;
+
+    const trips = beyondData.travel.filter((item) => item.coords);
+    if (typeof worldDots === "undefined" || !trips.length) {
+        root.remove();
+        return;
+    }
+
+    const width = (360 / worldDots.step) * MAP_CELL;
+    const height = worldDots.rows.length * MAP_CELL;
+    const svg = svgEl("svg", {
+        viewBox: `0 0 ${width} ${height}`,
+        class: "travel-map-svg",
+        role: "img",
+        "aria-label": "World map of places I've traveled: " + trips.map((t) => t.place).join(", "),
+    });
+
+    // Land dots
+    let d = "";
+    worldDots.rows.forEach((row, r) => {
+        const y = (r + 0.5) * MAP_CELL;
+        row.split(" ").filter(Boolean).forEach((run) => {
+            const [start, length] = run.split(",").map(Number);
+            for (let c = start; c < start + length; c++) {
+                d += `M${(c + 0.5) * MAP_CELL} ${y}h0`;
+            }
+        });
+    });
+    svg.appendChild(svgEl("path", { d, class: "map-land" }));
+
+    const homes = beyondData.home || [];
+
+    // Arcs connecting home, then each trip in timeline order
+    const points = [...homes, ...trips].map((item) => projectToMap(item.coords));
+    let web = "";
+    for (let i = 1; i < points.length; i++) {
+        const [x1, y1] = points[i - 1];
+        const [x2, y2] = points[i];
+        const bend = Math.hypot(x2 - x1, y2 - y1) * 0.2;
+        const cx = (x1 + x2) / 2;
+        const cy = (y1 + y2) / 2 - bend;
+        web += `M${x1} ${y1}Q${cx} ${cy} ${x2} ${y2}`;
+    }
+    svg.appendChild(svgEl("path", { d: web, class: "map-web" }));
+    const tooltip = document.createElement("div");
+    tooltip.className = "map-tooltip";
+
+    homes.forEach((item) => {
+        const [x, y] = projectToMap(item.coords);
+        const pin = svgEl("g", {
+            class: "map-pin map-pin--home",
+            transform: `translate(${x} ${y})`,
+            tabindex: "0",
+            "aria-label": `${item.place}, ${item.date}`,
+        });
+        pin.appendChild(svgEl("circle", { r: 3.2, class: "map-pin-dot" }));
+
+        const show = () => showMapTooltip(tooltip, root, pin, item);
+        const hide = () => tooltip.classList.remove("is-visible");
+        pin.addEventListener("mouseenter", show);
+        pin.addEventListener("focus", show);
+        pin.addEventListener("mouseleave", hide);
+        pin.addEventListener("blur", hide);
+        svg.appendChild(pin);
+    });
+
+    travelPins = beyondData.travel.map((item, i) => {
+        if (!item.coords) return null;
+        const [x, y] = projectToMap(item.coords);
+
+        const pin = svgEl("g", {
+            class: "map-pin",
+            transform: `translate(${x} ${y})`,
+            tabindex: "0",
+            role: "button",
+            "aria-label": `${item.place}, ${item.date}`,
+        });
+        pin.style.animationDelay = `${i * 0.35}s`;
+        pin.append(
+            svgEl("circle", { r: 4, class: "map-pin-pulse" }),
+            svgEl("circle", { r: 3.2, class: "map-pin-dot" })
+        );
+
+        const show = () => showMapTooltip(tooltip, root, pin, item);
+        const hide = () => tooltip.classList.remove("is-visible");
+        pin.addEventListener("mouseenter", show);
+        pin.addEventListener("focus", show);
+        pin.addEventListener("mouseleave", hide);
+        pin.addEventListener("blur", hide);
+        pin.addEventListener("click", () => {
+            highlightTravelCard(i);
+            document.getElementById(`travel-card-${i}`).scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+        pin.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                pin.dispatchEvent(new MouseEvent("click"));
+            }
+        });
+
+        svg.appendChild(pin);
+        return { pin, show };
+    });
+
+    root.append(svg, tooltip);
+}
+
+function showMapTooltip(tooltip, root, pin, item) {
+    tooltip.textContent = "";
+    const place = document.createElement("strong");
+    place.textContent = item.place;
+    const date = document.createElement("span");
+    date.textContent = item.date;
+    tooltip.append(place, date);
+
+    const pinBox = pin.getBoundingClientRect();
+    const rootBox = root.getBoundingClientRect();
+    tooltip.style.left = `${pinBox.left + pinBox.width / 2 - rootBox.left}px`;
+    tooltip.style.top = `${pinBox.top - rootBox.top}px`;
+    tooltip.classList.add("is-visible");
+}
+
+function focusTravelPin(index) {
+    const entry = travelPins[index];
+    if (!entry) return;
+
+    document.getElementById("travel-map").scrollIntoView({ behavior: "smooth", block: "center" });
+    travelPins.forEach((p) => p && p.pin.classList.toggle("is-active", p === entry));
+    highlightTravelCard(index);
+    setTimeout(entry.show, 400);
+}
+
+function highlightTravelCard(index) {
+    document.querySelectorAll(".travel-card").forEach((card) =>
+        card.classList.toggle("is-highlighted", card.id === `travel-card-${index}`)
+    );
 }
 
 function renderGallery() {
@@ -391,7 +593,7 @@ function renderGalleryItems(filter) {
             ? beyondData.gallery
             : beyondData.gallery.filter((p) => p.category === filter);
 
-    items.forEach((photo) => {
+    items.forEach((photo, i) => {
         const cell = document.createElement("div");
         cell.className = "gallery-cell";
 
@@ -401,30 +603,78 @@ function renderGalleryItems(filter) {
         img.loading = "lazy";
 
         cell.appendChild(img);
-        cell.addEventListener("click", () => openLightbox(photo.src, photo.alt));
+        cell.addEventListener("click", () => openLightbox(items, i));
         root.appendChild(cell);
     });
 }
 
-function openLightbox(src, alt) {
+function openLightbox(photos, startIndex) {
+    let index = startIndex;
+
     const overlay = document.createElement("div");
     overlay.className = "lightbox-overlay";
 
+    const figure = document.createElement("figure");
+    figure.className = "lightbox-figure";
+
     const img = document.createElement("img");
-    img.src = src;
-    img.alt = alt;
+    const caption = document.createElement("figcaption");
+    caption.className = "lightbox-caption";
+    figure.append(img, caption);
 
     const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
     closeBtn.className = "lightbox-close";
+    closeBtn.setAttribute("aria-label", "Close");
     closeBtn.textContent = "\u00D7";
-    closeBtn.addEventListener("click", () => overlay.remove());
 
+    const prevBtn = document.createElement("button");
+    prevBtn.type = "button";
+    prevBtn.className = "lightbox-nav lightbox-prev";
+    prevBtn.setAttribute("aria-label", "Previous photo");
+    prevBtn.textContent = "\u2039";
+
+    const nextBtn = document.createElement("button");
+    nextBtn.type = "button";
+    nextBtn.className = "lightbox-nav lightbox-next";
+    nextBtn.setAttribute("aria-label", "Next photo");
+    nextBtn.textContent = "\u203A";
+
+    function show(i) {
+        index = (i + photos.length) % photos.length;
+        const photo = photos[index];
+        img.src = photo.src;
+        img.alt = photo.alt;
+        caption.textContent =
+            photos.length > 1 ? `${photo.alt}  \u00B7  ${index + 1} / ${photos.length}` : photo.alt;
+    }
+
+    function close() {
+        overlay.remove();
+        document.removeEventListener("keydown", onKey);
+        document.body.style.overflow = "";
+    }
+
+    function onKey(e) {
+        if (e.key === "Escape") close();
+        else if (e.key === "ArrowLeft") show(index - 1);
+        else if (e.key === "ArrowRight") show(index + 1);
+    }
+
+    closeBtn.addEventListener("click", close);
+    prevBtn.addEventListener("click", () => show(index - 1));
+    nextBtn.addEventListener("click", () => show(index + 1));
     overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) overlay.remove();
+        if (e.target === overlay) close();
     });
+    document.addEventListener("keydown", onKey);
 
-    overlay.append(img, closeBtn);
+    overlay.append(figure, closeBtn);
+    if (photos.length > 1) overlay.append(prevBtn, nextBtn);
     document.body.appendChild(overlay);
+    document.body.style.overflow = "hidden";
+    show(index);
+    closeBtn.focus();
 }
 
 function wireSmoothScrollButtons() {
@@ -490,7 +740,8 @@ function wireThemeSwitcher() {
 
 /* typewriter effect (note to self: this is only for green theme) */
 let typingTimers = [];
-const beyondSummaryText = "When I'm not working with data or finance, here's what keeps me going";
+const beyondSummaryEl = document.querySelector(".beyond-hero .hero-summary");
+const beyondSummaryText = beyondSummaryEl ? beyondSummaryEl.textContent.trim() : "";
 
 function clearTyping() {
     typingTimers.forEach(id => clearTimeout(id));
@@ -531,6 +782,6 @@ function runHackerTyping() {
     typeText(summaryEl, beyondSummaryText, 25);
 }
 
-init();
 wireThemeSwitcher();
+init();
 runHackerTyping();
