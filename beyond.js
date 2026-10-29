@@ -70,7 +70,14 @@ const beyondData = {
             date: "School",
         },
     ],
-
+    
+    // *NOTE TO SELF*
+    // Adding a trip: put the photo in images/beyond/, add an entry here, then add any lines for it in `routes` below.
+    // Shrink new photos first (from the Jay_Website folder): sips -Z 1600 -s formatOptions 72 images/beyond/NAME.jpeg
+    // Card, map pin, tooltip photo and hover highlight all follow automatically.
+    // Add coords = [latitude, longitude]
+    // Leave out coords to show the card without a map pin.
+    // Keep entries in date order: this sets the card order.
     travel: [
         {
             place: "Tokyo, Japan",
@@ -128,6 +135,21 @@ const beyondData = {
             image: "./images/beyond/fukuoka1.jpeg",
             note: "Traveled to Fukuoka after visiting Shanghai",
         },
+    ],
+
+    // Lines drawn on the travel map: each pair connects two places by their "place" name
+    routes: [
+        ["Tallahassee, Florida", "Atlanta, Georgia"],
+        ["Atlanta, Georgia", "Tokyo, Japan"],
+        ["Tokyo, Japan", "Nara, Japan"],
+        ["Nara, Japan", "Shanghai, China"],
+        ["Shanghai, China", "Atlanta, Georgia"],
+        ["Atlanta, Georgia", "Reykjavík, Iceland"],
+        ["Atlanta, Georgia", "Ann Arbor, Michigan"],
+        ["Atlanta, Georgia", "Lisbon, Portugal"],
+        ["Atlanta, Georgia", "Hong Kong, China"],
+        ["Hong Kong, China", "Shanghai, China"],
+        ["Shanghai, China", "Fukuoka, Japan"],
     ],
 
     gallery: [
@@ -445,18 +467,32 @@ function renderTravelMap() {
 
     const homes = beyondData.home || [];
 
-    // Arcs connecting home, then each trip in timeline order
-    const points = [...homes, ...trips].map((item) => projectToMap(item.coords));
-    let web = "";
-    for (let i = 1; i < points.length; i++) {
-        const [x1, y1] = points[i - 1];
-        const [x2, y2] = points[i];
+    // Arcs for each pair listed in beyondData.routes
+    const coordsByPlace = new Map([...homes, ...trips].map((item) => [item.place, item.coords]));
+    let routeIndex = 0;
+    (beyondData.routes || []).forEach(([from, to]) => {
+        if (!coordsByPlace.has(from) || !coordsByPlace.has(to)) {
+            console.warn(`Travel map route skipped, unknown place: ${from} -> ${to}`);
+            return;
+        }
+        const [x1, y1] = projectToMap(coordsByPlace.get(from));
+        const [x2, y2] = projectToMap(coordsByPlace.get(to));
         const bend = Math.hypot(x2 - x1, y2 - y1) * 0.2;
         const cx = (x1 + x2) / 2;
         const cy = (y1 + y2) / 2 - bend;
-        web += `M${x1} ${y1}Q${cx} ${cy} ${x2} ${y2}`;
-    }
-    svg.appendChild(svgEl("path", { d: web, class: "map-web" }));
+        // One path per route so each can draw itself in turn
+        const route = svgEl("path", {
+            d: `M${x1} ${y1}Q${cx} ${cy} ${x2} ${y2}`,
+            class: "map-web",
+            pathLength: 1,
+        });
+        route.dataset.from = from;
+        route.dataset.to = to;
+        route.style.setProperty("--route-delay", `${routeIndex * 0.2}s`);
+        routeIndex++;
+        svg.appendChild(route);
+    });
+    drawRoutesOnScroll(svg);
     const tooltip = document.createElement("div");
     tooltip.className = "map-tooltip";
 
@@ -470,8 +506,14 @@ function renderTravelMap() {
         });
         pin.appendChild(svgEl("circle", { r: 3.2, class: "map-pin-dot" }));
 
-        const show = () => showMapTooltip(tooltip, root, pin, item);
-        const hide = () => tooltip.classList.remove("is-visible");
+        const show = () => {
+            showMapTooltip(tooltip, root, pin, item);
+            highlightRoutes(svg, item.place);
+        };
+        const hide = () => {
+            tooltip.classList.remove("is-visible");
+            highlightRoutes(svg, null);
+        };
         pin.addEventListener("mouseenter", show);
         pin.addEventListener("focus", show);
         pin.addEventListener("mouseleave", hide);
@@ -496,8 +538,14 @@ function renderTravelMap() {
             svgEl("circle", { r: 3.2, class: "map-pin-dot" })
         );
 
-        const show = () => showMapTooltip(tooltip, root, pin, item);
-        const hide = () => tooltip.classList.remove("is-visible");
+        const show = () => {
+            showMapTooltip(tooltip, root, pin, item);
+            highlightRoutes(svg, item.place);
+        };
+        const hide = () => {
+            tooltip.classList.remove("is-visible");
+            highlightRoutes(svg, null);
+        };
         pin.addEventListener("mouseenter", show);
         pin.addEventListener("focus", show);
         pin.addEventListener("mouseleave", hide);
@@ -522,6 +570,13 @@ function renderTravelMap() {
 
 function showMapTooltip(tooltip, root, pin, item) {
     tooltip.textContent = "";
+    if (item.image) {
+        const photo = document.createElement("img");
+        photo.src = item.image;
+        photo.alt = "";
+        photo.className = "map-tooltip-photo";
+        tooltip.appendChild(photo);
+    }
     const place = document.createElement("strong");
     place.textContent = item.place;
     const date = document.createElement("span");
@@ -533,6 +588,15 @@ function showMapTooltip(tooltip, root, pin, item) {
     tooltip.style.left = `${pinBox.left + pinBox.width / 2 - rootBox.left}px`;
     tooltip.style.top = `${pinBox.top - rootBox.top}px`;
     tooltip.classList.add("is-visible");
+}
+
+// Brighten routes touching `place` and fade the rest; pass null to reset
+function highlightRoutes(svg, place) {
+    svg.classList.toggle("is-focusing", place !== null);
+    svg.querySelectorAll(".map-web").forEach((route) => {
+        const touches = route.dataset.from === place || route.dataset.to === place;
+        route.classList.toggle("is-highlighted", place !== null && touches);
+    });
 }
 
 function focusTravelPin(index) {
@@ -717,6 +781,28 @@ function revealSectionsOnScroll() {
         if (index === 0) return;
         observer.observe(section);
     });
+}
+
+function drawRoutesOnScroll(svg) {
+    if (!("IntersectionObserver" in window)) {
+        svg.classList.add("is-drawn");
+        return;
+    }
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            // Redraw each time the map comes back into view; clear it once it's fully off screen
+            entries.forEach((entry) => {
+                if (entry.intersectionRatio >= 0.4) {
+                    entry.target.classList.add("is-drawn");
+                } else if (!entry.isIntersecting) {
+                    entry.target.classList.remove("is-drawn");
+                }
+            });
+        },
+        { threshold: [0, 0.4] }
+    );
+    observer.observe(svg);
 }
 
 function wireThemeSwitcher() {

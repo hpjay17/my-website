@@ -1256,6 +1256,28 @@ a.brand {
     stroke-width: 0.8;
     opacity: 0.5;
     pointer-events: none;
+    /* Hidden until the map scrolls into view, then each route draws in turn */
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+}
+
+/* Transition only when drawing in, so leaving view clears the lines instantly */
+.travel-map-svg.is-drawn .map-web {
+    stroke-dashoffset: 0;
+    transition:
+        stroke-dashoffset 0.4s ease-out var(--route-delay, 0s),
+        opacity 0.2s ease,
+        stroke-width 0.2s ease;
+}
+
+/* Hovering a pin brightens its routes and fades the others */
+.travel-map-svg.is-focusing .map-web {
+    opacity: 0.12;
+}
+
+.travel-map-svg.is-focusing .map-web.is-highlighted {
+    opacity: 1;
+    stroke-width: 1.4;
 }
 
 .map-pin {
@@ -1306,6 +1328,11 @@ a.brand {
         animation: none;
         opacity: 0;
     }
+
+    .map-web {
+        stroke-dashoffset: 0;
+        transition: none;
+    }
 }
 
 .map-tooltip {
@@ -1334,6 +1361,15 @@ a.brand {
 .map-tooltip span {
     color: var(--text-muted);
     font-size: 0.78rem;
+}
+
+.map-tooltip-photo {
+    display: block;
+    width: 160px;
+    height: 100px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    object-fit: cover;
 }
 
 .travel-map-btn {
