@@ -70,7 +70,7 @@ const beyondData = {
             date: "School",
         },
     ],
-    
+
     // *NOTE TO SELF*
     // Adding a trip: put the photo in images/beyond/, add an entry here, then add any lines for it in `routes` below.
     // Shrink new photos first (from the Jay_Website folder): sips -Z 1600 -s formatOptions 72 images/beyond/NAME.jpeg
