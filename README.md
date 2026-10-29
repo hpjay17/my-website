@@ -27,15 +27,11 @@ Content lives in the data objects at the top of `script.js` and `beyond.js`; edi
 
 **Adding a trip:** see the comment above `travel:` in `beyond.js`. In short: add the photo, add a `travel` entry with `coords`, then add any map lines to `routes`.
 
-**Adding a photo:** shrink it first so pages load quickly:
-
 ```bash
 sips -Z 1600 -s formatOptions 72 images/beyond/NAME.jpeg
 ```
 
-iPhone `.HEIC` photos need converting first: `sips -s format jpeg IN.HEIC --out OUT.jpeg`
-
-**Changing the résumé:** replace the PDF in `files/` and update the `CV` link in `script.js`.
+**Changing the resume:** replace the PDF in `files/` and update the `CV` link in `script.js`.
 
 ## Link previews
 
