@@ -47,8 +47,7 @@
     box-sizing: border-box;
 }
 
-/* Theme switch (js/shared.js): the new theme grows in a circle from the button over the old one.
-   The browser's default crossfade is turned off so only the circle moves. */
+/* Theme switch (js/shared.js): the default crossfade is off so only the growing circle moves */
 ::view-transition-old(root),
 ::view-transition-new(root) {
     animation: none;
@@ -1276,7 +1275,7 @@ h1 {
     position: relative;
 }
 
-/* Drag to pan; vertical swipes still scroll the page on phones, sideways ones pan the map */
+/* On phones, vertical swipes still scroll the page; sideways ones pan the map */
 .travel-map-svg {
     --map-zoom: 1;
     display: block;
@@ -1290,7 +1289,7 @@ h1 {
     outline: none;
 }
 
-.travel-map-svg.is-panning {
+.travel-map-svg.is-dragging {
     cursor: grabbing;
 }
 
@@ -1299,7 +1298,7 @@ h1 {
     box-shadow: 0 0 0 2px var(--accent-a);
 }
 
-/* --map-dot shrinks the dots a little as the map zooms in (js/beyond.js), so zoomed-in land stays airy */
+/* --map-dot (js/travel-map.js) grows the dots more slowly than the zoom, so zoomed-in land stays airy */
 .map-land {
     fill: none;
     stroke: var(--text-muted);
@@ -1314,13 +1313,12 @@ h1 {
     stroke-width: calc(0.8px * var(--map-zoom));
     opacity: 0.5;
     pointer-events: none;
-    /* Hidden until the map scrolls into view, then each route draws in turn.
-       Each path holds four copies of its line (ROUTE_COPIES in js/beyond.js), each a quarter of
-       its length, so the pattern repeats every quarter and all the copies draw together. */
+    /* Hidden until the map scrolls into view. Each path holds four copies of its line
+       (ROUTE_COPIES in js/travel-map.js), so the dash pattern repeats every quarter. */
     stroke-dasharray: 0 0.25;
 }
 
-/* Transition only when drawing in, so leaving view clears the lines instantly */
+/* Only drawing in is animated, so leaving view clears the lines at once */
 .travel-map-svg.is-drawn .map-web {
     stroke-dasharray: 0.25 0;
     transition:
@@ -1350,9 +1348,21 @@ h1 {
     width: 100%;
     height: min(460px, 80vw);
     cursor: grab;
-    /* Vertical swipes still scroll the page on phones; sideways ones turn the globe */
     touch-action: pan-y;
     outline: none;
+}
+
+.travel-map-globe.is-over-pin {
+    cursor: pointer;
+}
+
+.travel-map-globe.is-dragging {
+    cursor: grabbing;
+}
+
+.travel-map-globe:focus-visible {
+    border-radius: 8px;
+    box-shadow: 0 0 0 2px var(--accent-a);
 }
 
 .travel-map.is-globe .travel-map-flat {
@@ -1402,27 +1412,13 @@ h1 {
     border-radius: 2px;
 }
 
-.travel-map-globe.is-over-pin {
-    cursor: pointer;
-}
-
-.travel-map-globe.is-dragging {
-    cursor: grabbing;
-}
-
-.travel-map-globe:focus-visible {
-    border-radius: 8px;
-    box-shadow: 0 0 0 2px var(--accent-a);
-}
-
-/* Replay: js/beyond.js draws each line itself, frame by frame, through the same stroke-dasharray the
-   scroll-in drawing animates. Without this, every frame's change would restart that animation, with its
-   delay, so lines would hang on when the replay starts and trail behind the plane. */
+/* js/replay.js sets stroke-dasharray every frame. With the draw-in transition left on, each change would
+   restart its delay and the lines would trail behind the plane. */
 .travel-map-svg.is-replaying .map-web {
     transition: opacity 0.2s ease, stroke-width 0.2s ease;
 }
 
-/* Replay: the line being flown stands out; the rest keep their normal look */
+/* The line being flown in the replay */
 .travel-map-svg.is-replaying .map-web.is-highlighted {
     opacity: 1;
     stroke-width: calc(1.4px * var(--map-zoom));
@@ -1434,7 +1430,7 @@ h1 {
     transition: opacity 0.3s ease;
 }
 
-/* Hovering is off during the replay, and places not reached yet are hidden */
+/* During the replay, hovering is off and places not reached yet are hidden */
 .travel-map-svg.is-replaying .map-pin {
     pointer-events: none;
 }

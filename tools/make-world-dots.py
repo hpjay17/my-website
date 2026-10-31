@@ -22,9 +22,8 @@ from PIL import Image, ImageDraw
 LAND_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson"
 OUTPUT = Path(__file__).resolve().parent.parent / "data" / "world-dots.js"
 
-LAT_TOP = 90      # northern edge of the grid; js/beyond.js reads this from the output
-LAT_BOTTOM = -90  # southern edge. The whole globe is covered so the globe view has both poles;
-                  # the flat map crops itself to the places you've been (MAP_NORTH_EDGE in js/beyond.js)
+LAT_TOP = 90      # the map scripts read this from the output
+LAT_BOTTOM = -90  # both poles, for the globe; the flat map limits itself (MAP_NORTH_EDGE in js/travel-map.js)
 SUPERSAMPLE = 8   # each dot is drawn as an 8x8 block, then averaged
 LAND_THRESHOLD = 90  # 0-255: how much of a cell must be land to get a dot (90 is about 35%)
 

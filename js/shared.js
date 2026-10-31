@@ -1,18 +1,23 @@
-/* Behavior used by both pages. Load this before js/portfolio.js or js/beyond.js. */
+/* Used by both pages: element creation, theme switcher, scrolling, section fade-in and the typing effect */
 
-// Nav buttons with class "js-scroll" scroll to the section named in data-target
+function createEl(tag, className, text) {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text !== undefined) el.textContent = text;
+    return el;
+}
+
+// Buttons with class "js-scroll" scroll to the section named in data-target
 function wireSmoothScrollButtons() {
     document.querySelectorAll(".js-scroll").forEach((button) => {
         button.addEventListener("click", () => {
-            const target = document.getElementById(button.dataset.target);
-            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+            document.getElementById(button.dataset.target).scrollIntoView({ behavior: "smooth", block: "start" });
         });
     });
 }
 
-// Fade each section in the first time it scrolls into view (the first section is already visible)
+// Fade each section in the first time it scrolls into view (the first is visible from the start)
 function revealSectionsOnScroll() {
-    const sections = Array.from(document.querySelectorAll(".section"));
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
@@ -24,8 +29,7 @@ function revealSectionsOnScroll() {
         },
         { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
     );
-
-    sections.slice(1).forEach((section) => observer.observe(section));
+    [...document.querySelectorAll(".section")].slice(1).forEach((section) => observer.observe(section));
 }
 
 // Apply the saved theme and wire the theme buttons; onChange(theme) runs after each switch
@@ -35,7 +39,6 @@ function wireThemeSwitcher(onChange) {
         document.documentElement.setAttribute("data-theme", theme);
         buttons.forEach((btn) => btn.classList.toggle("active", btn.dataset.setTheme === theme));
     };
-
     setTheme(localStorage.getItem("theme") || "blue");
 
     buttons.forEach((btn) => {
@@ -44,15 +47,15 @@ function wireThemeSwitcher(onChange) {
             localStorage.setItem("theme", theme);
             revealTheme(btn, theme, () => {
                 setTheme(theme);
-                if (onChange) onChange(theme);
+                onChange(theme);
             });
         });
     });
 }
 
-// Switch themes with a circle that grows out of the clicked button until it covers the window.
-// The browser photographs the page before and after `update`, then this animates a circular
-// cut-out of the new page over the old one. Browsers without View Transitions just switch at once.
+// Grow the new theme in a circle from the clicked button. The browser snapshots the page before and
+// after `update` (View Transitions); this animates a circular cut-out of the new snapshot over the old.
+// Browsers without View Transitions switch at once.
 function revealTheme(button, theme, update) {
     if (!document.startViewTransition || prefersReducedMotion() || theme === currentTheme()) {
         update();
@@ -64,8 +67,7 @@ function revealTheme(button, theme, update) {
     // Far enough to reach the window's farthest corner
     const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
 
-    const transition = document.startViewTransition(update);
-    transition.ready.then(() => {
+    document.startViewTransition(update).ready.then(() => {
         document.documentElement.animate(
             { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
             { duration: 600, easing: "cubic-bezier(0.4, 0, 0.2, 1)", pseudoElement: "::view-transition-new(root)" }
@@ -81,11 +83,11 @@ function prefersReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/* Typewriter effect (green theme only) */
+// Typing effect, used by the green theme
 let typingTimers = [];
 
 function clearTyping() {
-    typingTimers.forEach((id) => clearTimeout(id));
+    typingTimers.forEach(clearTimeout);
     typingTimers = [];
 }
 
@@ -98,14 +100,13 @@ function typeText(element, text, speed) {
     element.textContent = "";
     element.classList.add("typing", "typing-cursor");
     let i = 0;
-    function tick() {
+    const tick = () => {
         if (i < text.length) {
-            element.textContent += text[i];
-            i++;
+            element.textContent += text[i++];
             typingTimers.push(setTimeout(tick, speed));
         } else {
             element.classList.remove("typing", "typing-cursor");
         }
-    }
+    };
     tick();
 }

@@ -54,13 +54,6 @@ const TERMINAL = {
         return forced || sessionStorage.getItem(SEEN_KEY) !== theme;
     }
 
-    function el(tag, className, text) {
-        const node = document.createElement(tag);
-        if (className) node.className = className;
-        if (text !== undefined) node.textContent = text;
-        return node;
-    }
-
     // Fade the gate out and hand over to the page
     function closeGate(gate, onClosed) {
         if (gate.classList.contains("is-leaving")) return;
@@ -78,53 +71,53 @@ const TERMINAL = {
 
     function buildBoardingPass() {
         const now = new Date();
-        const gate = el("div", "gate gate--pass");
+        const gate = createEl("div", "gate gate--pass");
         gate.setAttribute("role", "dialog");
         gate.setAttribute("aria-modal", "true");
         gate.setAttribute("aria-label", "Boarding pass to Beyond Work");
 
-        const pass = el("div", "pass");
-        const main = el("div", "pass-main");
+        const pass = createEl("div", "pass");
+        const main = createEl("div", "pass-main");
 
-        const header = el("div", "pass-header");
-        header.append(el("span", "pass-airline", BOARDING_PASS.airline), el("span", "pass-kind", "BOARDING PASS"));
+        const header = createEl("div", "pass-header");
+        header.append(createEl("span", "pass-airline", BOARDING_PASS.airline), createEl("span", "pass-kind", "BOARDING PASS"));
 
-        const route = el("div", "pass-route");
-        const from = el("div", "pass-place");
-        from.append(el("span", "pass-code", BOARDING_PASS.from.code), el("span", "pass-city", BOARDING_PASS.from.city));
-        const to = el("div", "pass-place pass-place--to");
-        to.append(el("span", "pass-code", BOARDING_PASS.to.code), el("span", "pass-city", BOARDING_PASS.to.city));
-        const path = el("div", "pass-path");
+        const route = createEl("div", "pass-route");
+        const from = createEl("div", "pass-place");
+        from.append(createEl("span", "pass-code", BOARDING_PASS.from.code), createEl("span", "pass-city", BOARDING_PASS.from.city));
+        const to = createEl("div", "pass-place pass-place--to");
+        to.append(createEl("span", "pass-code", BOARDING_PASS.to.code), createEl("span", "pass-city", BOARDING_PASS.to.city));
+        const path = createEl("div", "pass-path");
         path.innerHTML =
             '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>';
         route.append(from, path, to);
 
         const date = now.toLocaleDateString("en-US", { day: "2-digit", month: "short" }).toUpperCase();
-        const fields = el("div", "pass-fields");
+        const fields = createEl("div", "pass-fields");
         BOARDING_PASS.fields.forEach(([label, value]) => {
-            const field = el("div", "pass-field");
-            field.append(el("span", "pass-label", label), el("span", "pass-value", label === "Date" ? date : value));
+            const field = createEl("div", "pass-field");
+            field.append(createEl("span", "pass-label", label), createEl("span", "pass-value", label === "Date" ? date : value));
             fields.appendChild(field);
         });
 
         main.append(header, route, fields);
 
         // Stub: barcode and the button that "scans" it
-        const stub = el("div", "pass-stub");
-        const barcode = el("div", "pass-barcode");
+        const stub = createEl("div", "pass-stub");
+        const barcode = createEl("div", "pass-barcode");
         const widths = [1, 3, 1, 2, 1, 1, 3, 2, 1, 2, 3, 1, 1, 2, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 3, 2, 1];
         widths.forEach((w) => {
-            const bar = el("span", "pass-bar");
+            const bar = createEl("span", "pass-bar");
             bar.style.flexGrow = w;
             barcode.appendChild(bar);
         });
-        barcode.appendChild(el("span", "pass-scan"));
-        const button = el("button", "pass-btn", BOARDING_PASS.button);
+        barcode.appendChild(createEl("span", "pass-scan"));
+        const button = createEl("button", "pass-btn", BOARDING_PASS.button);
         button.type = "button";
-        stub.append(el("span", "pass-label", BOARDING_PASS.stub), barcode, button);
+        stub.append(createEl("span", "pass-label", BOARDING_PASS.stub), barcode, button);
 
         pass.append(main, stub);
-        gate.append(pass, el("p", "gate-hint", BOARDING_PASS.hint));
+        gate.append(pass, createEl("p", "gate-hint", BOARDING_PASS.hint));
 
         const board = () => {
             if (gate.classList.contains("is-scanning")) return;
@@ -149,17 +142,17 @@ const TERMINAL = {
 
     function buildTerminal() {
         const now = new Date();
-        const gate = el("div", "gate gate--terminal");
+        const gate = createEl("div", "gate gate--terminal");
         gate.setAttribute("role", "dialog");
         gate.setAttribute("aria-modal", "true");
         gate.setAttribute("aria-label", "Terminal login to Beyond Work");
 
-        const term = el("div", "term");
-        const bar = el("div", "term-bar", TERMINAL.title);
-        const body = el("pre", "term-body");
+        const term = createEl("div", "term");
+        const bar = createEl("div", "term-bar", TERMINAL.title);
+        const body = createEl("pre", "term-body");
         body.setAttribute("aria-live", "polite");
         term.append(bar, body);
-        gate.append(term, el("p", "gate-hint", TERMINAL.hint));
+        gate.append(term, createEl("p", "gate-hint", TERMINAL.hint));
 
         const stamp = now.toLocaleString("en-US", {
             weekday: "short", month: "short", day: "numeric",
@@ -175,12 +168,12 @@ const TERMINAL = {
         const timers = [];
         let finished = false;
         const later = (fn, ms) => timers.push(setTimeout(fn, ms));
-        const cursor = el("span", "term-cursor", " ");
+        const cursor = createEl("span", "term-cursor", " ");
 
         const printAll = () => {
             body.textContent = "";
             steps.forEach((step) => {
-                const line = el("span", step.className || "", step.text + (step.type || ""));
+                const line = createEl("span", step.className, step.text + (step.type || ""));
                 body.append(line, "\n");
             });
             body.appendChild(cursor);
@@ -218,7 +211,7 @@ const TERMINAL = {
         let time = 300;
         body.appendChild(cursor);
         steps.forEach((step) => {
-            const line = el("span", step.className || "");
+            const line = createEl("span", step.className);
             later(() => {
                 line.textContent = step.text;
                 body.insertBefore(line, cursor);

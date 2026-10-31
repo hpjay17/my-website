@@ -32,7 +32,7 @@ const beyondData = {
         license: "Private Pilot License (PPL)",
         summary:
             "Earned my Private Pilot License at 17. Flying gives me a unique perspective on the world ~ from above.",
-        // Numbers from your logbook, shown as tiles under the summary. Add or remove any line.
+        // Shown as tiles under the summary
         logbook: [
             { label: "Total Flight Hours", value: 90.5 },
             { label: "Pilot in Command", value: 29.9 },
@@ -66,6 +66,7 @@ const beyondData = {
         ],
     },
 
+    // Always on the map, in their own color. Not counted in the places stat.
     home: [
         {
             place: "Tallahassee, Florida",
@@ -79,15 +80,12 @@ const beyondData = {
         },
     ],
 
-    // *NOTE TO SELF*
-    // Adding a trip: put the photo in images/beyond/, add an entry here, then add any lines for it in `routes` below.
-    // Shrink new photos first (from the Jay_Website folder): sips -Z 1600 -s formatOptions 72 images/beyond/NAME.jpeg
-    // Card, map pin, label, tooltip photo, zoom button and stats all follow automatically.
-    // Write place as "City, Country" (or "City, State" in the US): the map label uses the city,
-    // and the country count uses the part after the last comma.
-    // Add coords = [latitude, longitude] (right-click a spot in Google Maps to copy them).
-    // Leave out coords to show the card without a map pin; leave image as "" for a card without a photo.
-    // Keep entries in date order: this sets the card order.
+    // One card and map pin per trip, in date order.
+    // place: "City, Country", or "City, State" in the US. The pin label uses the city; the country stat uses the part after the last comma.
+    // coords: [lat, lng] (right-click a spot in Google Maps to copy). Omit to show the card without a pin.
+    // image: a photo in images/beyond/, or "" for a card without one. Shrink new photos first:
+    //   sips -Z 1600 -s format jpeg -s formatOptions low images/beyond/NAME.jpeg
+    // Then add the flights to and from it in `routes`.
     travel: [
         {
             place: "San José, Costa Rica",
@@ -168,10 +166,8 @@ const beyondData = {
         },
     ],
 
-    // Map-only places: a small pin and route lines, but no card or photo below the map.
-    // Use these for places without photos, or airports you only connected through.
-    // Date is optional and shows in the hover tooltip.
-    // They count toward the "places" and "countries" stats and can be used in routes.
+    // Map-only places (layovers, places without photos): a small pin and no card. date is optional and shows in the tooltip.
+    // Counted in the places and countries stats, and usable in routes.
     stops: [
         { place: "New York, New York", coords: [40.713, -74.006], date: "Family" },
         { place: "Baltimore, Maryland", coords: [39.290, -76.612], date: "Naval Academy" },
@@ -184,13 +180,10 @@ const beyondData = {
         { place: "Los Angeles, California", coords: [34.052, -118.244], date: "Layover" },
     ],
 
-    // Flights drawn on the travel map: each pair connects two places by their "place" name.
-    // Every entry adds its distance to the miles stat. For a flight taken more than once,
-    // add how many times as a third value: ["Tallahassee, Florida", "Atlanta, Georgia", 6]
-    // Repeats and return legs (B to A after A to B) count toward the miles but share one line on the map.
-    // Keep flights in the order you took them: the map's replay button flies them in this order.
-    // A year on its own line ("2024",) starts that year in the replay. When the replay reaches a trip
-    // in its own year, the counter shows the trip's date (e.g. "June 2024").
+    // Flights in the order taken, which is the order the replay flies them: ["From place", "To place"], using exact place names.
+    // Every flight adds to the miles stat. A third value counts a repeated flight: ["Tallahassee, Florida", "Atlanta, Georgia", 6].
+    // A return leg shares the outbound line on the map.
+    // A year on its own line ("2024",) starts that year in the replay; trips reached in their own year show their date.
     routes: [
         "2023",
         ["Tallahassee, Florida", "Atlanta, Georgia"],
@@ -247,6 +240,7 @@ const beyondData = {
         ["Tokyo, Japan", "Atlanta, Georgia"],
     ],
 
+    // Each distinct category gets a filter button
     gallery: [
         {
             src: "./images/beyond/gallery/flying.jpg",
