@@ -54,7 +54,7 @@ const templateData = {
         },
         {
             company: "Techbridge",
-            role: "Student Data Analyst",
+            role: "Data Research Intern",
             period: "Jan 2025 – May 2025",
             location: "Atlanta, GA",
             stack: ["Excel", "Python", "Tableau"],
@@ -145,21 +145,20 @@ const templateData = {
     ],
 };
 
-const state = {
-    activeCareerIndex: 0,
-    isAnimatingCareer: false,
-    activeOrgIndex: 0,
-    isAnimatingOrg: false,
-    activeProjectIndex: 0,
+// Career and Organizations share the same tab list + sliding detail panel
+const tabGroups = {
+    career: { items: templateData.career, listId: "career-list", detailId: "career-detail", activeIndex: 0, isAnimating: false },
+    org: { items: templateData.organizations, listId: "org-list", detailId: "org-detail", activeIndex: 0, isAnimating: false },
 };
+let activeProjectIndex = 0;
 
 function init() {
     applyProfile();
     renderSocialLinks();
-    renderCareerList();
-    renderCareerDetail(0, false);
-    renderOrgList();
-    renderOrgDetail(0, false);
+    Object.values(tabGroups).forEach((group) => {
+        renderTabList(group);
+        renderTabDetail(group, 0, false);
+    });
     renderSkills();
     renderProjects();
     renderCertifications();
@@ -185,6 +184,14 @@ function applyProfile() {
     emailLink.href = `mailto:${profile.email}`;
 }
 
+// Links starting with http open in a new tab; local files and mailto stay in this one
+function openExternalInNewTab(link) {
+    if (link.getAttribute("href").startsWith("http")) {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+    }
+}
+
 function renderSocialLinks() {
     const socialRoot = document.getElementById("social-links");
     socialRoot.textContent = "";
@@ -195,11 +202,7 @@ function renderSocialLinks() {
         link.href = item.href;
         link.setAttribute("aria-label", item.label);
         link.title = item.label;
-
-        if (item.href.startsWith("http")) {
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-        }
+        openExternalInNewTab(link);
 
         const icon = document.createElement("span");
         icon.className = "social-icon";
@@ -213,17 +216,15 @@ function renderSocialLinks() {
     });
 }
 
-function renderCareerList() {
-    const careerList = document.getElementById("career-list");
-    careerList.textContent = "";
+function renderTabList(group) {
+    const list = document.getElementById(group.listId);
+    list.textContent = "";
 
-    templateData.career.forEach((item, index) => {
+    group.items.forEach((item, index) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `career-item${index === state.activeCareerIndex ? " active" : ""}`;
-        button.dataset.index = String(index);
+        button.className = "career-item";
         button.setAttribute("role", "tab");
-        button.setAttribute("aria-selected", index === state.activeCareerIndex ? "true" : "false");
 
         const company = document.createElement("span");
         company.className = "company";
@@ -235,21 +236,20 @@ function renderCareerList() {
 
         button.append(company, role);
         button.addEventListener("click", () => {
-            if (state.isAnimatingCareer || index === state.activeCareerIndex) return;
-            setActiveCareerButton(index);
-            renderCareerDetail(index, true);
+            if (group.isAnimating || index === group.activeIndex) return;
+            renderTabDetail(group, index, true);
         });
 
-        careerList.appendChild(button);
+        list.appendChild(button);
     });
+    setActiveTab(group, group.activeIndex);
 }
 
-function setActiveCareerButton(index) {
-    const buttons = document.querySelectorAll(".career-item");
-    buttons.forEach((button, buttonIndex) => {
+function setActiveTab(group, index) {
+    document.getElementById(group.listId).querySelectorAll(".career-item").forEach((button, buttonIndex) => {
         const isActive = buttonIndex === index;
         button.classList.toggle("active", isActive);
-        button.setAttribute("aria-selected", isActive ? "true" : "false");
+        button.setAttribute("aria-selected", String(isActive));
     });
 }
 
@@ -294,174 +294,47 @@ function createCareerPanel(entry) {
     return panel;
 }
 
-function renderCareerDetail(nextIndex, animate = true) {
-    const detailRoot = document.getElementById("career-detail");
-    const nextPanel = createCareerPanel(templateData.career[nextIndex]);
+// Swap the detail panel, sliding up or down depending on which way the user moved in the list
+function renderTabDetail(group, nextIndex, animate) {
+    const detailRoot = document.getElementById(group.detailId);
+    const nextPanel = createCareerPanel(group.items[nextIndex]);
     const currentPanel = detailRoot.firstElementChild;
+    setActiveTab(group, nextIndex);
 
-    if (!animate || !currentPanel) {
+    const finish = () => {
         detailRoot.replaceChildren(nextPanel);
-        state.activeCareerIndex = nextIndex;
+        nextPanel.classList.remove("overlay-panel");
+        group.activeIndex = nextIndex;
+        group.isAnimating = false;
+    };
+
+    if (!animate || !currentPanel || typeof nextPanel.animate !== "function") {
+        finish();
         return;
     }
 
-    state.isAnimatingCareer = true;
+    group.isAnimating = true;
     detailRoot.appendChild(nextPanel);
     nextPanel.classList.add("overlay-panel");
 
-    const direction = nextIndex > state.activeCareerIndex ? 1 : -1;
-    const offset = direction > 0 ? 26 : -26;
-
-    if (typeof currentPanel.animate !== "function" || typeof nextPanel.animate !== "function") {
-        detailRoot.replaceChildren(nextPanel);
-        nextPanel.classList.remove("overlay-panel");
-        state.activeCareerIndex = nextIndex;
-        state.isAnimatingCareer = false;
-        return;
-    }
-
+    const offset = nextIndex > group.activeIndex ? 26 : -26;
+    const timing = { duration: 280, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" };
     const outAnimation = currentPanel.animate(
         [
             { opacity: 1, transform: "translateY(0)" },
             { opacity: 0, transform: `translateY(${-offset}px)` },
         ],
-        {
-            duration: 280,
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            fill: "forwards",
-        }
+        timing
     );
-
     const inAnimation = nextPanel.animate(
         [
             { opacity: 0, transform: `translateY(${offset}px)` },
             { opacity: 1, transform: "translateY(0)" },
         ],
-        {
-            duration: 280,
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            fill: "forwards",
-        }
+        timing
     );
 
-    Promise.all([outAnimation.finished, inAnimation.finished])
-        .then(() => {
-            currentPanel.remove();
-            nextPanel.classList.remove("overlay-panel");
-            state.activeCareerIndex = nextIndex;
-            state.isAnimatingCareer = false;
-        })
-        .catch(() => {
-            detailRoot.replaceChildren(nextPanel);
-            nextPanel.classList.remove("overlay-panel");
-            state.activeCareerIndex = nextIndex;
-            state.isAnimatingCareer = false;
-        });
-}
-
-function renderOrgList() {
-    const orgList = document.getElementById("org-list");
-    orgList.textContent = "";
-
-    templateData.organizations.forEach((item, index) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `career-item${index === state.activeOrgIndex ? " active" : ""}`;
-        button.dataset.index = String(index);
-        button.setAttribute("role", "tab");
-        button.setAttribute("aria-selected", index === state.activeOrgIndex ? "true" : "false");
-
-        const company = document.createElement("span");
-        company.className = "company";
-        company.textContent = item.company;
-
-        const role = document.createElement("span");
-        role.className = "role";
-        role.textContent = item.role;
-
-        button.append(company, role);
-        button.addEventListener("click", () => {
-            if (state.isAnimatingOrg || index === state.activeOrgIndex) return;
-            setActiveOrgButton(index);
-            renderOrgDetail(index, true);
-        });
-
-        orgList.appendChild(button);
-    });
-}
-
-function setActiveOrgButton(index) {
-    const buttons = document.querySelectorAll("#org-list .career-item");
-    buttons.forEach((button, buttonIndex) => {
-        const isActive = buttonIndex === index;
-        button.classList.toggle("active", isActive);
-        button.setAttribute("aria-selected", isActive ? "true" : "false");
-    });
-}
-
-function renderOrgDetail(nextIndex, animate = true) {
-    const detailRoot = document.getElementById("org-detail");
-    const nextPanel = createCareerPanel(templateData.organizations[nextIndex]);
-    const currentPanel = detailRoot.firstElementChild;
-
-    if (!animate || !currentPanel) {
-        detailRoot.replaceChildren(nextPanel);
-        state.activeOrgIndex = nextIndex;
-        return;
-    }
-
-    state.isAnimatingOrg = true;
-    detailRoot.appendChild(nextPanel);
-    nextPanel.classList.add("overlay-panel");
-
-    const direction = nextIndex > state.activeOrgIndex ? 1 : -1;
-    const offset = direction > 0 ? 26 : -26;
-
-    if (typeof currentPanel.animate !== "function" || typeof nextPanel.animate !== "function") {
-        detailRoot.replaceChildren(nextPanel);
-        nextPanel.classList.remove("overlay-panel");
-        state.activeOrgIndex = nextIndex;
-        state.isAnimatingOrg = false;
-        return;
-    }
-
-    const outAnimation = currentPanel.animate(
-        [
-            { opacity: 1, transform: "translateY(0)" },
-            { opacity: 0, transform: `translateY(${-offset}px)` },
-        ],
-        {
-            duration: 280,
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            fill: "forwards",
-        }
-    );
-
-    const inAnimation = nextPanel.animate(
-        [
-            { opacity: 0, transform: `translateY(${offset}px)` },
-            { opacity: 1, transform: "translateY(0)" },
-        ],
-        {
-            duration: 280,
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            fill: "forwards",
-        }
-    );
-
-    Promise.all([outAnimation.finished, inAnimation.finished])
-        .then(() => {
-            currentPanel.remove();
-            nextPanel.classList.remove("overlay-panel");
-            state.activeOrgIndex = nextIndex;
-            state.isAnimatingOrg = false;
-        })
-        .catch(() => {
-            detailRoot.replaceChildren(nextPanel);
-            nextPanel.classList.remove("overlay-panel");
-            state.activeOrgIndex = nextIndex;
-            state.isAnimatingOrg = false;
-        });
+    Promise.all([outAnimation.finished, inAnimation.finished]).then(finish, finish);
 }
 
 function renderSkills() {
@@ -477,11 +350,13 @@ function renderSkills() {
         icon.alt = skill.name;
         icon.loading = "lazy";
 
-        const label = document.createTextNode(skill.name);
-
-        pill.append(icon, label);
+        pill.append(icon, document.createTextNode(skill.name));
         skillsRoot.appendChild(pill);
     });
+}
+
+function projectPlaceholder(theme) {
+    return `./images/project-placeholder-${theme}.svg`;
 }
 
 function renderProjects() {
@@ -517,7 +392,7 @@ function renderProjects() {
     projects.forEach((_, i) => {
         const dot = document.createElement("button");
         dot.type = "button";
-        dot.className = "carousel-dot" + (i === 0 ? " active" : "");
+        dot.className = "carousel-dot";
         dot.setAttribute("aria-label", `Go to project ${i + 1}`);
         dot.addEventListener("click", () => goToProject(i));
         dots.appendChild(dot);
@@ -526,15 +401,14 @@ function renderProjects() {
 
     root.appendChild(carousel);
 
-    function fillCard(index) {
-        const project = projects[index];
-        card.innerHTML = "";
+    function fillCard(project) {
+        card.textContent = "";
 
         const imgWrap = document.createElement("div");
         imgWrap.className = "project-image-wrap";
         const img = document.createElement("img");
-        const currentTheme = document.documentElement.getAttribute("data-theme") || "blue";
-        img.src = project.image || `./images/project-placeholder-${currentTheme}.svg`;
+        img.src = project.image || projectPlaceholder(currentTheme());
+        if (!project.image) img.dataset.placeholder = "true";
         img.alt = project.name;
         imgWrap.appendChild(img);
 
@@ -551,34 +425,24 @@ function renderProjects() {
         link.className = "project-source";
         link.href = project.href;
         link.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Source';
-        if (project.href.startsWith("http")) {
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-        }
+        openExternalInNewTab(link);
 
         info.append(title, summary, link);
         card.append(imgWrap, info);
     }
 
     function goToProject(index) {
-        state.activeProjectIndex = index;
-        fillCard(index);
-        dots.querySelectorAll(".carousel-dot").forEach((d, i) => {
-            d.classList.toggle("active", i === index);
+        activeProjectIndex = (index + projects.length) % projects.length;
+        fillCard(projects[activeProjectIndex]);
+        dots.querySelectorAll(".carousel-dot").forEach((dot, i) => {
+            dot.classList.toggle("active", i === activeProjectIndex);
         });
     }
 
-    prevBtn.addEventListener("click", () => {
-        const next = (state.activeProjectIndex - 1 + projects.length) % projects.length;
-        goToProject(next);
-    });
+    prevBtn.addEventListener("click", () => goToProject(activeProjectIndex - 1));
+    nextBtn.addEventListener("click", () => goToProject(activeProjectIndex + 1));
 
-    nextBtn.addEventListener("click", () => {
-        const next = (state.activeProjectIndex + 1) % projects.length;
-        goToProject(next);
-    });
-
-    fillCard(0);
+    goToProject(0);
 }
 
 function renderCertifications() {
@@ -589,10 +453,7 @@ function renderCertifications() {
         const row = document.createElement("a");
         row.className = "cert-row";
         row.href = cert.href;
-        if (cert.href.startsWith("http")) {
-            row.target = "_blank";
-            row.rel = "noopener noreferrer";
-        }
+        openExternalInNewTab(row);
 
         const textWrap = document.createElement("div");
         const title = document.createElement("h3");
@@ -610,120 +471,26 @@ function renderCertifications() {
     });
 }
 
-function wireSmoothScrollButtons() {
-    const buttons = document.querySelectorAll(".js-scroll");
-
-    buttons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const targetId = button.dataset.target;
-            const target = document.getElementById(targetId);
-            if (target) {
-                target.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-        });
+function onThemeChange(theme) {
+    // Project placeholders come in a version per theme
+    document.querySelectorAll('.project-image-wrap img[data-placeholder="true"]').forEach((img) => {
+        img.src = projectPlaceholder(theme);
     });
+    runHackerTyping();
 }
 
-function revealSectionsOnScroll() {
-    const sections = Array.from(document.querySelectorAll(".section"));
-    if (!("IntersectionObserver" in window)) {
-        sections.forEach((section) => section.classList.add("is-visible"));
-        return;
-    }
-
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("is-visible");
-                    observer.unobserve(entry.target);
-                }
-            });
-        },
-        {
-            threshold: 0.15,
-            rootMargin: "0px 0px -8% 0px",
-        }
-    );
-
-    sections.forEach((section, index) => {
-        if (index === 0) return;
-        observer.observe(section);
-    });
-}
-
-function wireThemeSwitcher() {
-    const buttons = document.querySelectorAll(".theme-btn");
-    const saved = localStorage.getItem("theme") || "blue";
-    document.documentElement.setAttribute("data-theme", saved);
-    buttons.forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.setTheme === saved);
-    });
-
-    buttons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-            const theme = btn.dataset.setTheme;
-            document.documentElement.setAttribute("data-theme", theme);
-            localStorage.setItem("theme", theme);
-            buttons.forEach((b) => b.classList.toggle("active", b === btn));
-            document.querySelectorAll(".project-image-wrap img").forEach((img) => {
-                if (img.src.includes("project-placeholder")) {
-                    img.src = `./images/project-placeholder-${theme}.svg`;
-                }
-            });
-            runHackerTyping();
-        });
-    });
-}
-
-/* typewriter effect (this is only for green theme) */
-let typingTimers = [];
-
-function clearTyping() {
-    typingTimers.forEach(id => clearTimeout(id));
-    typingTimers = [];
-}
-
-function typeText(element, text, speed, callback) {
-    element.textContent = "";
-    element.classList.add("typing", "typing-cursor");
-    let i = 0;
-    function tick() {
-        if (i < text.length) {
-            element.textContent += text[i];
-            i++;
-            const id = setTimeout(tick, speed);
-            typingTimers.push(id);
-        } else {
-            element.classList.remove("typing-cursor");
-            element.classList.remove("typing");
-            if (callback) callback();
-        }
-    }
-    tick();
-}
-
+// Green theme types out the title; other themes show it instantly
 function runHackerTyping() {
     clearTyping();
-    const theme = document.documentElement.getAttribute("data-theme");
     const titleEl = document.getElementById("profile-title");
     const summaryEl = document.getElementById("profile-summary");
+    const { title, summary } = templateData.profile;
 
-    const titleText = templateData.profile.title;
-    const summaryText = templateData.profile.summary;
-
-    if (theme !== "green") {
-        titleEl.textContent = titleText;
-        summaryEl.textContent = summaryText;
-        titleEl.classList.remove("typing", "typing-cursor");
-        summaryEl.classList.remove("typing", "typing-cursor");
-        return;
-    }
-
-    summaryEl.textContent = summaryText;
-    typeText(titleEl, titleText, 35);
+    resetTyping(summaryEl, summary);
+    if (currentTheme() === "green") typeText(titleEl, title, 35);
+    else resetTyping(titleEl, title);
 }
 
+wireThemeSwitcher(onThemeChange);
 init();
-wireThemeSwitcher();
 runHackerTyping();

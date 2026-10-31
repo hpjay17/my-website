@@ -715,7 +715,7 @@ h1 {
     text-shadow: 0 0 4px rgba(0, 255, 65, 0.45);
 }
 
-/* temp1 structural overrides */
+/* green theme: sharper corners, less glow */
 [data-theme="green"] .template-shell {
     box-shadow: 0 0 30px rgba(0, 255, 65, 0.12);
 }
@@ -1017,11 +1017,61 @@ a.brand {
     border-radius: 2px;
 }
 
-/* Aviation Section */
+/* Aviation Section: text on the left, photos on the right (stacked below 860px) */
 .aviation-content {
+    display: grid;
+    gap: 24px;
+}
+
+.aviation-info {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+@media (min-width: 860px) {
+    .aviation-content {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .aviation-content .aviation-photos {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Logbook stat tiles */
+.aviation-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.aviation-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 110px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--pill-bg);
+}
+
+.aviation-stat-value {
+    color: var(--accent-a);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.aviation-stat-label {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+[data-theme="green"] .aviation-stat {
+    border-radius: 2px;
 }
 
 .aviation-intro {
@@ -1217,6 +1267,11 @@ a.brand {
     line-height: 1.5;
 }
 
+/* Cards without a photo stay as tall as their text instead of stretching to the row */
+.travel-card--no-image {
+    align-self: start;
+}
+
 [data-theme="green"] .travel-card {
     border-radius: 2px;
 }
@@ -1235,17 +1290,41 @@ a.brand {
     border-radius: 2px;
 }
 
+.travel-map-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-bottom: 10px;
+}
+
+.travel-map-views {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.travel-map-stats {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 .travel-map-svg {
+    --map-zoom: 1;
     display: block;
     width: 100%;
     height: auto;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .map-land {
     fill: none;
     stroke: var(--text-muted);
-    stroke-width: 2.4;
+    stroke-width: 1.3;
     stroke-linecap: round;
     opacity: 0.35;
 }
@@ -1253,7 +1332,7 @@ a.brand {
 .map-web {
     fill: none;
     stroke: var(--accent-a);
-    stroke-width: 0.8;
+    stroke-width: calc(0.8px * var(--map-zoom));
     opacity: 0.5;
     pointer-events: none;
     /* Hidden until the map scrolls into view, then each route draws in turn */
@@ -1277,12 +1356,18 @@ a.brand {
 
 .travel-map-svg.is-focusing .map-web.is-highlighted {
     opacity: 1;
-    stroke-width: 1.4;
+    stroke-width: calc(1.4px * var(--map-zoom));
 }
 
 .map-pin {
     cursor: pointer;
     outline: none;
+}
+
+/* Counter-scales the pin so it stays the same size when the map zooms in */
+.map-pin-body {
+    transform: scale(var(--map-zoom));
+    animation-delay: inherit;
 }
 
 .map-pin-dot {
@@ -1296,6 +1381,42 @@ a.brand {
 .map-pin--home .map-pin-dot {
     fill: var(--accent-b);
     filter: drop-shadow(0 0 3px var(--accent-b));
+}
+
+/* Map-only stops: smaller hollow dots, not clickable */
+.map-pin--stop {
+    cursor: default;
+}
+
+.map-pin--stop .map-pin-dot {
+    fill: var(--bg-card);
+    stroke: var(--accent-a);
+    stroke-width: 1.2;
+    filter: none;
+}
+
+/* City names, shown only in zoomed-in views. Sizes are in map units (about 1.2px each at full width). */
+.map-pin-label {
+    font-size: 9px;
+    font-weight: 600;
+    fill: var(--text-main);
+    stroke: var(--bg-card);
+    stroke-width: 2.5px;
+    paint-order: stroke;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.travel-map-svg.is-zoomed .map-pin-label {
+    opacity: 0.9;
+}
+
+/* Plane that flies along a pin's routes on hover */
+.map-plane {
+    fill: var(--text-main);
+    filter: drop-shadow(0 0 2px var(--accent-a));
+    pointer-events: none;
 }
 
 .map-pin:hover .map-pin-dot,
@@ -1563,5 +1684,312 @@ a.brand {
 
     .aviation-photos {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+/* ---------- Entry gate (gate.js): boarding pass in blue, terminal login in green ---------- */
+
+/* Cover the page until the gate is gone (a backdrop, so the page itself is left untouched) */
+html.gate-active body {
+    overflow: hidden;
+}
+
+html.gate-active::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: var(--bg-base);
+}
+
+.gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 20px;
+    background: var(--bg-base);
+    transition: opacity 0.5s ease;
+}
+
+.gate:focus {
+    outline: none;
+}
+
+.gate.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gate-hint {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Boarding pass */
+.pass {
+    display: flex;
+    width: min(640px, 100%);
+    border-radius: 14px;
+    background: var(--card-grad);
+    border: 1px solid var(--line-hover);
+    box-shadow: 0 0 40px var(--glow-a);
+    color: var(--text-main);
+    animation: pass-in 0.6s ease-out;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.gate.is-leaving .pass {
+    transform: translateY(-40px) scale(0.97);
+}
+
+@keyframes pass-in {
+    from { transform: translateY(24px); opacity: 0; }
+}
+
+.pass-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 22px;
+}
+
+.pass-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.pass-airline {
+    color: var(--accent-a);
+}
+
+.pass-kind {
+    color: var(--text-muted);
+}
+
+.pass-route {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pass-place {
+    display: flex;
+    flex-direction: column;
+}
+
+.pass-place--to {
+    text-align: right;
+}
+
+.pass-code {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.02em;
+}
+
+.pass-city {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Dotted flight path with a plane in the middle */
+.pass-path {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pass-path::before,
+.pass-path::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--accent-a) 0 6px, transparent 6px 12px);
+    opacity: 0.8;
+}
+
+.pass-path svg {
+    width: 22px;
+    height: 22px;
+    transform: rotate(90deg);
+    fill: var(--accent-a);
+    filter: drop-shadow(0 0 4px var(--accent-a));
+}
+
+.pass-fields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px 16px;
+}
+
+.pass-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pass-label {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pass-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+/* Tear-off stub, split from the main part by a perforated line */
+.pass-stub {
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 18px;
+    border-left: 2px dashed var(--line-hover);
+}
+
+.pass-barcode {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    height: 64px;
+    padding: 6px;
+    border-radius: 4px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.pass-bar {
+    flex-basis: 0;
+    background: #0b1128;
+}
+
+/* Laser line that sweeps across the barcode when scanned */
+.pass-scan {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -10%;
+    width: 3px;
+    background: #ff3b3b;
+    box-shadow: 0 0 8px 2px rgba(255, 59, 59, 0.7);
+    opacity: 0;
+}
+
+.gate.is-scanning .pass-scan {
+    animation: pass-scan 0.7s ease-in-out;
+}
+
+@keyframes pass-scan {
+    0% { left: -5%; opacity: 1; }
+    100% { left: 105%; opacity: 1; }
+}
+
+.pass-btn {
+    padding: 9px 12px;
+    border: 1px solid var(--accent-a);
+    border-radius: 999px;
+    background: var(--active-bg);
+    color: var(--accent-a);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.pass-btn:hover,
+.pass-btn:focus-visible,
+.gate.is-scanning .pass-btn {
+    background: var(--accent-a);
+    color: var(--bg-base);
+}
+
+@media (max-width: 640px) {
+    .pass {
+        flex-direction: column;
+    }
+
+    .pass-stub {
+        width: auto;
+        border-left: none;
+        border-top: 2px dashed var(--line-hover);
+    }
+
+    .pass-code {
+        font-size: 1.9rem;
+    }
+}
+
+/* Terminal login */
+.term {
+    width: min(640px, 100%);
+    border: 1px solid var(--line-hover);
+    border-radius: 2px;
+    background: #000000;
+    box-shadow: 0 0 30px var(--glow-a);
+}
+
+.term-bar {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.term-body {
+    min-height: 220px;
+    margin: 0;
+    padding: 14px 16px;
+    color: var(--text-main);
+    font-family: "Courier New", "Lucida Console", "Consolas", monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.term-granted {
+    color: #000000;
+    background: var(--accent-a);
+    padding: 0 4px;
+    text-shadow: none;
+}
+
+.term-cursor {
+    display: inline-block;
+    width: 0.6em;
+    background: var(--accent-a);
+    animation: term-blink 1s steps(1) infinite;
+}
+
+@keyframes term-blink {
+    50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gate,
+    .pass {
+        animation: none;
+        transition: none;
+    }
+
+    .term-cursor {
+        animation: none;
     }
 }

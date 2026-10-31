@@ -13,7 +13,10 @@ Plain HTML, CSS, and JavaScript: no build step or dependencies. Pushing to `main
 | `beyond.html` | Beyond Work page: interests, aviation, travel map, photo gallery |
 | `script.js` | Portfolio content (`templateData`) and page behavior |
 | `beyond.js` | Beyond Work content (`beyondData`), travel map, gallery |
-| `world-dots.js` | Dot-grid world map data used by the travel map |
+| `shared.js` | Behavior both pages use: theme switcher, smooth scrolling, section fade-in, typewriter effect |
+| `gate.js` | Entry gate on `beyond.html`: boarding pass (blue theme) or terminal login (green theme), once per visit. Add `?gate` to the URL to see it again |
+| `world-dots.js` | Dot-grid world map data used by the travel map (generated, don't edit by hand) |
+| `tools/make-world-dots.py` | Rebuilds `world-dots.js` from Natural Earth coastlines |
 | `styles.css` | Styles for both pages, including the blue and green themes |
 | `images/` | Profile photo, link-preview card (`preview.jpg`), project placeholders |
 | `images/beyond/` | Interest, aviation, and travel photos, plus the Beyond page preview |
@@ -30,6 +33,8 @@ Content lives in the data objects at the top of `script.js` and `beyond.js`; edi
 ```bash
 sips -Z 1600 -s formatOptions 72 images/beyond/NAME.jpeg
 ```
+
+**Travel map settings:** zoom regions, padding, and animation speeds are the `MAP_*` settings under "Travel map" in `beyond.js`. The map's colors and sizes are the `.map-*` rules in `styles.css`. To change the dot grid itself, run `python3 tools/make-world-dots.py` (see the notes at the top of the script).
 
 **Changing the resume:** replace the PDF in `files/` and update the `CV` link in `script.js`.
 
