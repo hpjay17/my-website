@@ -1,4 +1,4 @@
-"""Rebuild world-dots.js, the dot-grid land map used by the travel map on beyond.html.
+"""Rebuild data/world-dots.js, the dot-grid land map used by the travel map on beyond.html.
 
 Downloads Natural Earth's 1:50m land outlines, draws them onto a fine grid, and writes
 each row of land as "startColumn,length" runs.
@@ -7,8 +7,8 @@ Usage (from the project folder; needs Pillow: pip3 install pillow):
     python3 tools/make-world-dots.py            # 0.75 degree dots, the current setting
     python3 tools/make-world-dots.py --step 0.5 # finer dots, bigger file
 
-After rebuilding, bump the ?v= number on world-dots.js in beyond.html so browsers reload it.
-If you change --step a lot, also adjust the .map-land stroke-width in styles.css
+After rebuilding, bump the ?v= number on data/world-dots.js in beyond.html so browsers reload it.
+If you change --step a lot, also adjust the .map-land stroke-width in css/styles.css
 (dot diameter is roughly half the spacing: 0.75 degree dots use 1.3).
 """
 
@@ -20,9 +20,9 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 LAND_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson"
-OUTPUT = Path(__file__).resolve().parent.parent / "world-dots.js"
+OUTPUT = Path(__file__).resolve().parent.parent / "data" / "world-dots.js"
 
-LAT_TOP = 80     # northern edge of the map; beyond.js reads this from the output
+LAT_TOP = 80     # northern edge of the map; js/beyond.js reads this from the output
 LAT_BOTTOM = -60  # southern edge; Antarctica is left out
 SUPERSAMPLE = 8   # each dot is drawn as an 8x8 block, then averaged
 LAND_THRESHOLD = 90  # 0-255: how much of a cell must be land to get a dot (90 is about 35%)

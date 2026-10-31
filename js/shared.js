@@ -1,4 +1,4 @@
-/* Behavior used by both pages. Load this before script.js or beyond.js. */
+/* Behavior used by both pages. Load this before js/portfolio.js or js/beyond.js. */
 
 // Nav buttons with class "js-scroll" scroll to the section named in data-target
 function wireSmoothScrollButtons() {
@@ -13,11 +13,6 @@ function wireSmoothScrollButtons() {
 // Fade each section in the first time it scrolls into view (the first section is already visible)
 function revealSectionsOnScroll() {
     const sections = Array.from(document.querySelectorAll(".section"));
-    if (!("IntersectionObserver" in window)) {
-        sections.forEach((section) => section.classList.add("is-visible"));
-        return;
-    }
-
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {

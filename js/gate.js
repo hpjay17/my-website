@@ -1,8 +1,6 @@
 /* Entry gate for beyond.html: a boarding pass in the blue theme, a terminal login in the green theme.
    Shows once per browser tab (sessionStorage), so moving around the site doesn't show it again.
-   Add ?gate to the URL to see it again (beyond.html?gate).*/
-
-// ===== Edit the gate text here =====
+   Add ?gate to the URL to see it again (beyond.html?gate). */
 
 // Blue theme: boarding pass
 const BOARDING_PASS = {
@@ -43,8 +41,6 @@ const TERMINAL = {
     hint: "Press any key or click to skip",
 };
 
-// ===== End of settings =====
-
 (function () {
     const SEEN_KEY = "beyondGateSeen";
     const forced = new URLSearchParams(location.search).has("gate");
@@ -74,7 +70,7 @@ const TERMINAL = {
         html.classList.remove("gate-active");
         if (onClosed) onClosed();
         // Green theme: replay the hero typing now that it can be seen
-        if (typeof runHackerTyping === "function") runHackerTyping();
+        runHackerTyping();
         setTimeout(() => gate.remove(), reducedMotion ? 0 : 600);
     }
 

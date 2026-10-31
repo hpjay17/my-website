@@ -1,275 +1,3 @@
-const beyondData = {
-    interests: [
-        {
-            name: "Duolingo",
-            icon: "./images/beyond/duolingo.jpeg",
-            note: "Currently learning Japanese w/ 830 days streak",
-            link: "https://www.duolingo.com/",
-        },
-        {
-            name: "GeoGuessr",
-            icon: "",
-            note: "Exploring the world virtually one street at a time",
-            link: "https://www.geoguessr.com/",
-        },
-        {
-            name: "Tennis & Pickleball",
-            icon: "",
-            note: "You only live once, but you get to serve twice",
-            link: "https://www.atptour.com/en",
-        },
-        {
-            name: "Fishing",
-            icon: "",
-            note: "If I'm not fishing, I'm thinking about it",
-            link: "https://myfwc.com/fishing/",
-        },
-    ],
-
-    aviation: {
-        headline: "Private Pilot",
-        license: "Private Pilot License (PPL)",
-        summary:
-            "Earned my Private Pilot License at 17. Flying gives me a unique perspective on the world ~ from above.",
-        // Numbers from your logbook, shown as tiles under the summary. Add or remove any line.
-        logbook: [
-            { label: "Flight Hours", value: 90 },
-            { label: "Landings", value: 210 },
-            { label: "Airports", value: 9 },
-        ],
-        aircraftFlown: [
-            { name: "Piper PA-28 Cherokee", note: "Primary trainer" },
-            { name: "Cessna 172 Skyhawk", note: "Secondary trainer" },
-        ],
-        milestones: [
-            {
-                label: "First Solo",
-                date: "September 2022",
-                description: "First time flying alone",
-            },
-            {
-                label: "PPL Checkride",
-                date: "March 2023",
-                description: "Passed the FAA practical exam",
-            },
-        ],
-        goals: [
-            "Instrument Rating",
-            "Commercial Pilot License",
-            "Take my family flying"
-        ],
-        photos: [
-            { src: "./images/beyond/aviation1.jpeg", alt: "Cockpit" },
-            { src: "./images/beyond/plane.jpeg", alt: "Piper Cherokee" },
-        ],
-    },
-
-    home: [
-        {
-            place: "Tallahassee, Florida",
-            coords: [30.438, -84.281],
-            date: "Hometown",
-        },
-        {
-            place: "Atlanta, Georgia",
-            coords: [33.749, -84.388],
-            date: "School",
-        },
-    ],
-
-    // *NOTE TO SELF*
-    // Adding a trip: put the photo in images/beyond/, add an entry here, then add any lines for it in `routes` below.
-    // Shrink new photos first (from the Jay_Website folder): sips -Z 1600 -s formatOptions 72 images/beyond/NAME.jpeg
-    // Card, map pin, label, tooltip photo, zoom button and stats all follow automatically.
-    // Write place as "City, Country" (or "City, State" in the US): the map label uses the city,
-    // and the country count uses the part after the last comma.
-    // Add coords = [latitude, longitude] (right-click a spot in Google Maps to copy them).
-    // Leave out coords to show the card without a map pin; leave image as "" for a card without a photo.
-    // Keep entries in date order: this sets the card order.
-    travel: [
-        {
-            place: "San José, Costa Rica",
-            coords: [9.935, -84.088],
-            date: "June 2023",
-            image: "./images/beyond/costarica.jpeg",
-            note: "Horseback riding on the beaches",
-        },
-        {
-            place: "Dubai, UAE",
-            coords: [25.205, 55.271],
-            date: "July 2023",
-            image: "./images/beyond/dubai.jpeg",
-            note: "Went to the top of the Burj Khalifa",
-        },
-        {
-            place: "Tokyo, Japan",
-            coords: [35.716, 139.800],
-            date: "June 2024",
-            image: "./images/beyond/tokyo_japan.jpeg",
-            note: "Visited the Senso-Ji in Tokyo",
-        },
-        {
-            place: "Nara, Japan",
-            coords: [34.685, 135.843],
-            date: "June 2024",
-            image: "./images/beyond/nara_japan.jpeg",
-            note: "Explored Nara Park with the sika deer",
-        },
-        {
-            place: "Shanghai, China",
-            coords: [31.240, 121.496],
-            date: "March 2025",
-            image: "./images/beyond/shanghai_china.jpeg",
-            note: "Traveled to my hometown for spring break",
-        },
-        {
-            place: "Reykjavík, Iceland",
-            coords: [64.146, -21.942],
-            date: "August 2025",
-            image: "./images/beyond/iceland1.jpg",
-            note: "Explored the nature in Iceland",
-        },
-        {
-            place: "Ann Arbor, Michigan",
-            coords: [42.277, -83.737],
-            date: "December 2025",
-            image: "./images/beyond/michigan.jpg",
-            note: "Went for the Blockchain Conference",
-        },
-        {
-            place: "Lisbon, Portugal",
-            coords: [38.710, -9.137],
-            date: "January 2026",
-            image: "./images/beyond/lisbon1.jpeg",
-            note: "Had fun in Lisbon for winter break",
-        },
-        {
-            place: "Denver, Colorado",
-            coords: [39.739, -104.990],
-            date: "February 2026",
-            image: "./images/beyond/denver.jpeg",
-            note: "Attended ETHDenver",
-        },
-        {
-            place: "Hong Kong, China",
-            coords: [22.319, 114.169],
-            date: "July 2026",
-            image: "./images/beyond/hongkong1.jpeg",
-            note: "Went to Hong Kong after summer internship",
-        },
-        {
-            place: "Fukuoka, Japan",
-            coords: [33.590, 130.401],
-            date: "August 2026",
-            image: "./images/beyond/fukuoka1.jpeg",
-            note: "Traveled to Fukuoka after visiting Shanghai",
-        },
-    ],
-
-    // Map-only places: a small pin and route lines, but no card or photo below the map.
-    // Use these for places without photos, or airports you only connected through.
-    // Date is optional and shows in the hover tooltip.
-    // They count toward the "places" and "countries" stats and can be used in routes.
-    stops: [
-        { place: "New York, New York", coords: [40.713, -74.006], date: "Family" },
-        { place: "Baltimore, Maryland", coords: [39.290, -76.612], date: "Naval Academy" },
-        { place: "Detroit, Michigan", coords: [42.331, -83.046], date: "Layover" },
-        { place: "Seoul, South Korea", coords: [37.567, 126.978], date: "Layover" },
-        { place: "Dallas, Texas", coords: [32.777, -96.797], date: "Layover" },
-        { place: "Seattle, Washington", coords: [47.606, -122.332], date: "Layover" },
-        { place: "Jacksonville, Florida", coords: [30.332, -81.656], date: "Layover" },
-        { place: "Orlando, Florida", coords: [28.538, -81.379], date: "Layover" },
-        { place: "Los Angeles, California", coords: [34.052, -118.244], date: "Layover" },
-    ],
-
-    // Flights drawn on the travel map: each pair connects two places by their "place" name.
-    // Every entry adds its distance to the miles stat. For a flight taken more than once,
-    // add how many times as a third value: ["Tallahassee, Florida", "Atlanta, Georgia", 6]
-    // Repeats and return legs (B to A after A to B) count toward the miles but share one line on the map.
-    routes: [
-        ["Tallahassee, Florida", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "San José, Costa Rica"],
-        ["San José, Costa Rica", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Tallahassee, Florida"],
-        ["Tallahassee, Florida", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "New York, New York"],
-        ["New York, New York", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Tallahassee, Florida"],
-        ["Tallahassee, Florida", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Baltimore, Maryland"],
-        ["Baltimore, Maryland", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Tallahassee, Florida"],
-        ["Orlando, Florida", "Dubai, UAE"],
-        ["Dubai, UAE", "Shanghai, China"],
-        ["Shanghai, China", "Dubai, UAE"],
-        ["Dubai, UAE", "Orlando, Florida"],
-
-        // 2024
-        ["Tallahassee, Florida", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Detroit, Michigan"],
-        ["Detroit, Michigan", "Tokyo, Japan"],
-        ["Nara, Japan", "Shanghai, China"],
-        ["Shanghai, China", "Seoul, South Korea"],
-        ["Seoul, South Korea", "Dallas, Texas"],
-        ["Dallas, Texas", "Tallahassee, Florida"],
-        ["Tallahassee, Florida", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Tallahassee, Florida"],
-
-        // 2025
-        ["Atlanta, Georgia", "Seattle, Washington"],
-        ["Seattle, Washington", "Shanghai, China"],
-        ["Shanghai, China", "Seattle, Washington"],
-        ["Seattle, Washington", "Atlanta, Georgia"],
-        ["Jacksonville, Florida", "New York, New York"],
-        ["New York, New York", "Jacksonville, Florida"],
-        ["Orlando, Florida", "Reykjavík, Iceland"],
-        ["Reykjavík, Iceland", "Orlando, Florida"],
-        ["Atlanta, Georgia", "Ann Arbor, Michigan"],
-        ["Ann Arbor, Michigan", "Atlanta, Georgia"],
-
-        // 2026
-        ["Atlanta, Georgia", "New York, New York"],
-        ["New York, New York", "Lisbon, Portugal"],
-        ["Lisbon, Portugal", "New York, New York"],
-        ["New York, New York", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Denver, Colorado"],
-        ["Denver, Colorado", "Atlanta, Georgia"],
-        ["Atlanta, Georgia", "Los Angeles, California"],
-        ["Los Angeles, California", "Hong Kong, China"],
-        ["Hong Kong, China", "Shanghai, China"],
-        ["Shanghai, China", "Fukuoka, Japan"],
-        ["Tokyo, Japan", "Atlanta, Georgia"],
-    ],
-
-    gallery: [
-        {
-            src: "./images/beyond/gallery/flying.jpg",
-            alt: "Piloting",
-            category: "aviation",
-        },
-        {
-            src: "./images/beyond/gallery/iceland2.jpg",
-            alt: "Reynisfjara Beach",
-            category: "travel",
-        },
-        {
-            src: "./images/beyond/gallery/iceland3.JPG",
-            alt: "Reykjavik Sunset",
-            category: "travel",
-        },
-        {
-            src: "./images/beyond/gallery/lisbon3.jpg",
-            alt: "The Moorish Castle",
-            category: "travel",
-        },
-        {
-            src: "./images/beyond/gallery/lisbon2.jpeg",
-            alt: "Boca do Inferno",
-            category: "travel",
-        },
-    ],
-};
-
 function init() {
     renderInterests();
     renderAviation();
@@ -282,7 +10,6 @@ function init() {
 
 function renderInterests() {
     const root = document.getElementById("interests-grid");
-    root.textContent = "";
 
     beyondData.interests.forEach((item) => {
         const card = document.createElement("div");
@@ -323,11 +50,8 @@ function renderInterests() {
 
 function renderAviation() {
     const root = document.getElementById("aviation-content");
-    root.textContent = "";
-
     const data = beyondData.aviation;
 
-    // Intro
     const intro = document.createElement("div");
     intro.className = "aviation-intro";
 
@@ -350,7 +74,6 @@ function renderAviation() {
     info.appendChild(intro);
     root.appendChild(info);
 
-    // Logbook stats
     if (data.logbook.length) {
         const stats = document.createElement("div");
         stats.className = "aviation-stats";
@@ -372,7 +95,6 @@ function renderAviation() {
         info.appendChild(stats);
     }
 
-    // Aircraft flown
     if (data.aircraftFlown.length) {
         const aircraftSection = document.createElement("div");
         aircraftSection.className = "aviation-subsection";
@@ -394,7 +116,6 @@ function renderAviation() {
         info.appendChild(aircraftSection);
     }
 
-    // Milestones timeline
     if (data.milestones.length) {
         const timelineSection = document.createElement("div");
         timelineSection.className = "aviation-subsection";
@@ -431,7 +152,6 @@ function renderAviation() {
         info.appendChild(timelineSection);
     }
 
-    // Goals
     if (data.goals.length) {
         const goalsSection = document.createElement("div");
         goalsSection.className = "aviation-subsection";
@@ -451,7 +171,6 @@ function renderAviation() {
         info.appendChild(goalsSection);
     }
 
-    // Photos
     if (data.photos.length) {
         const photosSection = document.createElement("div");
         photosSection.className = "aviation-photos";
@@ -474,7 +193,6 @@ function renderAviation() {
 
 function renderTravel() {
     const root = document.getElementById("travel-grid");
-    root.textContent = "";
 
     if (!beyondData.travel.length) {
         const empty = document.createElement("p");
@@ -543,9 +261,7 @@ function highlightTravelCard(index) {
     );
 }
 
-/* ---------- Travel map ---------- */
-
-/* Settings: safe to tweak */
+/* Travel map settings: safe to tweak */
 
 // Degrees of space kept around the outermost pins
 const MAP_PADDING = { lat: 10, lon: 18 };
@@ -567,11 +283,13 @@ const MAP_REGIONS = [
     { name: "Oceania", bounds: [0, 110, -48, 180] },
 ];
 
-/* Internals */
+/* Travel map internals */
 
 const SVG_NS = "http://www.w3.org/2000/svg";
-// Map units per degree. Pin and label sizes in this file and styles.css are in these units.
+// Map units per degree. Pin and label sizes in this file and css/styles.css are in these units.
 const MAP_SCALE = 10 / 3;
+// The whole world (360 degrees) in map units
+const WORLD_WIDTH = 360 * MAP_SCALE;
 const EARTH_RADIUS_MILES = 3959;
 // The stats line counts places named "City, State" as the United States
 const US_STATES = new Set([
@@ -608,12 +326,10 @@ const travelMap = {
 
 function renderTravelMap() {
     const root = document.getElementById("travel-map");
-    if (!root) return;
-
-    const homes = beyondData.home || [];
-    const stops = beyondData.stops || [];
+    const homes = beyondData.home;
+    const stops = beyondData.stops;
     const trips = beyondData.travel.filter((item) => item.coords);
-    if (typeof worldDots === "undefined" || !trips.length) {
+    if (!trips.length) {
         root.remove();
         return;
     }
@@ -650,11 +366,6 @@ function renderTravelMap() {
 
 function projectToMap([lat, lon]) {
     return [(lon + 180) * MAP_SCALE, (worldDots.latTop - lat) * MAP_SCALE];
-}
-
-// Width of the whole world (360 degrees) in map units
-function worldWidth() {
-    return 360 * MAP_SCALE;
 }
 
 // Viewbox [x, y, width, height] for a [north, west, south, east] box
@@ -762,7 +473,7 @@ function buildRoutes(places) {
     const drawn = new Set();
     travelMap.totalMiles = 0;
 
-    (beyondData.routes || []).forEach(([from, to, times = 1]) => {
+    beyondData.routes.forEach(([from, to, times = 1]) => {
         if (!coordsByPlace.has(from) || !coordsByPlace.has(to)) {
             console.warn(`Travel map route skipped, unknown place: ${from} -> ${to}`);
             return;
@@ -780,7 +491,7 @@ function buildRoutes(places) {
         // running off one edge of the map: move the end a world-width over so the
         // curve heads that way, then draw a second copy shifted back in from the other edge.
         const gap = end[0] - start[0];
-        const shift = Math.abs(gap) > worldWidth() / 2 ? -Math.sign(gap) * worldWidth() : 0;
+        const shift = Math.abs(gap) > WORLD_WIDTH / 2 ? -Math.sign(gap) * WORLD_WIDTH : 0;
         end[0] += shift;
 
         const bend = Math.hypot(end[0] - start[0], end[1] - start[1]) * 0.2;
@@ -872,12 +583,12 @@ function buildMapHeader() {
 // Countries come from the text after the last comma in each place; miles from every flight in routes.
 function travelStatsText() {
     const countries = new Set(
-        [...(beyondData.home || []), ...(beyondData.stops || []), ...beyondData.travel].map((item) => {
+        [...beyondData.home, ...beyondData.stops, ...beyondData.travel].map((item) => {
             const last = item.place.split(",").pop().trim();
             return US_STATES.has(last) ? "United States" : last;
         })
     );
-    const placeCount = beyondData.travel.length + (beyondData.stops || []).length;
+    const placeCount = beyondData.travel.length + beyondData.stops.length;
 
     return [
         `${placeCount} ${placeCount === 1 ? "place" : "places"}`,
@@ -960,7 +671,7 @@ function flyPlanes(place) {
             const point = pointOnRoute(route, t);
             const { y, angle } = point;
             // Routes over the Pacific run past the map's edge; wrap the plane back onto the other side
-            const x = ((point.x % worldWidth()) + worldWidth()) % worldWidth();
+            const x = ((point.x % WORLD_WIDTH) + WORLD_WIDTH) % WORLD_WIDTH;
             el.setAttribute("transform", `translate(${x} ${y}) rotate(${angle}) scale(${travelMap.zoom})`);
             // Fade in at takeoff and out at landing
             el.style.opacity = Math.min(1, t * 8, (1 - t) * 8);
@@ -988,7 +699,7 @@ function setMapView(name) {
     svg.classList.toggle("is-zoomed", next !== views[0]);
     placeLabels(next.box);
 
-    const worldWidth = views[0].box[2];
+    const worldViewWidth = views[0].box[2];
     const from = svg.getAttribute("viewBox").split(" ").map(Number);
     const to = next.box;
     const duration = prefersReducedMotion() ? 0 : MAP_ZOOM_MS;
@@ -1001,7 +712,7 @@ function setMapView(name) {
         const box = from.map((f, k) => f + (to[k] - f) * ease);
         svg.setAttribute("viewBox", box.join(" "));
         // Keep pins, lines and labels the same size on screen while the land zooms
-        travelMap.zoom = box[2] / worldWidth;
+        travelMap.zoom = box[2] / worldViewWidth;
         svg.style.setProperty("--map-zoom", travelMap.zoom.toFixed(4));
         if (t < 1) travelMap.zoomFrame = requestAnimationFrame(step);
     };
@@ -1028,8 +739,6 @@ function regionFor(coords) {
 // From a card's "View on map" button: scroll up, zoom to the pin's region, then show its tooltip
 function focusTravelPin(index) {
     const entry = travelMap.tripPins[index];
-    if (!entry) return;
-
     travelMap.root.scrollIntoView({ behavior: "smooth", block: "center" });
     travelMap.tripPins.forEach((p) => p && p.pin.classList.toggle("is-active", p === entry));
     highlightTravelCard(index);
@@ -1039,11 +748,6 @@ function focusTravelPin(index) {
 
 // Redraw the routes each time the map comes back into view; clear them once it's fully off screen
 function drawRoutesOnScroll(svg) {
-    if (!("IntersectionObserver" in window)) {
-        svg.classList.add("is-drawn");
-        return;
-    }
-
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
@@ -1059,13 +763,11 @@ function drawRoutesOnScroll(svg) {
     observer.observe(svg);
 }
 
-/* ---------- Gallery and lightbox ---------- */
+/* Gallery and lightbox */
 
 function renderGallery() {
     const filtersRoot = document.getElementById("gallery-filters");
     const gridRoot = document.getElementById("gallery-grid");
-    filtersRoot.textContent = "";
-    gridRoot.textContent = "";
 
     if (!beyondData.gallery.length) {
         const empty = document.createElement("p");
@@ -1187,15 +889,12 @@ function openLightbox(photos, startIndex) {
     closeBtn.focus();
 }
 
-/* ---------- Theme ---------- */
-
 const beyondSummaryEl = document.querySelector(".beyond-hero .hero-summary");
-const beyondSummaryText = beyondSummaryEl ? beyondSummaryEl.textContent.trim() : "";
+const beyondSummaryText = beyondSummaryEl.textContent.trim();
 
 // Green theme types out the hero line; other themes show it instantly
 function runHackerTyping() {
     clearTyping();
-    if (!beyondSummaryEl) return;
     if (currentTheme() === "green") typeText(beyondSummaryEl, beyondSummaryText, 25);
     else resetTyping(beyondSummaryEl, beyondSummaryText);
 }

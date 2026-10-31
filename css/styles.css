@@ -61,14 +61,14 @@ body {
     background: var(--bg-base);
 }
 
-.template-page {
+.page {
     position: relative;
     min-height: 100vh;
     padding: 14px 0 36px;
     background: var(--bg-base);
 }
 
-.template-shell {
+.shell {
     width: min(1080px, calc(100% - 20px));
     margin: 0 auto;
     position: relative;
@@ -111,6 +111,7 @@ body {
     font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.02em;
+    text-decoration: none;
     cursor: pointer;
 }
 
@@ -121,7 +122,8 @@ body {
     flex-wrap: wrap;
 }
 
-.top-nav button {
+.top-nav button,
+.nav-link-page {
     border: 1px solid var(--line);
     border-radius: 999px;
     padding: 7px 12px;
@@ -134,7 +136,13 @@ body {
     transition: all 0.2s ease;
 }
 
-.top-nav button:hover {
+.nav-link-page {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.top-nav button:hover,
+.nav-link-page:hover {
     color: var(--accent-a);
     border-color: var(--line-hover);
 }
@@ -716,34 +724,23 @@ h1 {
 }
 
 /* green theme: sharper corners, less glow */
-[data-theme="green"] .template-shell {
+[data-theme="green"] .shell {
     box-shadow: 0 0 30px rgba(0, 255, 65, 0.12);
 }
 
-[data-theme="green"] .top-nav button {
+[data-theme="green"] .top-nav button,
+[data-theme="green"] .nav-link-page,
+[data-theme="green"] .btn,
+[data-theme="green"] .career-item,
+[data-theme="green"] .career-details,
+[data-theme="green"] .social-link,
+[data-theme="green"] .project-image-wrap,
+[data-theme="green"] .carousel-arrow,
+[data-theme="green"] .carousel-dot {
     border-radius: 2px;
 }
 
-[data-theme="green"] .btn {
-    border-radius: 2px;
-}
-
-[data-theme="green"] .career-item {
-    border-radius: 2px;
-}
-
-[data-theme="green"] .career-details {
-    border-radius: 2px;
-}
-
-[data-theme="green"] .social-link {
-    border-radius: 2px;
-}
-
-[data-theme="green"] .skill-pill {
-    border-radius: 3px;
-}
-
+[data-theme="green"] .skill-pill,
 [data-theme="green"] .stack-pill {
     border-radius: 3px;
 }
@@ -751,18 +748,6 @@ h1 {
 [data-theme="green"] .project-card {
     border-radius: 4px;
     box-shadow: none;
-}
-
-[data-theme="green"] .project-image-wrap {
-    border-radius: 2px;
-}
-
-[data-theme="green"] .carousel-arrow {
-    border-radius: 2px;
-}
-
-[data-theme="green"] .carousel-dot {
-    border-radius: 2px;
 }
 
 [data-theme="green"] .profile-ring {
@@ -811,8 +796,6 @@ h1 {
 [data-theme="green"] .hero-summary.typing {
     min-height: 1.2em;
 }
-
-
 
 @media (max-width: 960px) {
     .hero {
@@ -900,36 +883,7 @@ h1 {
     }
 }
 
-/* BEYOND WORK PAGE */
-
-/* Cross-page nav link (styled like top-nav buttons but as <a>) */
-.nav-link-page {
-    display: inline-block;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 7px 12px;
-    color: var(--text-soft);
-    background: transparent;
-    cursor: pointer;
-    font-size: 0.82rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-
-.nav-link-page:hover {
-    color: var(--accent-a);
-    border-color: var(--line-hover);
-}
-
-a.brand {
-    text-decoration: none;
-    color: var(--text-main);
-}
-
-[data-theme="green"] .nav-link-page {
-    border-radius: 2px;
-}
+/* Beyond Work page */
 
 /* Beyond Hero (mini header) */
 .beyond-hero {
@@ -945,7 +899,6 @@ a.brand {
     margin: 0 auto;
 }
 
-/* Empty state message */
 .empty-message {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -979,8 +932,6 @@ a.brand {
 
 .interest-card--no-icon {
     justify-content: center;
-    align-items: center;
-    text-align: center;
 }
 
 .interest-icon {
@@ -1165,10 +1116,7 @@ a.brand {
     line-height: 1.5;
 }
 
-[data-theme="green"] .aviation-badge {
-    border-radius: 2px;
-}
-
+[data-theme="green"] .aviation-badge,
 [data-theme="green"] .timeline-dot {
     border-radius: 2px;
 }
@@ -1185,6 +1133,7 @@ a.brand {
     overflow: hidden;
     border: 1px solid var(--line);
     aspect-ratio: 4 / 3;
+    cursor: zoom-in;
 }
 
 .aviation-photo-wrap img {
@@ -1227,6 +1176,7 @@ a.brand {
     width: 100%;
     aspect-ratio: 16 / 10;
     overflow: hidden;
+    cursor: zoom-in;
 }
 
 .travel-image-wrap img {
@@ -1446,13 +1396,11 @@ a.brand {
 
 @media (prefers-reduced-motion: reduce) {
     .map-pin-pulse {
-        animation: none;
         opacity: 0;
     }
 
     .map-web {
         stroke-dashoffset: 0;
-        transition: none;
     }
 }
 
@@ -1578,10 +1526,7 @@ a.brand {
     transform: scale(1.08);
 }
 
-[data-theme="green"] .gallery-filter-btn {
-    border-radius: 2px;
-}
-
+[data-theme="green"] .gallery-filter-btn,
 [data-theme="green"] .gallery-cell {
     border-radius: 2px;
 }
@@ -1651,11 +1596,6 @@ a.brand {
     right: 16px;
 }
 
-.aviation-photo-wrap,
-.travel-image-wrap {
-    cursor: zoom-in;
-}
-
 .lightbox-close {
     position: absolute;
     top: 20px;
@@ -1687,7 +1627,7 @@ a.brand {
     }
 }
 
-/* ---------- Entry gate (gate.js): boarding pass in blue, terminal login in green ---------- */
+/* Entry gate (js/gate.js): boarding pass in blue, terminal login in green */
 
 /* Cover the page until the gate is gone (a backdrop, so the page itself is left untouched) */
 html.gate-active body {
@@ -1980,16 +1920,4 @@ html.gate-active::after {
 
 @keyframes term-blink {
     50% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .gate,
-    .pass {
-        animation: none;
-        transition: none;
-    }
-
-    .term-cursor {
-        animation: none;
-    }
 }
