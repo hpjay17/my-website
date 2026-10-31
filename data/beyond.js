@@ -34,9 +34,10 @@ const beyondData = {
             "Earned my Private Pilot License at 17. Flying gives me a unique perspective on the world ~ from above.",
         // Numbers from your logbook, shown as tiles under the summary. Add or remove any line.
         logbook: [
-            { label: "Flight Hours", value: 90 },
-            { label: "Landings", value: 210 },
-            { label: "Airports", value: 9 },
+            { label: "Total Flight Hours", value: 90.5 },
+            { label: "Pilot in Command", value: 29.9 },
+            { label: "Landings", value: 221 },
+            { label: "Airports", value: 14 },
         ],
         aircraftFlown: [
             { name: "Piper PA-28 Cherokee", note: "Primary trainer" },
@@ -187,7 +188,11 @@ const beyondData = {
     // Every entry adds its distance to the miles stat. For a flight taken more than once,
     // add how many times as a third value: ["Tallahassee, Florida", "Atlanta, Georgia", 6]
     // Repeats and return legs (B to A after A to B) count toward the miles but share one line on the map.
+    // Keep flights in the order you took them: the map's replay button flies them in this order.
+    // A year on its own line ("2024",) starts that year in the replay. When the replay reaches a trip
+    // in its own year, the counter shows the trip's date (e.g. "June 2024").
     routes: [
+        "2023",
         ["Tallahassee, Florida", "Atlanta, Georgia"],
         ["Atlanta, Georgia", "San José, Costa Rica"],
         ["San José, Costa Rica", "Atlanta, Georgia"],
@@ -205,7 +210,7 @@ const beyondData = {
         ["Shanghai, China", "Dubai, UAE"],
         ["Dubai, UAE", "Orlando, Florida"],
 
-        // 2024
+        "2024",
         ["Tallahassee, Florida", "Atlanta, Georgia"],
         ["Atlanta, Georgia", "Detroit, Michigan"],
         ["Detroit, Michigan", "Tokyo, Japan"],
@@ -216,7 +221,7 @@ const beyondData = {
         ["Tallahassee, Florida", "Atlanta, Georgia"],
         ["Atlanta, Georgia", "Tallahassee, Florida"],
 
-        // 2025
+        "2025",
         ["Atlanta, Georgia", "Seattle, Washington"],
         ["Seattle, Washington", "Shanghai, China"],
         ["Shanghai, China", "Seattle, Washington"],
@@ -228,7 +233,7 @@ const beyondData = {
         ["Atlanta, Georgia", "Ann Arbor, Michigan"],
         ["Ann Arbor, Michigan", "Atlanta, Georgia"],
 
-        // 2026
+        "2026",
         ["Atlanta, Georgia", "New York, New York"],
         ["New York, New York", "Lisbon, Portugal"],
         ["Lisbon, Portugal", "New York, New York"],

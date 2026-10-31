@@ -41,10 +41,35 @@ function wireThemeSwitcher(onChange) {
     buttons.forEach((btn) => {
         btn.addEventListener("click", () => {
             const theme = btn.dataset.setTheme;
-            setTheme(theme);
             localStorage.setItem("theme", theme);
-            if (onChange) onChange(theme);
+            revealTheme(btn, theme, () => {
+                setTheme(theme);
+                if (onChange) onChange(theme);
+            });
         });
+    });
+}
+
+// Switch themes with a circle that grows out of the clicked button until it covers the window.
+// The browser photographs the page before and after `update`, then this animates a circular
+// cut-out of the new page over the old one. Browsers without View Transitions just switch at once.
+function revealTheme(button, theme, update) {
+    if (!document.startViewTransition || prefersReducedMotion() || theme === currentTheme()) {
+        update();
+        return;
+    }
+    const box = button.getBoundingClientRect();
+    const x = box.left + box.width / 2;
+    const y = box.top + box.height / 2;
+    // Far enough to reach the window's farthest corner
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+
+    const transition = document.startViewTransition(update);
+    transition.ready.then(() => {
+        document.documentElement.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+            { duration: 600, easing: "cubic-bezier(0.4, 0, 0.2, 1)", pseudoElement: "::view-transition-new(root)" }
+        );
     });
 }
 

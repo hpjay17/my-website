@@ -47,6 +47,14 @@
     box-sizing: border-box;
 }
 
+/* Theme switch (js/shared.js): the new theme grows in a circle from the button over the old one.
+   The browser's default crossfade is turned off so only the circle moves. */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
 html,
 body {
     margin: 0;
@@ -1263,18 +1271,39 @@ h1 {
     white-space: nowrap;
 }
 
+/* The flat map and its zoom buttons */
+.travel-map-flat {
+    position: relative;
+}
+
+/* Drag to pan; vertical swipes still scroll the page on phones, sideways ones pan the map */
 .travel-map-svg {
     --map-zoom: 1;
     display: block;
     width: 100%;
     height: auto;
     overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    outline: none;
 }
 
+.travel-map-svg.is-panning {
+    cursor: grabbing;
+}
+
+.travel-map-svg:focus-visible {
+    border-radius: 6px;
+    box-shadow: 0 0 0 2px var(--accent-a);
+}
+
+/* --map-dot shrinks the dots a little as the map zooms in (js/beyond.js), so zoomed-in land stays airy */
 .map-land {
     fill: none;
     stroke: var(--text-muted);
-    stroke-width: 1.3;
+    stroke-width: calc(1.3px * var(--map-dot, 1));
     stroke-linecap: round;
     opacity: 0.35;
 }
@@ -1285,16 +1314,17 @@ h1 {
     stroke-width: calc(0.8px * var(--map-zoom));
     opacity: 0.5;
     pointer-events: none;
-    /* Hidden until the map scrolls into view, then each route draws in turn */
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
+    /* Hidden until the map scrolls into view, then each route draws in turn.
+       Each path holds four copies of its line (ROUTE_COPIES in js/beyond.js), each a quarter of
+       its length, so the pattern repeats every quarter and all the copies draw together. */
+    stroke-dasharray: 0 0.25;
 }
 
 /* Transition only when drawing in, so leaving view clears the lines instantly */
 .travel-map-svg.is-drawn .map-web {
-    stroke-dashoffset: 0;
+    stroke-dasharray: 0.25 0;
     transition:
-        stroke-dashoffset 0.4s ease-out var(--route-delay, 0s),
+        stroke-dasharray 0.4s ease-out var(--route-delay, 0s),
         opacity 0.2s ease,
         stroke-width 0.2s ease;
 }
@@ -1309,9 +1339,108 @@ h1 {
     stroke-width: calc(1.4px * var(--map-zoom));
 }
 
+/* Globe view (js/globe.js): the canvas takes the flat map's place */
+.travel-map-globe-wrap {
+    position: relative;
+    display: none;
+}
+
+.travel-map-globe {
+    display: block;
+    width: 100%;
+    height: min(460px, 80vw);
+    cursor: grab;
+    /* Vertical swipes still scroll the page on phones; sideways ones turn the globe */
+    touch-action: pan-y;
+    outline: none;
+}
+
+.travel-map.is-globe .travel-map-flat {
+    display: none;
+}
+
+.travel-map.is-globe .travel-map-globe-wrap {
+    display: block;
+}
+
+/* Zoom buttons in the bottom-right corner of the flat map and the globe */
+.map-zoom {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.map-zoom-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--line-hover);
+    border-radius: 50%;
+    background: var(--bg-panel);
+    color: var(--accent-a);
+    font: inherit;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.map-zoom-btn:hover:not(:disabled) {
+    border-color: var(--accent-a);
+    box-shadow: 0 0 8px var(--glow-a);
+}
+
+.map-zoom-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+[data-theme="green"] .map-zoom-btn {
+    border-radius: 2px;
+}
+
+.travel-map-globe.is-over-pin {
+    cursor: pointer;
+}
+
+.travel-map-globe.is-dragging {
+    cursor: grabbing;
+}
+
+.travel-map-globe:focus-visible {
+    border-radius: 8px;
+    box-shadow: 0 0 0 2px var(--accent-a);
+}
+
+/* Replay: js/beyond.js draws each line itself, frame by frame, through the same stroke-dasharray the
+   scroll-in drawing animates. Without this, every frame's change would restart that animation, with its
+   delay, so lines would hang on when the replay starts and trail behind the plane. */
+.travel-map-svg.is-replaying .map-web {
+    transition: opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+/* Replay: the line being flown stands out; the rest keep their normal look */
+.travel-map-svg.is-replaying .map-web.is-highlighted {
+    opacity: 1;
+    stroke-width: calc(1.4px * var(--map-zoom));
+}
+
 .map-pin {
     cursor: pointer;
     outline: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Hovering is off during the replay, and places not reached yet are hidden */
+.travel-map-svg.is-replaying .map-pin {
+    pointer-events: none;
+}
+
+.map-pin.is-pending {
+    opacity: 0;
 }
 
 /* Counter-scales the pin so it stays the same size when the map zooms in */
@@ -1400,7 +1529,7 @@ h1 {
     }
 
     .map-web {
-        stroke-dashoffset: 0;
+        stroke-dasharray: 0.25 0;
     }
 }
 
@@ -1439,6 +1568,93 @@ h1 {
     margin-bottom: 4px;
     border-radius: 4px;
     object-fit: cover;
+}
+
+/* Replay controls under the map: play button, timeline, date */
+.travel-map-replay {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.travel-map-replay[hidden] {
+    display: none;
+}
+
+.travel-map-replay-btn {
+    flex-shrink: 0;
+    min-width: 6.5em;
+}
+
+/* A thin line with a small round handle; the track and handle need separate rules for each browser */
+.travel-map-scrubber {
+    flex: 1;
+    min-width: 0;
+    height: 14px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.travel-map-scrubber::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 1px;
+    background: var(--line-hover);
+}
+
+.travel-map-scrubber::-moz-range-track {
+    height: 2px;
+    border-radius: 1px;
+    background: var(--line-hover);
+}
+
+.travel-map-scrubber::-webkit-slider-thumb {
+    width: 10px;
+    height: 10px;
+    margin-top: -4px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-a);
+    box-shadow: 0 0 6px var(--glow-a-strong);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.travel-map-scrubber::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-a);
+    box-shadow: 0 0 6px var(--glow-a-strong);
+}
+
+.travel-map-scrubber:focus {
+    outline: none;
+}
+
+.travel-map-scrubber:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--accent-a);
+    outline-offset: 2px;
+}
+
+.travel-map-scrubber:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--accent-a);
+    outline-offset: 2px;
+}
+
+.travel-map-date {
+    flex-shrink: 0;
+    min-width: 7.5em;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 .travel-map-btn {

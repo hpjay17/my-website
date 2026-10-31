@@ -16,7 +16,8 @@ Plain HTML, CSS, and JavaScript: no build step or dependencies. Pushing to `main
 | `data/world-dots.js` | Dot-grid world map used by the travel map (generated, don't edit by hand) |
 | `js/portfolio.js` | Renders the portfolio page |
 | `js/beyond.js` | Renders the Beyond Work page: travel map, gallery, lightbox |
-| `js/shared.js` | Behavior both pages use: theme switcher, smooth scrolling, section fade-in, typewriter effect |
+| `js/globe.js` | Globe view of the travel map (the "Globe" button): drag to spin, follows the replay |
+| `js/shared.js` | Behavior both pages use: theme switcher with its circular reveal, smooth scrolling, section fade-in, typewriter effect |
 | `js/gate.js` | Entry gate on `beyond.html`: boarding pass (blue theme) or terminal login (green theme), once per visit. Add `?gate` to the URL to see it again |
 | `css/styles.css` | Styles for both pages, including the blue and green themes |
 | `tools/make-world-dots.py` | Rebuilds `data/world-dots.js` from Natural Earth coastlines |
@@ -36,7 +37,11 @@ Content lives in `data/portfolio.js` and `data/beyond.js`; edit those rather tha
 sips -Z 1600 -s formatOptions 72 images/beyond/NAME.jpeg
 ```
 
-**Travel map settings:** zoom regions, padding, and animation speeds are the `MAP_*` settings under "Travel map settings" in `js/beyond.js`. The map's colors and sizes are the `.map-*` rules in `css/styles.css`. To change the dot grid itself, run `python3 tools/make-world-dots.py` (see the notes at the top of the script).
+**Flight replay:** the map's Replay button flies every entry in `routes` in the order listed, so keep new flights in order. A year on its own line (`"2027",`) starts that year in the replay. `REPLAY_MS` in `js/beyond.js` sets how long it takes.
+
+**Globe settings:** spin speed, how quickly a flick slows down, how high routes arc, where it starts facing, the zoom limit and the pin sizes are the `GLOBE_*` settings at the top of `js/globe.js`. It uses the same places, routes and colors as the flat map, so there's nothing extra to update.
+
+**Travel map settings:** the flat map's zoom limit, how far north and south it can be dragged, how quickly a flung map slows down, and padding around the pins are the `MAP_*` settings under "Travel map settings" in `js/beyond.js`. The map's colors and sizes are the `.map-*` rules in `css/styles.css`. To change the dot grid itself, run `python3 tools/make-world-dots.py` (see the notes at the top of the script).
 
 **Changing the resume:** replace the PDF in `files/` and update the `CV` link in `data/portfolio.js`.
 
