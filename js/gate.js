@@ -6,7 +6,7 @@
 // Blue theme: boarding pass
 const BOARDING_PASS = {
     airline: "JAY AIR",
-    from: { code: "DSK", city: "Desk" },
+    from: { code: "OFC", city: "Office" },
     to: { code: "BYD", city: "Beyond Work" },
     // Shown in a 3-column grid; "Date" is filled in with today's date automatically
     fields: [
