@@ -899,6 +899,6 @@ function runHackerTyping() {
     else resetTyping(beyondSummaryEl, beyondSummaryText);
 }
 
-wireThemeSwitcher(runHackerTyping);
+wireThemeSwitcher(playGateIfThemeChanged);
 init();
 runHackerTyping();

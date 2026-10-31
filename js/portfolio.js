@@ -7,6 +7,7 @@ const tabGroups = {
 function init() {
     applyProfile();
     renderSocialLinks();
+    renderTicker();
     Object.values(tabGroups).forEach((group) => {
         renderTabList(group);
         renderTabDetail(group, 0, false);
@@ -58,6 +59,67 @@ function renderSocialLinks() {
         link.append(icon, text);
         socialRoot.appendChild(link);
     });
+}
+
+const TICKER_ARROWS = { up: "▲", down: "▼", flat: "–" };
+
+function renderTicker() {
+    const { items, colors } = portfolioData.ticker;
+    const strip = document.getElementById("ticker");
+    strip.style.setProperty("--ticker-up", colors.up);
+    strip.style.setProperty("--ticker-down", colors.down);
+    // Screen readers get one plain sentence; the moving copies are hidden from them
+    strip.setAttribute("aria-label", items.map((item) => `${item.symbol} ${item.change}: ${item.text}`).join(", "));
+
+    fillTicker();
+    window.addEventListener("resize", () => {
+        const group = strip.querySelector(".ticker-group");
+        if (group.offsetWidth < strip.clientWidth) fillTicker();
+    });
+
+    // No point animating while it's scrolled out of view
+    const observer = new IntersectionObserver(([entry]) => {
+        strip.classList.toggle("is-paused", !entry.isIntersecting);
+    });
+    observer.observe(strip);
+}
+
+// The track holds two identical groups, each at least as wide as the strip.
+// Sliding left by exactly one group and starting over looks like one endless loop.
+function fillTicker() {
+    const { items, speed } = portfolioData.ticker;
+    const strip = document.getElementById("ticker");
+    const track = document.createElement("div");
+    track.className = "ticker-track";
+    track.setAttribute("aria-hidden", "true");
+    const group = document.createElement("div");
+    group.className = "ticker-group";
+    track.appendChild(group);
+    strip.replaceChildren(track);
+
+    // On wide screens one set of items is shorter than the strip, so repeat it until it isn't
+    do {
+        items.forEach((item) => group.appendChild(createTickerItem(item)));
+    } while (group.offsetWidth < strip.clientWidth);
+
+    track.appendChild(group.cloneNode(true));
+    track.style.animationDuration = `${group.offsetWidth / speed}s`;
+}
+
+function createTickerItem(item) {
+    const el = document.createElement("span");
+    el.className = `ticker-item ticker-item--${item.change}`;
+
+    const symbol = document.createElement("span");
+    symbol.className = "ticker-symbol";
+    symbol.textContent = item.symbol;
+
+    const change = document.createElement("span");
+    change.className = "ticker-change";
+    change.textContent = `${TICKER_ARROWS[item.change]} ${item.text}`;
+
+    el.append(symbol, change);
+    return el;
 }
 
 function renderTabList(group) {
@@ -315,6 +377,8 @@ function onThemeChange(theme) {
     document.querySelectorAll('.project-image-wrap img[data-placeholder="true"]').forEach((img) => {
         img.src = projectPlaceholder(theme);
     });
+    // The green theme's monospace font is wider, so the ticker needs re-measuring
+    fillTicker();
     runHackerTyping();
 }
 

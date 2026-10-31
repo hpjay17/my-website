@@ -1,5 +1,6 @@
 /* Entry gate for beyond.html: a boarding pass in the blue theme, a terminal login in the green theme.
-   Shows once per browser tab (sessionStorage), so moving around the site doesn't show it again.
+   Plays the first time Beyond Work opens in a browser tab, then again only after the theme changes,
+   whether that happens on this page or on the portfolio.
    Add ?gate to the URL to see it again (beyond.html?gate). */
 
 // Blue theme: boarding pass
@@ -42,18 +43,16 @@ const TERMINAL = {
 };
 
 (function () {
-    const SEEN_KEY = "beyondGateSeen";
+    // Holds the theme the gate last played for in this tab
+    const SEEN_KEY = "beyondGateTheme";
     const forced = new URLSearchParams(location.search).has("gate");
-    if (sessionStorage.getItem(SEEN_KEY) && !forced) return;
-
-    // Runs in <head>, before the page draws, so the page stays hidden until the gate is ready
     const html = document.documentElement;
-    const theme = localStorage.getItem("theme") || "blue";
-    html.setAttribute("data-theme", theme);
-    html.classList.add("gate-active");
-
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const now = new Date();
+    let returnFocus = null;
+
+    function needsGate(theme) {
+        return forced || sessionStorage.getItem(SEEN_KEY) !== theme;
+    }
 
     function el(tag, className, text) {
         const node = document.createElement(tag);
@@ -65,18 +64,20 @@ const TERMINAL = {
     // Fade the gate out and hand over to the page
     function closeGate(gate, onClosed) {
         if (gate.classList.contains("is-leaving")) return;
-        sessionStorage.setItem(SEEN_KEY, "1");
+        sessionStorage.setItem(SEEN_KEY, html.getAttribute("data-theme"));
         gate.classList.add("is-leaving");
         html.classList.remove("gate-active");
         if (onClosed) onClosed();
         // Green theme: replay the hero typing now that it can be seen
         runHackerTyping();
+        if (returnFocus) returnFocus.focus({ preventScroll: true });
         setTimeout(() => gate.remove(), reducedMotion ? 0 : 600);
     }
 
     /* Blue theme: boarding pass */
 
     function buildBoardingPass() {
+        const now = new Date();
         const gate = el("div", "gate gate--pass");
         gate.setAttribute("role", "dialog");
         gate.setAttribute("aria-modal", "true");
@@ -147,6 +148,7 @@ const TERMINAL = {
     /* Green theme: terminal login */
 
     function buildTerminal() {
+        const now = new Date();
         const gate = el("div", "gate gate--terminal");
         gate.setAttribute("role", "dialog");
         gate.setAttribute("aria-modal", "true");
@@ -235,8 +237,26 @@ const TERMINAL = {
         }, time + 500);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        if (theme === "green") buildTerminal();
-        else buildBoardingPass();
-    });
+    function playGate(theme) {
+        html.classList.add("gate-active");
+        returnFocus = document.activeElement;
+        // Wait a frame, or an Enter press that switched the theme would also skip the gate
+        requestAnimationFrame(() => {
+            if (theme === "green") buildTerminal();
+            else buildBoardingPass();
+        });
+    }
+
+    // js/beyond.js calls this when the theme is switched on this page
+    window.playGateIfThemeChanged = (theme) => {
+        if (needsGate(theme)) playGate(theme);
+    };
+
+    // This part runs in <head>, before the page draws, so the page stays hidden until the gate is ready
+    const theme = localStorage.getItem("theme") || "blue";
+    if (needsGate(theme)) {
+        html.setAttribute("data-theme", theme);
+        html.classList.add("gate-active");
+        document.addEventListener("DOMContentLoaded", () => playGate(theme));
+    }
 })();

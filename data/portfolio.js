@@ -16,6 +16,20 @@ const portfolioData = {
         { label: "Email", href: "mailto:jay.wang@emory.edu", svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/></svg>' },
         { label: "CV", href: "./files/Website_Resume_Oct2026.pdf", svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z"/></svg>' },
     ],
+
+    // speed is pixels per second (30 is calm, 80 is busy). colors are for the up and down arrows.
+    ticker: {
+    speed: 45,
+    colors: { up: "#35e07a", down: "#ff5f5f" },
+    items: [
+        { symbol: "Emory", text: "Finance + ISOM · Data Science",    change: "up" },
+        { symbol: "COF",   text: "Incoming Data Analyst Intern '27", change: "up" },
+        { symbol: "TOOLS",  text: "SQL · Python · R · Excel",         change: "up" },
+        { symbol: "DUO",   text: "830-day streak",                   change: "up" },
+        { symbol: "SLEEP", text: "Exam season",                      change: "down" },
+    ],
+},
+
     career: [
         {
             company: "Capital One",
