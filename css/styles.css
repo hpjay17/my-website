@@ -47,11 +47,10 @@
     box-sizing: border-box;
 }
 
-/* Theme switch (js/shared.js): the default crossfade is off so only the growing circle moves */
+/* Theme switch crossfade (js/shared.js), a little slower than the browser's default */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
+    animation-duration: 0.35s;
 }
 
 html,

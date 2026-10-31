@@ -45,7 +45,7 @@ function wireThemeSwitcher(onChange) {
         btn.addEventListener("click", () => {
             const theme = btn.dataset.setTheme;
             localStorage.setItem("theme", theme);
-            revealTheme(btn, theme, () => {
+            fadeToTheme(theme, () => {
                 setTheme(theme);
                 onChange(theme);
             });
@@ -53,26 +53,13 @@ function wireThemeSwitcher(onChange) {
     });
 }
 
-// Grow the new theme in a circle from the clicked button. The browser snapshots the page before and
-// after `update` (View Transitions); this animates a circular cut-out of the new snapshot over the old.
-// Browsers without View Transitions switch at once.
-function revealTheme(button, theme, update) {
+// Crossfade to the new theme with View Transitions; browsers without them switch at once
+function fadeToTheme(theme, update) {
     if (!document.startViewTransition || prefersReducedMotion() || theme === currentTheme()) {
         update();
         return;
     }
-    const box = button.getBoundingClientRect();
-    const x = box.left + box.width / 2;
-    const y = box.top + box.height / 2;
-    // Far enough to reach the window's farthest corner
-    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-
-    document.startViewTransition(update).ready.then(() => {
-        document.documentElement.animate(
-            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-            { duration: 600, easing: "cubic-bezier(0.4, 0, 0.2, 1)", pseudoElement: "::view-transition-new(root)" }
-        );
-    });
+    document.startViewTransition(update);
 }
 
 function currentTheme() {

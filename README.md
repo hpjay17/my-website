@@ -5,7 +5,7 @@ Portfolio and travel/aviation pages, built as a static site. Live at https://hpj
 ## Features
 
 - Portfolio page with career and organization tabs, skills, a project carousel and certifications
-- Two themes (cyan and terminal green), switched with a circular reveal where the browser supports View Transitions
+- Two themes (cyan and terminal green), switched with a crossfade where the browser supports View Transitions
 - Beyond Work page with interests, an aviation logbook summary, trip cards, a filtered photo gallery and a lightbox
 - Travel map with great-circle flight routes, drawn on a flat map that pans endlessly or on a globe you can spin
 - Flight replay that flies every route in order, with a scrubber, a date counter and running stats
