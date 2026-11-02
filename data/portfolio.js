@@ -29,6 +29,18 @@ const portfolioData = {
             ],
         },
         {
+            company: "Hartsfield-Jackson Atlanta International Airport",
+            role: "Internal Audit Intern",
+            period: "May 2026 – Jul 2026",
+            location: "Atlanta, GA",
+            stack: ["Internal Audit", "Excel", "Financial Analysis"],
+            summary: "Contract and compliance auditing for the world’s busiest airport",
+            highlights: [
+                "Audited an $18M airfield contract, reviewing payments, invoices, and insurance compliance; designed the audit program and interviewed the contractor",
+                "Led a concourse-wide sustainability audit of food & beverage concessions, raising Sustainable Food Court Initiative compliance from 37% to 58%",
+            ],
+        },
+        {
             company: "Invest Atlanta",
             role: "Student Data Analyst",
             period: "Jan 2026 – May 2026",
