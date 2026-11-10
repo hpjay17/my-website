@@ -1,0 +1,406 @@
+/* Used by both pages: theme colors, page shell, top bar, section headings, and the pieces both pages share */
+
+:root,
+[data-theme="blue"] {
+    --bg-base: #0b1128;
+    --bg-panel: rgba(12, 20, 48, 0.94);
+    --bg-card: rgba(10, 18, 42, 0.7);
+    --bg-topbar: rgba(8, 14, 36, 0.95);
+    --text-main: #ffffff;
+    --text-soft: #c8daf5;
+    --text-muted: #7b93b8;
+    --line: rgba(0, 180, 255, 0.1);
+    --line-hover: rgba(0, 212, 255, 0.35);
+    --accent-a: #00c6fb;
+    --accent-b: #0ef6cc;
+    --accent-warm: #5ce8d4;
+    --glow-a: rgba(0, 198, 251, 0.25);
+    --glow-a-strong: rgba(0, 198, 251, 0.4);
+    --glow-warm: rgba(92, 232, 212, 0.25);
+    --glow-subtle: rgba(0, 198, 251, 0.1);
+    --pill-bg: rgba(0, 180, 255, 0.06);
+    --active-bg: rgba(0, 198, 251, 0.07);
+    --card-grad: linear-gradient(135deg, #0d1a3a, #122250, #163060, #1a3a5c);
+
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 999px;
+    --radius-round: 50%;
+
+    --font-2xs: 0.7rem;
+    --font-xs: 0.76rem;
+    --font-sm: 0.82rem;
+    --font-md: 0.88rem;
+    --font-base: 1rem;
+    --font-lg: 1.15rem;
+    --font-xl: 1.3rem;
+
+    --fade: 0.2s ease;
+    --fade-slow: 0.3s ease;
+    /* Height of the sticky top bar; sections stop this far below the top when scrolled to */
+    --top-bar-height: 64px;
+}
+
+[data-theme="green"] {
+    --bg-base: #000000;
+    --bg-panel: rgba(0, 0, 0, 0.98);
+    --bg-card: rgba(0, 5, 0, 0.85);
+    --bg-topbar: rgba(0, 0, 0, 0.98);
+    --text-main: #33ff66;
+    --text-soft: #00ff41;
+    --text-muted: #1fcc4a;
+    --line: rgba(0, 255, 65, 0.22);
+    --line-hover: rgba(0, 255, 65, 0.5);
+    --accent-a: #39ff14;
+    --accent-b: #00ff41;
+    --accent-warm: #33ff66;
+    --glow-a: rgba(0, 255, 65, 0.18);
+    --glow-a-strong: rgba(0, 255, 65, 0.4);
+    --glow-warm: rgba(0, 255, 65, 0.18);
+    --glow-subtle: rgba(0, 255, 65, 0.07);
+    --pill-bg: rgba(0, 255, 65, 0.07);
+    --active-bg: rgba(0, 255, 65, 0.1);
+    --card-grad: linear-gradient(135deg, #000000, #000500, #000a00, #000f00);
+
+    --radius-sm: 2px;
+    --radius-md: 2px;
+    --radius-lg: 2px;
+    --radius-pill: 2px;
+    --radius-round: 2px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent-a);
+    outline-offset: 2px;
+}
+
+/* Theme switch crossfade (js/shared.js), a little slower than the browser's default */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.35s;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    color: var(--text-main);
+    font-family: "Segoe UI", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-base);
+}
+
+.page {
+    position: relative;
+    min-height: 100vh;
+    padding: 14px 0 36px;
+    background: var(--bg-base);
+}
+
+.shell {
+    width: min(1080px, calc(100% - 20px));
+    margin: 0 auto;
+    position: relative;
+    border: 1px solid var(--line);
+    background: var(--bg-panel);
+    box-shadow: 0 0 40px var(--glow-a), 0 0 80px var(--glow-subtle);
+    /* clip, not hidden: hidden would make this a scroll container and stop the top bar sticking */
+    overflow: clip;
+    animation: reveal-shell 0.5s cubic-bezier(0.2, 0.7, 0.15, 1) both;
+}
+
+@keyframes reveal-shell {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-topbar);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.brand {
+    border: 0;
+    background: transparent;
+    color: var(--text-main);
+    font-size: var(--font-base);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.top-nav button,
+.nav-link-page {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    padding: 7px 12px;
+    color: var(--text-soft);
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--font-sm);
+    font-weight: 500;
+    transition: all var(--fade);
+}
+
+.nav-link-page {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.top-nav button:hover,
+.nav-link-page:hover {
+    color: var(--accent-a);
+    border-color: var(--line-hover);
+}
+
+.section {
+    padding: 28px 22px 30px;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: var(--top-bar-height);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-heading {
+    margin-bottom: 16px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+}
+
+.section-heading h2::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 3px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+    border-radius: 2px;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    line-height: 1.08;
+}
+
+.hero-summary {
+    margin: 0;
+    color: var(--text-muted);
+    max-width: 65ch;
+    line-height: 1.6;
+    font-size: clamp(0.88rem, 1.6vw, 0.98rem);
+}
+
+.stack-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.stack-pill {
+    border-radius: var(--radius-pill);
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    color: var(--accent-a);
+    background: var(--pill-bg);
+    font-size: var(--font-2xs);
+    font-weight: 600;
+}
+
+.highlight-list {
+    margin: 0;
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.highlight-list li {
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+    line-height: 1.5;
+}
+
+.theme-switcher {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.theme-switcher-label {
+    color: var(--text-muted);
+    font-size: var(--font-2xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.theme-btn {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    padding: 0;
+    transition: all var(--fade);
+}
+
+/* Invisible padding so the small dot is easy to tap */
+.theme-btn::after {
+    content: "";
+    position: absolute;
+    inset: -11px -3px;
+}
+
+.theme-btn:hover {
+    transform: scale(1.2);
+}
+
+.theme-btn.active {
+    border-color: var(--text-main);
+    box-shadow: 0 0 8px var(--glow-a);
+}
+
+.theme-btn[data-set-theme="blue"] {
+    background: linear-gradient(135deg, #00c6fb, #0ef6cc);
+}
+
+.theme-btn[data-set-theme="green"] {
+    background: linear-gradient(135deg, #39ff14, #00ff41);
+}
+
+/* Green theme: monospace type and a phosphor glow on text. Its square corners come from the --radius variables. */
+
+[data-theme="green"] body,
+[data-theme="green"] button,
+[data-theme="green"] a {
+    font-family: "Courier New", "Lucida Console", "Consolas", monospace;
+}
+
+[data-theme="green"] body {
+    text-shadow: 0 0 4px rgba(0, 255, 65, 0.45);
+}
+
+[data-theme="green"] .shell {
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.12);
+}
+
+[data-theme="green"] .section-heading h2::before {
+    border-radius: 0;
+}
+
+/* Typing effect (js/shared.js) */
+
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+[data-theme="green"] .typing-cursor::after {
+    content: "\2588";
+    color: var(--accent-a);
+    animation: blink-cursor 0.7s step-end infinite;
+    margin-left: 1px;
+}
+
+[data-theme="green"] .hero-title.typing,
+[data-theme="green"] .hero-summary.typing {
+    min-height: 1.2em;
+}
+
+@media (max-width: 640px) {
+    /* Three rows tall on a phone, so it scrolls away with the page */
+    .top-bar {
+        position: static;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 14px;
+    }
+
+    .brand {
+        order: 0;
+        flex: 1;
+        text-align: left;
+        font-size: var(--font-md);
+    }
+
+    .theme-switcher {
+        order: 1;
+        flex: 0 0 auto;
+    }
+
+    .top-nav {
+        order: 2;
+        flex: 1 1 100%;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .top-nav button,
+    .nav-link-page {
+        padding: 8px 12px;
+        font-size: var(--font-xs);
+    }
+
+    .section {
+        padding: 22px 14px 24px;
+        scroll-margin-top: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html,
+    body {
+        scroll-behavior: auto;
+    }
+
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

@@ -15,25 +15,20 @@ function renderInterests() {
     const root = document.getElementById("interests-grid");
     beyondData.interests.forEach((item) => {
         const card = createEl("div", "interest-card" + (item.icon ? "" : " interest-card--no-icon"));
-        if (item.icon) {
-            const icon = createEl("img", "interest-icon");
-            icon.src = item.icon;
-            icon.alt = item.name;
-            icon.loading = "lazy";
-            card.appendChild(icon);
-        }
+        // Decorative: the name is right below it
+        if (item.icon) card.appendChild(lazyImage(item.icon, "", "interest-icon"));
         card.append(createEl("h3", "interest-name", item.name), createEl("p", "interest-note", item.note));
         if (item.link) {
             const link = createEl("a", "interest-link", "Learn more");
             link.href = item.link;
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
+            openExternalInNewTab(link);
             card.appendChild(link);
         }
         root.appendChild(card);
     });
 }
 
+// Text in the left column, photos in the right (stacked on small screens)
 function renderAviation() {
     const root = document.getElementById("aviation-content");
     const data = beyondData.aviation;
@@ -44,77 +39,70 @@ function renderAviation() {
         createEl("h3", "", data.headline),
         createEl("p", "aviation-summary", data.summary)
     );
-    // Text in the left column, photos in the right (stacked on small screens)
     const info = createEl("div", "aviation-info");
     info.appendChild(intro);
-    root.appendChild(info);
-
-    if (data.logbook.length) {
-        const stats = createEl("div", "aviation-stats");
-        data.logbook.forEach((stat) => {
-            const tile = createEl("div", "aviation-stat");
-            const value = typeof stat.value === "number" ? stat.value.toLocaleString() : stat.value;
-            tile.append(createEl("span", "aviation-stat-value", value), createEl("span", "aviation-stat-label", stat.label));
-            stats.appendChild(tile);
-        });
-        info.appendChild(stats);
-    }
-
-    if (data.aircraftFlown.length) {
-        const row = createEl("div", "stack-row");
-        data.aircraftFlown.forEach((plane) => {
-            const pill = createEl("span", "stack-pill", plane.name);
-            pill.title = plane.note;
-            row.appendChild(pill);
-        });
-        info.appendChild(aviationSubsection("Aircraft Flown", row));
-    }
-
-    if (data.milestones.length) {
-        const timeline = createEl("div", "aviation-timeline");
-        data.milestones.forEach((milestone) => {
-            const entry = createEl("div", "timeline-entry");
-            entry.append(
-                createEl("span", "timeline-dot"),
-                createEl("span", "timeline-label", milestone.label),
-                createEl("span", "timeline-date", milestone.date),
-                createEl("p", "timeline-desc", milestone.description)
-            );
-            timeline.appendChild(entry);
-        });
-        info.appendChild(aviationSubsection("Milestones", timeline));
-    }
-
+    if (data.logbook.length) info.appendChild(aviationLogbook(data.logbook));
+    if (data.aircraftFlown.length) info.appendChild(aviationSubsection("Aircraft Flown", aviationAircraft(data.aircraftFlown)));
+    if (data.milestones.length) info.appendChild(aviationSubsection("Milestones", aviationTimeline(data.milestones)));
     if (data.goals.length) {
         const list = createEl("ul", "highlight-list");
         data.goals.forEach((goal) => list.appendChild(createEl("li", "", goal)));
         info.appendChild(aviationSubsection("Aviation Goals", list));
     }
+    root.appendChild(info);
+    if (data.photos.length) root.appendChild(aviationPhotos(data.photos));
+}
 
-    if (data.photos.length) {
-        const photos = createEl("div", "aviation-photos");
-        data.photos.forEach((photo, i) => {
-            const wrap = createEl("div", "aviation-photo-wrap");
-            wrap.addEventListener("click", () => openLightbox(data.photos, i));
-            wrap.appendChild(lazyImage(photo.src, photo.alt));
-            photos.appendChild(wrap);
-        });
-        root.appendChild(photos);
-    }
+function aviationLogbook(logbook) {
+    const stats = createEl("div", "aviation-stats");
+    logbook.forEach((stat) => {
+        const tile = createEl("div", "aviation-stat");
+        const value = typeof stat.value === "number" ? stat.value.toLocaleString() : stat.value;
+        tile.append(createEl("span", "aviation-stat-value", value), createEl("span", "aviation-stat-label", stat.label));
+        stats.appendChild(tile);
+    });
+    return stats;
+}
+
+function aviationAircraft(aircraft) {
+    const row = createEl("div", "stack-row");
+    aircraft.forEach((plane) => {
+        const pill = createEl("span", "stack-pill", plane.name);
+        pill.title = plane.note;
+        row.appendChild(pill);
+    });
+    return row;
+}
+
+function aviationTimeline(milestones) {
+    const timeline = createEl("div", "aviation-timeline");
+    milestones.forEach((milestone) => {
+        const entry = createEl("div", "timeline-entry");
+        entry.append(
+            createEl("span", "timeline-dot"),
+            createEl("span", "timeline-label", milestone.label),
+            createEl("span", "timeline-date", milestone.date),
+            createEl("p", "timeline-desc", milestone.description)
+        );
+        timeline.appendChild(entry);
+    });
+    return timeline;
+}
+
+function aviationPhotos(photos) {
+    const grid = createEl("div", "aviation-photos");
+    photos.forEach((photo, i) => {
+        const wrap = createButton("aviation-photo-wrap", "", () => openLightbox(photos, i));
+        wrap.appendChild(lazyImage(photo.src, photo.alt));
+        grid.appendChild(wrap);
+    });
+    return grid;
 }
 
 function aviationSubsection(title, content) {
     const section = createEl("div", "aviation-subsection");
     section.append(createEl("h4", "", title), content);
     return section;
-}
-
-function lazyImage(src, alt) {
-    const img = createEl("img");
-    img.src = src;
-    img.alt = alt;
-    img.loading = "lazy";
-    return img;
 }
 
 function renderTravel() {
@@ -132,19 +120,15 @@ function renderTravel() {
         const card = createEl("div", item.image ? "travel-card" : "travel-card travel-card--no-image");
         card.id = `travel-card-${i}`;
         if (item.image) {
-            const imgWrap = createEl("div", "travel-image-wrap");
+            const imgWrap = createButton("travel-image-wrap", "", () => openLightbox(travelPhotos, withPhotos.indexOf(item)));
             imgWrap.appendChild(lazyImage(item.image, item.place));
-            imgWrap.addEventListener("click", () => openLightbox(travelPhotos, withPhotos.indexOf(item)));
             card.appendChild(imgWrap);
         }
 
         const info = createEl("div", "travel-info");
         info.append(createEl("h3", "", item.place), createEl("span", "travel-date", item.date), createEl("p", "", item.note));
         if (item.coords) {
-            const mapBtn = createEl("button", "travel-map-btn", "View on map");
-            mapBtn.type = "button";
-            mapBtn.addEventListener("click", () => focusTravelPin(i));
-            info.appendChild(mapBtn);
+            info.appendChild(createButton("travel-map-btn", "View on map", () => focusTravelPin(i)));
         }
         card.appendChild(info);
         root.appendChild(card);
@@ -166,13 +150,12 @@ function renderGallery() {
 
     const categories = ["all", ...new Set(beyondData.gallery.map((p) => p.category))];
     categories.forEach((category) => {
-        const btn = createEl("button", "gallery-filter-btn", category.charAt(0).toUpperCase() + category.slice(1));
-        btn.type = "button";
-        if (category === "all") btn.classList.add("active");
-        btn.addEventListener("click", () => {
+        const label = category.charAt(0).toUpperCase() + category.slice(1);
+        const btn = createButton("gallery-filter-btn", label, () => {
             filtersRoot.querySelectorAll(".gallery-filter-btn").forEach((b) => b.classList.toggle("active", b === btn));
             renderGalleryItems(category);
         });
+        if (category === "all") btn.classList.add("active");
         filtersRoot.appendChild(btn);
     });
     renderGalleryItems("all");
@@ -183,31 +166,27 @@ function renderGalleryItems(category) {
     root.textContent = "";
     const items = category === "all" ? beyondData.gallery : beyondData.gallery.filter((p) => p.category === category);
     items.forEach((photo, i) => {
-        const cell = createEl("div", "gallery-cell");
+        const cell = createButton("gallery-cell", "", () => openLightbox(items, i));
         cell.appendChild(lazyImage(photo.src, photo.alt));
-        cell.addEventListener("click", () => openLightbox(items, i));
         root.appendChild(cell);
     });
 }
 
 function openLightbox(photos, startIndex) {
     let index = startIndex;
+    const opener = document.activeElement;
     const overlay = createEl("div", "lightbox-overlay");
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Photo viewer");
     const figure = createEl("figure", "lightbox-figure");
     const img = createEl("img");
     const caption = createEl("figcaption", "lightbox-caption");
     figure.append(img, caption);
 
-    const button = (className, label, text, onClick) => {
-        const btn = createEl("button", className, text);
-        btn.type = "button";
-        btn.setAttribute("aria-label", label);
-        btn.addEventListener("click", onClick);
-        return btn;
-    };
-    const closeBtn = button("lightbox-close", "Close", "×", close);
-    const prevBtn = button("lightbox-nav lightbox-prev", "Previous photo", "‹", () => show(index - 1));
-    const nextBtn = button("lightbox-nav lightbox-next", "Next photo", "›", () => show(index + 1));
+    const closeBtn = createButton("lightbox-close", "×", close, "Close");
+    const prevBtn = createButton("lightbox-nav lightbox-prev", "‹", () => show(index - 1), "Previous photo");
+    const nextBtn = createButton("lightbox-nav lightbox-next", "›", () => show(index + 1), "Next photo");
 
     function show(i) {
         index = (i + photos.length) % photos.length;
@@ -221,12 +200,22 @@ function openLightbox(photos, startIndex) {
         overlay.remove();
         document.removeEventListener("keydown", onKey);
         document.body.style.overflow = "";
+        if (opener) opener.focus({ preventScroll: true });
     }
 
     function onKey(e) {
         if (e.key === "Escape") close();
         else if (e.key === "ArrowLeft") show(index - 1);
         else if (e.key === "ArrowRight") show(index + 1);
+        else if (e.key === "Tab") keepTabInside(e);
+    }
+
+    // Tab cycles through the lightbox's own buttons instead of the page behind it
+    function keepTabInside(e) {
+        const buttons = [...overlay.querySelectorAll("button")];
+        const next = buttons.indexOf(document.activeElement) + (e.shiftKey ? -1 : 1);
+        e.preventDefault();
+        buttons[(next + buttons.length) % buttons.length].focus();
     }
 
     overlay.addEventListener("click", (e) => {

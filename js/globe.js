@@ -209,7 +209,7 @@ function easeGlobeZoom(dt) {
 }
 
 function clampZoom(zoom) {
-    return Math.min(Math.max(zoom, 1), GLOBE_MAX_ZOOM);
+    return clamp(zoom, 1, GLOBE_MAX_ZOOM);
 }
 
 // Zoom by `factor` from where the zoom is heading
@@ -268,7 +268,7 @@ function angleBetween(from, to) {
 }
 
 function clampTilt(lat) {
-    return Math.min(Math.max(lat, -GLOBE_MAX_TILT), GLOBE_MAX_TILT);
+    return clamp(lat, -GLOBE_MAX_TILT, GLOBE_MAX_TILT);
 }
 
 // Drawing
@@ -476,7 +476,7 @@ function drawGlobePlane(project) {
     const { leg, progress } = replay.current;
     const t = leg.reverse ? 1 - progress : progress;
     // A point a little further along gives the heading
-    const ahead = Math.min(Math.max(t + (leg.reverse ? -0.01 : 0.01), 0), 1);
+    const ahead = clamp(t + (leg.reverse ? -0.01 : 0.01), 0, 1);
     const here = [0, 0, 0];
     const next = [0, 0, 0];
     if (!projectRoutePoint(project, leg.route, t, here)) return;

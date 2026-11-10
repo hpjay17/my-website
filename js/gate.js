@@ -1,53 +1,16 @@
 /* Entry gate for beyond.html: a boarding pass in the blue theme, a terminal login in the green theme.
    Plays the first time Beyond Work opens in a browser tab, then again only after the theme changes,
    whether that happens on this page or on the portfolio.
-   Add ?gate to the URL to see it again (beyond.html?gate). */
-
-// Blue theme: boarding pass
-const BOARDING_PASS = {
-    airline: "JAY AIR",
-    from: { code: "OFC", city: "Office" },
-    to: { code: "BYD", city: "Beyond Work" },
-    // Shown in a 3-column grid; "Date" is filled in with today's date automatically
-    fields: [
-        ["Passenger", "GUEST"],
-        ["Flight", "JW 017"],
-        ["Date", "TODAY"],
-        ["Gate", "B12"],
-        ["Seat", "27A"],
-        ["Boards", "NOW"],
-    ],
-    stub: "Seat 27A · Gate B12",
-    button: "Scan boarding pass",
-    buttonDone: "Boarding ✓",
-    hint: "Press Enter to board",
-};
-
-// Green theme: terminal login
-const TERMINAL = {
-    title: "guest@jaywang: ~",
-    // Each line: `text` appears at once, then `type` is typed out after it.
-    // Optional: speed (ms per typed letter), pause (ms before the line), highlight: true (green block).
-    // {time} becomes the current date and time.
-    lines: [
-        { text: "Last login: {time} on ttys001" },
-        { text: "jaywang.dev :: restricted area /beyond" },
-        { text: "" },
-        { text: "login: ", type: "guest" },
-        { text: "password: ", type: "********" },
-        { text: "Verifying credentials", type: "...", speed: 250 },
-        { text: "ACCESS GRANTED", highlight: true, pause: 500 },
-        { text: "Welcome, guest. Loading /beyond", type: " ...", speed: 120 },
-    ],
-    hint: "Press any key or click to skip",
-};
+   Add ?gate to the URL to see it again (beyond.html?gate). The wording is in data/beyond.js (gate). */
 
 (function () {
+    const PLANE_ICON =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>';
+    const BARCODE_WIDTHS = [1, 3, 1, 2, 1, 1, 3, 2, 1, 2, 3, 1, 1, 2, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 3, 2, 1];
     // Holds the theme the gate last played for in this tab
     const SEEN_KEY = "beyondGateTheme";
     const forced = new URLSearchParams(location.search).has("gate");
     const html = document.documentElement;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let returnFocus = null;
 
     function needsGate(theme) {
@@ -64,66 +27,39 @@ const TERMINAL = {
         // Green theme: replay the hero typing now that it can be seen
         runHackerTyping();
         if (returnFocus) returnFocus.focus({ preventScroll: true });
-        setTimeout(() => gate.remove(), reducedMotion ? 0 : 600);
+        setTimeout(() => gate.remove(), prefersReducedMotion() ? 0 : 600);
+    }
+
+    function createGate(kind, label) {
+        const gate = createEl("div", `gate gate--${kind}`);
+        gate.setAttribute("role", "dialog");
+        gate.setAttribute("aria-modal", "true");
+        gate.setAttribute("aria-label", label);
+        return gate;
+    }
+
+    // Phones have no Enter key to press
+    function gateHint(text) {
+        return window.matchMedia("(pointer: coarse)").matches ? text.hintTouch : text.hint;
     }
 
     /* Blue theme: boarding pass */
 
     function buildBoardingPass() {
-        const now = new Date();
-        const gate = createEl("div", "gate gate--pass");
-        gate.setAttribute("role", "dialog");
-        gate.setAttribute("aria-modal", "true");
-        gate.setAttribute("aria-label", "Boarding pass to Beyond Work");
-
-        const pass = createEl("div", "pass");
-        const main = createEl("div", "pass-main");
-
-        const header = createEl("div", "pass-header");
-        header.append(createEl("span", "pass-airline", BOARDING_PASS.airline), createEl("span", "pass-kind", "BOARDING PASS"));
-
-        const route = createEl("div", "pass-route");
-        const from = createEl("div", "pass-place");
-        from.append(createEl("span", "pass-code", BOARDING_PASS.from.code), createEl("span", "pass-city", BOARDING_PASS.from.city));
-        const to = createEl("div", "pass-place pass-place--to");
-        to.append(createEl("span", "pass-code", BOARDING_PASS.to.code), createEl("span", "pass-city", BOARDING_PASS.to.city));
-        const path = createEl("div", "pass-path");
-        path.innerHTML =
-            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>';
-        route.append(from, path, to);
-
-        const date = now.toLocaleDateString("en-US", { day: "2-digit", month: "short" }).toUpperCase();
-        const fields = createEl("div", "pass-fields");
-        BOARDING_PASS.fields.forEach(([label, value]) => {
-            const field = createEl("div", "pass-field");
-            field.append(createEl("span", "pass-label", label), createEl("span", "pass-value", label === "Date" ? date : value));
-            fields.appendChild(field);
-        });
-
-        main.append(header, route, fields);
-
-        // Stub: barcode and the button that "scans" it
-        const stub = createEl("div", "pass-stub");
-        const barcode = createEl("div", "pass-barcode");
-        const widths = [1, 3, 1, 2, 1, 1, 3, 2, 1, 2, 3, 1, 1, 2, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 3, 2, 1];
-        widths.forEach((w) => {
-            const bar = createEl("span", "pass-bar");
-            bar.style.flexGrow = w;
-            barcode.appendChild(bar);
-        });
-        barcode.appendChild(createEl("span", "pass-scan"));
-        const button = createEl("button", "pass-btn", BOARDING_PASS.button);
+        const text = beyondData.gate.boardingPass;
+        const gate = createGate("pass", "Boarding pass to Beyond Work");
+        const button = createEl("button", "pass-btn", text.button);
         button.type = "button";
-        stub.append(createEl("span", "pass-label", BOARDING_PASS.stub), barcode, button);
-
-        pass.append(main, stub);
-        gate.append(pass, createEl("p", "gate-hint", BOARDING_PASS.hint));
+        const pass = createEl("div", "pass");
+        pass.append(passMain(text), passStub(text, button));
+        gate.append(pass, createEl("p", "gate-hint", gateHint(text)));
 
         const board = () => {
             if (gate.classList.contains("is-scanning")) return;
             gate.classList.add("is-scanning");
-            button.textContent = BOARDING_PASS.buttonDone;
-            setTimeout(() => closeGate(gate, () => document.removeEventListener("keydown", onKey)), reducedMotion ? 300 : 900);
+            button.textContent = text.buttonDone;
+            const wait = prefersReducedMotion() ? 300 : 900;
+            setTimeout(() => closeGate(gate, () => document.removeEventListener("keydown", onKey)), wait);
         };
         const onKey = (e) => {
             if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
@@ -138,33 +74,60 @@ const TERMINAL = {
         button.focus({ preventScroll: true });
     }
 
+    // Airline, route and the grid of fields
+    function passMain(text) {
+        const header = createEl("div", "pass-header");
+        header.append(createEl("span", "pass-airline", text.airline), createEl("span", "pass-kind", "BOARDING PASS"));
+
+        const place = (className, { code, city }) => {
+            const el = createEl("div", className);
+            el.append(createEl("span", "pass-code", code), createEl("span", "pass-city", city));
+            return el;
+        };
+        const path = createEl("div", "pass-path");
+        path.innerHTML = PLANE_ICON;
+        const route = createEl("div", "pass-route");
+        route.append(place("pass-place", text.from), path, place("pass-place pass-place--to", text.to));
+
+        const today = new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short" }).toUpperCase();
+        const fields = createEl("div", "pass-fields");
+        text.fields.forEach(([label, value]) => {
+            const field = createEl("div", "pass-field");
+            field.append(createEl("span", "pass-label", label), createEl("span", "pass-value", label === "Date" ? today : value));
+            fields.appendChild(field);
+        });
+
+        const main = createEl("div", "pass-main");
+        main.append(header, route, fields);
+        return main;
+    }
+
+    // Tear-off stub: barcode and the button that "scans" it
+    function passStub(text, button) {
+        const barcode = createEl("div", "pass-barcode");
+        BARCODE_WIDTHS.forEach((width) => {
+            const bar = createEl("span", "pass-bar");
+            bar.style.flexGrow = width;
+            barcode.appendChild(bar);
+        });
+        barcode.appendChild(createEl("span", "pass-scan"));
+        const stub = createEl("div", "pass-stub");
+        stub.append(createEl("span", "pass-label", text.stub), barcode, button);
+        return stub;
+    }
+
     /* Green theme: terminal login */
 
     function buildTerminal() {
-        const now = new Date();
-        const gate = createEl("div", "gate gate--terminal");
-        gate.setAttribute("role", "dialog");
-        gate.setAttribute("aria-modal", "true");
-        gate.setAttribute("aria-label", "Terminal login to Beyond Work");
-
+        const text = beyondData.gate.terminal;
+        const gate = createGate("terminal", "Terminal login to Beyond Work");
         const term = createEl("div", "term");
-        const bar = createEl("div", "term-bar", TERMINAL.title);
         const body = createEl("pre", "term-body");
         body.setAttribute("aria-live", "polite");
-        term.append(bar, body);
-        gate.append(term, createEl("p", "gate-hint", TERMINAL.hint));
+        term.append(createEl("div", "term-bar", text.title), body);
+        gate.append(term, createEl("p", "gate-hint", gateHint(text)));
 
-        const stamp = now.toLocaleString("en-US", {
-            weekday: "short", month: "short", day: "numeric",
-            hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-        }).replace(/,/g, "");
-
-        const steps = TERMINAL.lines.map((line) => ({
-            ...line,
-            text: line.text.replace("{time}", stamp),
-            className: line.highlight ? "term-granted" : "",
-        }));
-
+        const steps = terminalSteps(text.lines);
         const timers = [];
         let finished = false;
         const later = (fn, ms) => timers.push(setTimeout(fn, ms));
@@ -172,13 +135,9 @@ const TERMINAL = {
 
         const printAll = () => {
             body.textContent = "";
-            steps.forEach((step) => {
-                const line = createEl("span", step.className, step.text + (step.type || ""));
-                body.append(line, "\n");
-            });
+            steps.forEach((step) => body.append(createEl("span", step.className, step.text + (step.type || "")), "\n"));
             body.appendChild(cursor);
         };
-
         const finish = () => {
             if (finished) return;
             finished = true;
@@ -201,15 +160,36 @@ const TERMINAL = {
         gate.tabIndex = -1;
         gate.focus({ preventScroll: true });
 
-        if (reducedMotion) {
+        if (prefersReducedMotion()) {
             printAll();
             later(() => closeGate(gate, removeSkip), 1500);
             return;
         }
-
-        // Play the steps one after another
-        let time = 300;
         body.appendChild(cursor);
+        const end = typeTerminalSteps(steps, body, cursor, later);
+        later(() => {
+            finished = true;
+            closeGate(gate, removeSkip);
+        }, end + 500);
+    }
+
+    function terminalSteps(lines) {
+        const stamp = new Date()
+            .toLocaleString("en-US", {
+                weekday: "short", month: "short", day: "numeric",
+                hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+            })
+            .replace(/,/g, "");
+        return lines.map((line) => ({
+            ...line,
+            text: line.text.replace("{time}", stamp),
+            className: line.highlight ? "term-granted" : "",
+        }));
+    }
+
+    // Schedule the lines one after another, typed parts letter by letter; returns when the last one ends (ms)
+    function typeTerminalSteps(steps, body, cursor, later) {
+        let time = 300;
         steps.forEach((step) => {
             const line = createEl("span", step.className);
             later(() => {
@@ -224,10 +204,7 @@ const TERMINAL = {
             time += step.type ? 250 : 0;
             later(() => body.insertBefore(document.createTextNode("\n"), cursor), time);
         });
-        later(() => {
-            finished = true;
-            closeGate(gate, removeSkip);
-        }, time + 500);
+        return time;
     }
 
     function playGate(theme) {

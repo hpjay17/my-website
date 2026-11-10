@@ -1,23 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1128">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2GV8NR992N"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-2GV8NR992N');
     </script>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Jay Wang | Portfolio</title>
     <meta name="description" content="Jay Wang, Finance, ISOM & Data Science student at Emory University's Goizueta Business School. Data analysis with SQL, Python, R, and Excel.">
     <meta name="author" content="Jay Wang">
 
     <!-- Link previews (LinkedIn, iMessage, Slack, etc.) -->
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Jay Wang">
     <meta property="og:title" content="Jay Wang | Portfolio">
     <meta property="og:description" content="Finance, ISOM & Data Science at Emory University. Career, projects, and skills.">
     <meta property="og:url" content="https://hpjay17.github.io/my-website/">
@@ -26,18 +27,23 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Jay Wang, Finance, ISOM & Data Science at Emory University">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jay Wang | Portfolio">
+    <meta name="twitter:description" content="Finance, ISOM & Data Science at Emory University. Career, projects, and skills.">
+    <meta name="twitter:image" content="https://hpjay17.github.io/my-website/images/preview.jpg">
 
+    <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-    <link rel="stylesheet" href="./css/styles.css?v=20261113">
-    <script defer src="./js/shared.js?v=20261113"></script>
-    <script defer src="./data/portfolio.js?v=20261112"></script>
-    <script defer src="./js/portfolio.js?v=20261112"></script>
+    <link rel="stylesheet" href="./css/shared.css?v=20261115">
+    <link rel="stylesheet" href="./css/portfolio.css?v=20261115">
+    <script defer src="./js/shared.js?v=20261115"></script>
+    <script defer src="./data/portfolio.js?v=20261115"></script>
+    <script defer src="./js/portfolio.js?v=20261115"></script>
 </head>
 <body>
-    <div class="page">
+    <div class="page" id="top">
         <main class="shell">
-            <header class="top-bar" id="top">
+            <header class="top-bar">
                 <button class="brand js-scroll" data-target="top" type="button">Jay Wang</button>
                 <nav class="top-nav" aria-label="Section navigation">
                     <button class="js-scroll" data-target="career" type="button">Career</button>
@@ -47,16 +53,16 @@
                     <button class="js-scroll" data-target="certifications" type="button">Certs</button>
                     <a class="nav-link-page" href="./beyond.html">Beyond Work</a>
                 </nav>
-                <div class="theme-switcher" aria-label="Theme switcher">
-                    <span class="theme-switcher-label">Theme</span>
-                    <button class="theme-btn active" data-set-theme="blue" type="button" title="Cyan"></button>
-                    <button class="theme-btn" data-set-theme="green" type="button" title="Neon Green"></button>
+                <div class="theme-switcher" role="group" aria-label="Theme">
+                    <span class="theme-switcher-label" aria-hidden="true">Theme</span>
+                    <button class="theme-btn active" data-set-theme="blue" type="button" title="Cyan" aria-label="Cyan theme" aria-pressed="true"></button>
+                    <button class="theme-btn" data-set-theme="green" type="button" title="Neon Green" aria-label="Neon green theme" aria-pressed="false"></button>
                 </div>
             </header>
 
             <section class="section hero is-visible" id="hero">
                 <div class="profile-ring">
-                    <img id="profile-image" class="profile-image" src="./images/profile.jpeg" alt="Jay Wang">
+                    <img id="profile-image" class="profile-image" src="./images/profile.jpeg" alt="Jay Wang" width="400" height="400">
                 </div>
                 <div class="hero-content">
                     <h1 id="profile-name">Jay Wang</h1>
@@ -77,7 +83,7 @@
                 </div>
                 <div class="career-layout">
                     <div id="career-list" class="career-list" role="tablist" aria-label="Career timeline"></div>
-                    <div id="career-detail" class="career-details" aria-live="polite"></div>
+                    <div id="career-detail" class="career-details" role="tabpanel" aria-live="polite"></div>
                 </div>
             </section>
 
@@ -87,7 +93,7 @@
                 </div>
                 <div class="career-layout">
                     <div id="org-list" class="career-list" role="tablist" aria-label="Organizations"></div>
-                    <div id="org-detail" class="career-details" aria-live="polite"></div>
+                    <div id="org-detail" class="career-details" role="tabpanel" aria-live="polite"></div>
                 </div>
             </section>
 

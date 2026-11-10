@@ -23,16 +23,21 @@ Portfolio and travel/aviation pages, built as a static site. Live at https://hpj
 ```
 index.html              Portfolio page
 beyond.html             Beyond Work page
-css/styles.css          Styles for both pages and both themes
+favicon.svg             Tab icon, with favicon-32.png as a fallback and apple-touch-icon.png for phones
+css/
+  shared.css            Theme colors, page shell, top bar and pieces both pages use
+  portfolio.css         Portfolio page
+  beyond.css            Beyond Work page, travel map and intro screen
 data/
   portfolio.js          Portfolio content
-  beyond.js             Beyond Work content: interests, aviation, trips, stops, routes, gallery
+  beyond.js             Beyond Work content: interests, aviation, trips, stops, routes, gallery, intro screen text
   world-dots.js         Generated land grid for the map (don't edit by hand)
 js/
-  shared.js             Theme switcher, scrolling, section fade-in, typing effect
+  shared.js             Element helpers, theme switcher, scrolling, section fade-in, typing effect
   portfolio.js          Renders the portfolio page
   beyond.js             Renders the Beyond Work page sections, gallery and lightbox
   travel-map.js         Flat travel map: routes, pins, stats, pan and zoom
+  map-controls.js       Zoom buttons and drag, flick and pinch handling for the map and globe
   replay.js             Flight replay
   globe.js              Globe view of the travel map
   gate.js               Intro screen on Beyond Work (add ?gate to the URL to see it again)

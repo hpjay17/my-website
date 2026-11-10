@@ -1,23 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1128">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2GV8NR992N"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-2GV8NR992N');
     </script>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Jay Wang | Beyond Work</title>
     <meta name="description" content="Beyond work: Jay Wang's interests, aviation, travel map, and photo gallery.">
     <meta name="author" content="Jay Wang">
 
     <!-- Link previews (LinkedIn, iMessage, Slack, etc.) -->
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Jay Wang">
     <meta property="og:title" content="Jay Wang | Beyond Work">
     <meta property="og:description" content="Aviation, travel, and photos from Japan, Iceland, Lisbon, and more.">
     <meta property="og:url" content="https://hpjay17.github.io/my-website/beyond.html">
@@ -26,24 +27,30 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Jay Wang in Iceland">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jay Wang | Beyond Work">
+    <meta name="twitter:description" content="Aviation, travel, and photos from Japan, Iceland, Lisbon, and more.">
+    <meta name="twitter:image" content="https://hpjay17.github.io/my-website/images/beyond/preview.jpg">
 
+    <link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-    <link rel="stylesheet" href="./css/styles.css?v=20261113">
+    <link rel="stylesheet" href="./css/shared.css?v=20261115">
+    <link rel="stylesheet" href="./css/beyond.css?v=20261115">
     <!-- Not deferred: it hides the page before the first paint so the intro screen doesn't flash -->
-    <script src="./js/gate.js?v=20261112"></script>
-    <script defer src="./js/shared.js?v=20261113"></script>
+    <script src="./js/gate.js?v=20261115"></script>
+    <script defer src="./js/shared.js?v=20261115"></script>
     <script defer src="./data/world-dots.js?v=20261107"></script>
-    <script defer src="./data/beyond.js?v=20261112"></script>
-    <script defer src="./js/travel-map.js?v=20261112"></script>
-    <script defer src="./js/replay.js?v=20261112"></script>
-    <script defer src="./js/globe.js?v=20261112"></script>
-    <script defer src="./js/beyond.js?v=20261112"></script>
+    <script defer src="./data/beyond.js?v=20261115"></script>
+    <script defer src="./js/map-controls.js?v=20261115"></script>
+    <script defer src="./js/travel-map.js?v=20261115"></script>
+    <script defer src="./js/replay.js?v=20261115"></script>
+    <script defer src="./js/globe.js?v=20261115"></script>
+    <script defer src="./js/beyond.js?v=20261115"></script>
 </head>
 <body>
-    <div class="page">
+    <div class="page" id="top">
         <main class="shell">
-            <header class="top-bar" id="top">
+            <header class="top-bar">
                 <a class="brand" href="./index.html">Jay Wang</a>
                 <nav class="top-nav" aria-label="Section navigation">
                     <a class="nav-link-page" href="./index.html">Portfolio</a>
@@ -52,10 +59,10 @@
                     <button class="js-scroll" data-target="travel" type="button">Travel</button>
                     <button class="js-scroll" data-target="gallery" type="button">Gallery</button>
                 </nav>
-                <div class="theme-switcher" aria-label="Theme switcher">
-                    <span class="theme-switcher-label">Theme</span>
-                    <button class="theme-btn active" data-set-theme="blue" type="button" title="Cyan"></button>
-                    <button class="theme-btn" data-set-theme="green" type="button" title="Neon Green"></button>
+                <div class="theme-switcher" role="group" aria-label="Theme">
+                    <span class="theme-switcher-label" aria-hidden="true">Theme</span>
+                    <button class="theme-btn active" data-set-theme="blue" type="button" title="Cyan" aria-label="Cyan theme" aria-pressed="true"></button>
+                    <button class="theme-btn" data-set-theme="green" type="button" title="Neon Green" aria-label="Neon green theme" aria-pressed="false"></button>
                 </div>
             </header>
 

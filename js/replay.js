@@ -93,9 +93,9 @@ function buildReplayTimeline() {
 
 // Play button, scrubber and date counter
 function buildReplayControls() {
-    const button = createEl("button", "gallery-filter-btn travel-map-replay-btn");
-    button.type = "button";
-    button.addEventListener("click", () => (replay.playing ? pauseReplay() : playReplay()));
+    const button = createButton("gallery-filter-btn travel-map-replay-btn", "", () =>
+        replay.playing ? pauseReplay() : playReplay()
+    );
 
     const scrubber = createEl("input", "travel-map-scrubber");
     scrubber.type = "range";
@@ -224,7 +224,7 @@ function renderReplay(time) {
 
     travelMap.routes.forEach((route) => {
         const first = route.firstLeg;
-        setRouteDrawn(route, first ? Math.min(Math.max((time - first.start) / first.duration, 0), 1) : 1);
+        setRouteDrawn(route, first ? clamp((time - first.start) / first.duration, 0, 1) : 1);
         route.el.classList.toggle("is-highlighted", current !== null && current.leg.route === route);
     });
     travelMap.pins.forEach(({ pin, item }) => pin.classList.toggle("is-pending", !seen.has(item.place)));
@@ -262,9 +262,7 @@ function moveReplayPlane(current) {
     }
     const { leg, progress } = current;
     const point = pointOnRoute(leg.route, leg.reverse ? 1 - progress : progress);
-    const angle = point.angle + (leg.reverse ? 180 : 0);
-    plane.setAttribute("transform", `translate(${wrapToView(point.x)} ${point.y}) rotate(${angle}) scale(${travelMap.zoom})`);
-    plane.style.opacity = planeOpacity(progress);
+    placePlane(plane, point, leg.reverse ? 180 : 0, progress);
 }
 
 // Light up the latest trip's pin and card

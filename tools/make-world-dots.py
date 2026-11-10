@@ -8,7 +8,7 @@ Usage (from the project folder; needs Pillow: pip3 install pillow):
     python3 tools/make-world-dots.py --step 0.5 # finer dots, bigger file
 
 After rebuilding, bump the ?v= number on data/world-dots.js in beyond.html so browsers reload it.
-If you change --step a lot, also adjust the .map-land stroke-width in css/styles.css
+If you change --step a lot, also adjust the .map-land stroke-width in css/beyond.css
 (dot diameter is roughly half the spacing: 0.75 degree dots use 1.3).
 """
 

@@ -4,7 +4,7 @@ const beyondData = {
         {
             name: "Duolingo",
             icon: "./images/beyond/duolingo.jpeg",
-            note: "Currently learning Japanese w/ 830 days streak",
+            note: "Currently learning Japanese w/ 830-day streak",
             link: "https://www.duolingo.com/",
         },
         {
@@ -268,4 +268,45 @@ const beyondData = {
             category: "travel",
         },
     ],
+
+    // Intro screen (js/gate.js): a boarding pass in the blue theme, a terminal login in the green one
+    gate: {
+        boardingPass: {
+            airline: "JAY AIR",
+            from: { code: "OFC", city: "Office" },
+            to: { code: "BYD", city: "Beyond Work" },
+            // Shown in a 3-column grid; "Date" is filled in with today's date
+            fields: [
+                ["Passenger", "GUEST"],
+                ["Flight", "JW 017"],
+                ["Date", "TODAY"],
+                ["Gate", "B12"],
+                ["Seat", "27A"],
+                ["Boards", "NOW"],
+            ],
+            stub: "Seat 27A · Gate B12",
+            button: "Scan boarding pass",
+            buttonDone: "Boarding ✓",
+            hint: "Press Enter to board",
+            hintTouch: "Tap the button to board",
+        },
+        terminal: {
+            title: "guest@jaywang: ~",
+            // Each line: `text` appears at once, then `type` is typed out after it.
+            // Optional: speed (ms per typed letter), pause (ms before the line), highlight: true (green block).
+            // {time} becomes the current date and time.
+            lines: [
+                { text: "Last login: {time} on ttys001" },
+                { text: "jaywang.dev :: restricted area /beyond" },
+                { text: "" },
+                { text: "login: ", type: "guest" },
+                { text: "password: ", type: "********" },
+                { text: "Verifying credentials", type: "...", speed: 250 },
+                { text: "ACCESS GRANTED", highlight: true, pause: 500 },
+                { text: "Welcome, guest. Loading /beyond", type: " ...", speed: 120 },
+            ],
+            hint: "Press any key or click to skip",
+            hintTouch: "Tap to skip",
+        },
+    },
 };

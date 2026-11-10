@@ -5,8 +5,9 @@
 
 // Degrees of space kept around the outermost pins in the starting view
 const MAP_PADDING = { lat: 10, lon: 18 };
-// Widest the map gets (width / height) before it adds space above and below
+// Widest the map gets (width / height) before it adds space above and below; phones get a taller map
 const MAP_MAX_ASPECT = 3;
+const MAP_MAX_ASPECT_PHONE = 2;
 // Furthest north and south the map can be dragged. The dot grid covers both poles for the globe,
 // but on a flat map the far north is stretched too wide to be worth showing.
 const MAP_NORTH_EDGE = 80;
@@ -24,7 +25,7 @@ const MAP_ZOOM_MS = 600;
 const PLANE_FLIGHT_MS = 1800;
 
 const SVG_NS = "http://www.w3.org/2000/svg";
-// Map units per degree. Pin and label sizes here and in css/styles.css are in these units.
+// Map units per degree. Pin and label sizes here and in css/beyond.css are in these units.
 const MAP_SCALE = 10 / 3;
 const WORLD_WIDTH = 360 * MAP_SCALE;
 const EARTH_RADIUS_MILES = 3959;
@@ -142,7 +143,7 @@ function distanceMiles([lat1, lon1], [lat2, lon2]) {
 // along it stays at the tip of the line. (The points are evenly spaced over the globe, and the flat
 // map stretches the far north, so going point by point would put the plane ahead of or behind the line.)
 function pointOnRoute({ points, lengths }, t) {
-    const target = Math.min(Math.max(t, 0), 1) * lengths[lengths.length - 1];
+    const target = clamp(t, 0, 1) * lengths[lengths.length - 1];
     // Binary search for the segment holding that distance
     let i = 0;
     let hi = lengths.length - 1;
@@ -171,7 +172,7 @@ function toVector([lat, lon]) {
 
 function toLatLon([x, y, z]) {
     const deg = 180 / Math.PI;
-    return [Math.asin(Math.min(Math.max(z, -1), 1)) * deg, Math.atan2(y, x) * deg];
+    return [Math.asin(clamp(z, -1, 1)) * deg, Math.atan2(y, x) * deg];
 }
 
 // Points along the great circle from a to b (the shortest path over the globe, which long flights
@@ -179,7 +180,7 @@ function toLatLon([x, y, z]) {
 function greatCircle(a, b) {
     const va = toVector(a);
     const vb = toVector(b);
-    const dot = Math.min(Math.max(va[0] * vb[0] + va[1] * vb[1] + va[2] * vb[2], -1), 1);
+    const dot = clamp(va[0] * vb[0] + va[1] * vb[1] + va[2] * vb[2], -1, 1);
     const angle = Math.acos(dot);
     const steps = Math.max(8, Math.ceil((angle * 180) / Math.PI));
     const sin = Math.sin(angle);
@@ -213,10 +214,14 @@ function buildHomeView(coords) {
     const [x2, y2] = projectToMap([Math.min(...lats) - MAP_PADDING.lat, Math.min(Math.max(...lons) + MAP_PADDING.lon, 180)]);
     let w = x2 - x1;
     let h = y2 - y1;
-    const aspect = Math.min(w / h, MAP_MAX_ASPECT);
+    const maxAspect = window.matchMedia("(max-width: 640px)").matches ? MAP_MAX_ASPECT_PHONE : MAP_MAX_ASPECT;
+    const aspect = Math.min(w / h, maxAspect);
     if (w / h < aspect) w = h * aspect;
     else h = w / aspect;
-    const top = Math.max((y1 + y2) / 2 - h / 2, projectToMap([MAP_NORTH_EDGE, 0])[1]);
+    // No taller than the map itself, from its north edge to its south
+    const northY = projectToMap([MAP_NORTH_EDGE, 0])[1];
+    h = Math.min(h, projectToMap([MAP_SOUTH_EDGE, 0])[1] - northY);
+    const top = Math.max((y1 + y2) / 2 - h / 2, northY);
     return [(x1 + x2) / 2 - w / 2, top, w, h];
 }
 
@@ -266,20 +271,8 @@ function buildRoutes(places) {
         drawn.add(key);
 
         const { angle, vectors } = greatCircle(coordsByPlace.get(from), coordsByPlace.get(to));
-        // Keep each point within half a world of the last, so a flight over the Pacific runs
-        // straight on past the map's edge instead of jumping back across it
-        let lastX = null;
-        const points = vectors.map((v) => {
-            const [x, y] = projectToMap(toLatLon(v));
-            lastX = lastX === null ? x : x + Math.round((lastX - x) / WORLD_WIDTH) * WORLD_WIDTH;
-            return [lastX, y];
-        });
-        const lengths = [0];
-        for (let i = 1; i < points.length; i++) {
-            lengths.push(lengths[i - 1] + Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]));
-        }
+        const { points, lengths } = flatRouteLine(vectors);
         const line = (dx) => "M" + points.map(([x, y]) => `${(x + dx).toFixed(2)} ${y.toFixed(2)}`).join("L");
-
         const el = svgEl("path", {
             d: ROUTE_COPIES.map((k) => line(k * WORLD_WIDTH)).join(""),
             class: "map-web",
@@ -290,6 +283,23 @@ function buildRoutes(places) {
         routes.push({ el, key, from, to, points, lengths, vectors, angle });
     });
     return routes;
+}
+
+// A great circle's points on the flat map, and the distance along the line to each one
+function flatRouteLine(vectors) {
+    // Keep each point within half a world of the last, so a flight over the Pacific runs
+    // straight on past the map's edge instead of jumping back across it
+    let lastX = null;
+    const points = vectors.map((v) => {
+        const [x, y] = projectToMap(toLatLon(v));
+        lastX = lastX === null ? x : x + Math.round((lastX - x) / WORLD_WIDTH) * WORLD_WIDTH;
+        return [lastX, y];
+    });
+    const lengths = [0];
+    for (let i = 1; i < points.length; i++) {
+        lengths.push(lengths[i - 1] + Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]));
+    }
+    return { points, lengths };
 }
 
 function routeKey(from, to) {
@@ -338,17 +348,10 @@ function createPin(item, kind, index) {
 }
 
 function buildMapHeader() {
+    travelMap.mapButton = createButton("gallery-filter-btn active", "Map", showFlatMap);
+    travelMap.globeButton = createButton("gallery-filter-btn", "Globe", showGlobe);
     const controls = createEl("div", "travel-map-views");
-    const addButton = (text, onClick) => {
-        const btn = createEl("button", "gallery-filter-btn", text);
-        btn.type = "button";
-        btn.addEventListener("click", onClick);
-        controls.appendChild(btn);
-        return btn;
-    };
-    travelMap.mapButton = addButton("Map", showFlatMap);
-    travelMap.mapButton.classList.add("active");
-    travelMap.globeButton = addButton("Globe", showGlobe);
+    controls.append(travelMap.mapButton, travelMap.globeButton);
     travelMap.stats = createEl("p", "travel-map-stats", travelStatsText());
 
     const header = createEl("div", "travel-map-header");
@@ -450,14 +453,16 @@ function flyPlanes(place) {
     const start = performance.now();
     const step = (now) => {
         const t = ((now - start) % PLANE_FLIGHT_MS) / PLANE_FLIGHT_MS;
-        travelMap.planes.forEach(({ el, route }) => {
-            const { x, y, angle } = pointOnRoute(route, t);
-            el.setAttribute("transform", `translate(${wrapToView(x)} ${y}) rotate(${angle}) scale(${travelMap.zoom})`);
-            el.style.opacity = planeOpacity(t);
-        });
+        travelMap.planes.forEach(({ el, route }) => placePlane(el, pointOnRoute(route, t), 0, t));
         travelMap.planeFrame = requestAnimationFrame(step);
     };
     travelMap.planeFrame = requestAnimationFrame(step);
+}
+
+// Put a plane at a point from pointOnRoute, turned a further `turn` degrees, `progress` (0 to 1) into its flight
+function placePlane(el, { x, y, angle }, turn, progress) {
+    el.setAttribute("transform", `translate(${wrapToView(x)} ${y}) rotate(${angle + turn}) scale(${travelMap.zoom})`);
+    el.style.opacity = planeOpacity(progress);
 }
 
 // Planes fade in at takeoff and out at landing; t runs from 0 to 1 over the flight
@@ -485,7 +490,7 @@ function showFlatMap() {
 // side and pins hop to whichever copy is in view, so panning never reaches an edge.
 function setCamera([x, y, w, h]) {
     const { svg, home } = travelMap;
-    w = Math.min(Math.max(w, home[2] / MAP_MAX_ZOOM), home[2]);
+    w = clamp(w, home[2] / MAP_MAX_ZOOM, home[2]);
     h = (w * home[3]) / home[2];
     const top = projectToMap([MAP_NORTH_EDGE, 0])[1];
     const bottom = projectToMap([MAP_SOUTH_EDGE, 0])[1];
@@ -568,7 +573,7 @@ function glideCamera(to, duration = MAP_ZOOM_MS) {
 function zoomCamera(factor, fx, fy, glide = false, from = travelMap.glideTarget || travelMap.camera) {
     const [x, y, w, h] = from;
     const { home } = travelMap;
-    const nextW = Math.min(Math.max(w / factor, home[2] / MAP_MAX_ZOOM), home[2]);
+    const nextW = clamp(w / factor, home[2] / MAP_MAX_ZOOM, home[2]);
     if (Math.abs(nextW - w) < 1e-6) return;
     const nextH = (nextW * h) / w;
     const next = [x + (w - nextW) * fx, y + (h - nextH) * fy, nextW, nextH];
@@ -653,130 +658,6 @@ function wireMapMoving(svg) {
         const [x, y, w, h] = travelMap.glideTarget || travelMap.camera;
         glideCamera([x + move[0] * w * 0.25, y + move[1] * h * 0.25, w, h], MAP_ZOOM_MS / 2);
     });
-}
-
-// Controls shared by the flat map and the globe (js/globe.js)
-
-// + and − buttons for the map's corner; onZoom gets the factor to zoom by
-function buildZoomButtons(step, onZoom) {
-    const bar = createEl("div", "map-zoom");
-    const add = (label, text, factor) => {
-        const btn = createEl("button", "map-zoom-btn", text);
-        btn.type = "button";
-        btn.setAttribute("aria-label", label);
-        btn.addEventListener("click", () => onZoom(factor));
-        bar.appendChild(btn);
-        return btn;
-    };
-    return { bar, in: add("Zoom in", "+", step), out: add("Zoom out", "−", 1 / step) };
-}
-
-// Scrolling up zooms in. Trackpad pinches arrive as wheel events with ctrlKey and much smaller deltas.
-function wheelZoomFactor(e) {
-    const lines = e.deltaMode === 1 ? 16 : 1;
-    return Math.exp(-e.deltaY * lines * (e.ctrlKey ? 0.01 : 0.002));
-}
-
-// + (or =, its unshifted key) zooms in by `step`, - zooms out; any other key gives 0
-function keyZoomFactor(key, step) {
-    if (key === "+" || key === "=") return step;
-    if (key === "-") return 1 / step;
-    return 0;
-}
-
-// Drag, flick and pinch on `target`. A press only becomes a drag once it moves a few pixels, so a plain
-// click still reaches what's under it. Callbacks:
-//   onPress()                   a pointer went down
-//   onDragStart()               a drag began, or a pinch ended with one finger still down
-//   onDrag(dx, dy)              pixels moved since onDragStart
-//   onRelease({ velocity, click })  the press ended. velocity is [x, y] pixels a second after a drag;
-//                               click is the pointer event if it never moved. Both are null if the
-//                               browser took the touch over to scroll the page.
-//   onPinchStart(), onPinch(factor, fx, fy)  two fingers: the zoom factor since onPinchStart, and the point
-//                               between the fingers when it started, as fractions across the target
-function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onPinchStart, onPinch }) {
-    const pointers = new Map();
-    let drag = null;
-    let pinch = null;
-
-    const startDrag = (id, { x, y }, moved) => {
-        drag = { id, x, y, moved, samples: [{ time: performance.now(), x, y }] };
-        if (moved) onDragStart();
-    };
-    const fingers = () => {
-        const [a, b] = [...pointers.values()];
-        const box = target.getBoundingClientRect();
-        return {
-            spread: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)),
-            fx: ((a.x + b.x) / 2 - box.left) / box.width,
-            fy: ((a.y + b.y) / 2 - box.top) / box.height,
-        };
-    };
-
-    target.addEventListener("pointerdown", (e) => {
-        if (e.button !== 0) return;
-        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-        onPress();
-        if (pointers.size === 2) {
-            drag = null;
-            target.classList.remove("is-dragging");
-            pinch = fingers();
-            onPinchStart();
-        } else if (pointers.size === 1) {
-            startDrag(e.pointerId, pointers.get(e.pointerId), false);
-        }
-    });
-
-    target.addEventListener("pointermove", (e) => {
-        if (!pointers.has(e.pointerId)) return;
-        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-        if (pinch) {
-            if (pointers.size === 2) onPinch(fingers().spread / pinch.spread, pinch.fx, pinch.fy);
-            return;
-        }
-        if (!drag || drag.id !== e.pointerId) return;
-        const dx = e.clientX - drag.x;
-        const dy = e.clientY - drag.y;
-        if (!drag.moved) {
-            if (Math.abs(dx) + Math.abs(dy) <= 4) return;
-            drag.moved = true;
-            target.setPointerCapture(e.pointerId);
-            target.classList.add("is-dragging");
-            onDragStart();
-        }
-        onDrag(dx, dy);
-        // The last tenth of a second of movement gives the flick speed
-        const now = performance.now();
-        drag.samples.push({ time: now, x: e.clientX, y: e.clientY });
-        while (drag.samples.length > 2 && now - drag.samples[0].time > 100) drag.samples.shift();
-    });
-
-    const release = (e, cancelled) => {
-        if (!pointers.delete(e.pointerId)) return;
-        if (pinch) {
-            if (pointers.size < 2) pinch = null;
-            // Carry on dragging from where the remaining finger is, without a jump
-            if (pointers.size === 1) {
-                const [[id, point]] = pointers.entries();
-                startDrag(id, point, true);
-            }
-            return;
-        }
-        if (!drag || drag.id !== e.pointerId) return;
-        target.classList.remove("is-dragging");
-        const { moved, samples } = drag;
-        drag = null;
-        const first = samples[0];
-        const last = samples[samples.length - 1];
-        const seconds = (last.time - first.time) / 1000;
-        const flicked = moved && !cancelled && seconds > 0;
-        onRelease({
-            velocity: flicked ? [(last.x - first.x) / seconds, (last.y - first.y) / seconds] : null,
-            click: moved || cancelled ? null : e,
-        });
-    };
-    target.addEventListener("pointerup", (e) => release(e, false));
-    target.addEventListener("pointercancel", (e) => release(e, true));
 }
 
 // From a trip card's "View on map": scroll up, glide to the pin and zoom in, then show its tooltip

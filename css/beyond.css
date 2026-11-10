@@ -1,0 +1,1245 @@
+/* Beyond Work page (beyond.html): interests, aviation, travel map, trip cards, gallery, lightbox and the entry gate */
+
+.beyond-hero {
+    text-align: center;
+    padding: 40px 22px;
+}
+
+.beyond-hero h1 {
+    margin-bottom: 8px;
+}
+
+.beyond-hero .hero-summary {
+    margin: 0 auto;
+}
+
+.empty-message {
+    color: var(--text-muted);
+    font-size: var(--font-md);
+    font-style: italic;
+}
+
+/* Photos open the lightbox, so their frames are buttons; this strips the button look */
+.aviation-photo-wrap,
+.travel-image-wrap,
+.gallery-cell {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+/* Inside the frame, where the card's clipped edge can't cut the ring off */
+.aviation-photo-wrap:focus-visible,
+.travel-image-wrap:focus-visible,
+.gallery-cell:focus-visible {
+    outline-offset: -2px;
+}
+
+/* Photos fill their frame and zoom a little on hover */
+.aviation-photo-wrap img,
+.travel-image-wrap img,
+.gallery-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--fade-slow);
+}
+
+/* Interests Grid */
+.interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.interest-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    transition: all var(--fade);
+}
+
+.interest-card:hover {
+    border-color: var(--line-hover);
+    box-shadow: 0 0 16px var(--glow-subtle);
+}
+
+.interest-card--no-icon {
+    justify-content: center;
+}
+
+.interest-icon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.interest-name {
+    margin: 0;
+    font-size: var(--font-base);
+    font-weight: 600;
+}
+
+.interest-note {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-md);
+    line-height: 1.5;
+}
+
+.interest-link {
+    color: var(--accent-a);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.interest-link:hover {
+    text-decoration: underline;
+}
+
+/* Aviation Section: text on the left, photos on the right (stacked below 860px) */
+.aviation-content {
+    display: grid;
+    gap: 24px;
+}
+
+.aviation-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 860px) {
+    .aviation-content {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .aviation-content .aviation-photos {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Logbook stat tiles */
+.aviation-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.aviation-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 110px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--pill-bg);
+}
+
+.aviation-stat-value {
+    color: var(--accent-a);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.aviation-stat-label {
+    color: var(--text-muted);
+    font-size: var(--font-xs);
+}
+
+.aviation-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.aviation-badge {
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid var(--accent-a);
+    border-radius: var(--radius-pill);
+    padding: 4px 12px;
+    color: var(--accent-a);
+    background: var(--pill-bg);
+    font-size: var(--font-xs);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.aviation-intro h3 {
+    margin: 0;
+    font-size: var(--font-xl);
+}
+
+.aviation-summary {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-md);
+    line-height: 1.6;
+    max-width: 65ch;
+}
+
+.aviation-subsection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.aviation-subsection h4 {
+    margin: 0;
+    font-size: var(--font-base);
+    color: var(--text-soft);
+    font-weight: 600;
+}
+
+/* Aviation timeline */
+.aviation-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-left: 16px;
+    border-left: 2px solid var(--line);
+}
+
+.timeline-entry {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 10px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -22px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-round);
+    background: var(--accent-a);
+    box-shadow: 0 0 6px var(--glow-a);
+}
+
+.timeline-label {
+    font-weight: 600;
+    font-size: var(--font-md);
+    color: var(--text-main);
+}
+
+.timeline-date {
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+}
+
+.timeline-desc {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+    line-height: 1.5;
+}
+
+/* Aviation photos */
+.aviation-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.aviation-photo-wrap {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    aspect-ratio: 4 / 3;
+    cursor: zoom-in;
+}
+
+.aviation-photo-wrap:hover img {
+    transform: scale(1.05);
+}
+
+/* Travel Grid */
+.travel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+.travel-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-card);
+    transition: all var(--fade);
+}
+
+.travel-card:hover {
+    border-color: var(--line-hover);
+    box-shadow: 0 4px 20px var(--glow-subtle);
+}
+
+.travel-image-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+.travel-card:hover .travel-image-wrap img {
+    transform: scale(1.05);
+}
+
+.travel-info {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.travel-info h3 {
+    margin: 0;
+    font-size: var(--font-base);
+    font-weight: 600;
+}
+
+.travel-date {
+    font-size: var(--font-xs);
+    color: var(--accent-a);
+    font-weight: 600;
+}
+
+.travel-info p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+    line-height: 1.5;
+}
+
+/* Cards without a photo stay as tall as their text instead of stretching to the row */
+.travel-card--no-image {
+    align-self: start;
+}
+
+/* Travel map */
+.travel-map {
+    position: relative;
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+}
+
+.travel-map-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-bottom: 10px;
+}
+
+.travel-map-views {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.travel-map-stats {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* The flat map and its zoom buttons */
+.travel-map-flat {
+    position: relative;
+}
+
+/* On phones, vertical swipes still scroll the page; sideways ones pan the map */
+.travel-map-svg {
+    --map-zoom: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    outline: none;
+}
+
+.travel-map-svg.is-dragging {
+    cursor: grabbing;
+}
+
+.travel-map-svg:focus-visible {
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 0 2px var(--accent-a);
+}
+
+/* --map-dot (js/travel-map.js) grows the dots more slowly than the zoom, so zoomed-in land stays airy */
+.map-land {
+    fill: none;
+    stroke: var(--text-muted);
+    stroke-width: calc(1.3px * var(--map-dot, 1));
+    stroke-linecap: round;
+    opacity: 0.35;
+}
+
+.map-web {
+    fill: none;
+    stroke: var(--accent-a);
+    stroke-width: calc(0.8px * var(--map-zoom));
+    opacity: 0.5;
+    pointer-events: none;
+    /* Hidden until the map scrolls into view. Each path holds four copies of its line
+       (ROUTE_COPIES in js/travel-map.js), so the dash pattern repeats every quarter. */
+    stroke-dasharray: 0 0.25;
+}
+
+/* Only drawing in is animated, so leaving view clears the lines at once */
+.travel-map-svg.is-drawn .map-web {
+    stroke-dasharray: 0.25 0;
+    transition:
+        stroke-dasharray 0.4s ease-out var(--route-delay, 0s),
+        opacity var(--fade),
+        stroke-width var(--fade);
+}
+
+/* Hovering a pin brightens its routes and fades the others */
+.travel-map-svg.is-focusing .map-web {
+    opacity: 0.12;
+}
+
+/* js/replay.js sets stroke-dasharray every frame. With the draw-in transition left on, each change would
+   restart its delay and the lines would trail behind the plane. */
+.travel-map-svg.is-replaying .map-web {
+    transition: opacity var(--fade), stroke-width var(--fade);
+}
+
+/* A hovered pin's routes, and the line being flown in the replay */
+.travel-map-svg.is-focusing .map-web.is-highlighted,
+.travel-map-svg.is-replaying .map-web.is-highlighted {
+    opacity: 1;
+    stroke-width: calc(1.4px * var(--map-zoom));
+}
+
+/* Globe view (js/globe.js): the canvas takes the flat map's place */
+.travel-map-globe-wrap {
+    position: relative;
+    display: none;
+}
+
+.travel-map-globe {
+    display: block;
+    width: 100%;
+    height: min(460px, 80vw);
+    cursor: grab;
+    touch-action: pan-y;
+    outline: none;
+}
+
+.travel-map-globe.is-over-pin {
+    cursor: pointer;
+}
+
+.travel-map-globe.is-dragging {
+    cursor: grabbing;
+}
+
+.travel-map-globe:focus-visible {
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 0 2px var(--accent-a);
+}
+
+.travel-map.is-globe .travel-map-flat {
+    display: none;
+}
+
+.travel-map.is-globe .travel-map-globe-wrap {
+    display: block;
+}
+
+/* Zoom buttons in the bottom-right corner of the flat map and the globe */
+.map-zoom {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.map-zoom-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--line-hover);
+    border-radius: var(--radius-round);
+    background: var(--bg-panel);
+    color: var(--accent-a);
+    font: inherit;
+    font-size: var(--font-lg);
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color var(--fade), box-shadow var(--fade), opacity var(--fade);
+}
+
+.map-zoom-btn:hover:not(:disabled) {
+    border-color: var(--accent-a);
+    box-shadow: 0 0 8px var(--glow-a);
+}
+
+.map-zoom-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.map-pin {
+    cursor: pointer;
+    outline: none;
+    transition: opacity var(--fade-slow);
+}
+
+/* During the replay, hovering is off and places not reached yet are hidden */
+.travel-map-svg.is-replaying .map-pin {
+    pointer-events: none;
+}
+
+.map-pin.is-pending {
+    opacity: 0;
+}
+
+/* Counter-scales the pin so it stays the same size when the map zooms in */
+.map-pin-body {
+    transform: scale(var(--map-zoom));
+    animation-delay: inherit;
+}
+
+.map-pin-dot {
+    fill: var(--accent-a);
+    stroke: var(--bg-base);
+    stroke-width: 1;
+    filter: drop-shadow(0 0 3px var(--accent-a));
+    transition: transform var(--fade);
+}
+
+.map-pin--home .map-pin-dot {
+    fill: var(--accent-b);
+    filter: drop-shadow(0 0 3px var(--accent-b));
+}
+
+/* Map-only stops: smaller hollow dots, not clickable */
+.map-pin--stop {
+    cursor: default;
+}
+
+.map-pin--stop .map-pin-dot {
+    fill: var(--bg-card);
+    stroke: var(--accent-a);
+    stroke-width: 1.2;
+    filter: none;
+}
+
+/* City names, shown only in zoomed-in views. Sizes are in map units (about 1.2px each at full width). */
+.map-pin-label {
+    font-size: 9px;
+    font-weight: 600;
+    fill: var(--text-main);
+    stroke: var(--bg-card);
+    stroke-width: 2.5px;
+    paint-order: stroke;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--fade-slow);
+}
+
+.travel-map-svg.is-zoomed .map-pin-label {
+    opacity: 0.9;
+}
+
+/* Plane that flies along a pin's routes on hover */
+.map-plane {
+    fill: var(--text-main);
+    filter: drop-shadow(0 0 2px var(--accent-a));
+    pointer-events: none;
+}
+
+.map-pin:hover .map-pin-dot,
+.map-pin:focus-visible .map-pin-dot,
+.map-pin.is-active .map-pin-dot {
+    transform: scale(1.5);
+}
+
+.map-pin:focus-visible .map-pin-dot {
+    stroke: var(--text-main);
+}
+
+.map-pin-pulse {
+    fill: none;
+    stroke: var(--accent-a);
+    stroke-width: 1;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: map-pulse 2.4s ease-out infinite;
+    animation-delay: inherit;
+}
+
+.map-pin.is-active .map-pin-pulse {
+    stroke-width: 1.6;
+}
+
+@keyframes map-pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(3.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-pin-pulse {
+        opacity: 0;
+    }
+
+    .map-web {
+        stroke-dasharray: 0.25 0;
+    }
+}
+
+.map-tooltip {
+    position: absolute;
+    transform: translate(-50%, calc(-100% - 10px));
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg-panel);
+    color: var(--text-main);
+    font-size: var(--font-md);
+    white-space: nowrap;
+    box-shadow: 0 0 16px var(--glow-a);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.map-tooltip.is-visible {
+    opacity: 1;
+}
+
+.map-tooltip span {
+    color: var(--text-muted);
+    font-size: var(--font-xs);
+}
+
+.map-tooltip-photo {
+    display: block;
+    width: 160px;
+    height: 100px;
+    margin-bottom: 4px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+}
+
+/* Replay controls under the map: play button, timeline, date */
+.travel-map-replay {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.travel-map-replay[hidden] {
+    display: none;
+}
+
+.travel-map-replay-btn {
+    flex-shrink: 0;
+    min-width: 6.5em;
+}
+
+/* A thin line with a small round handle; the track and handle need separate rules for each browser */
+.travel-map-scrubber {
+    flex: 1;
+    min-width: 0;
+    height: 14px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.travel-map-scrubber::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 1px;
+    background: var(--line-hover);
+}
+
+.travel-map-scrubber::-moz-range-track {
+    height: 2px;
+    border-radius: 1px;
+    background: var(--line-hover);
+}
+
+.travel-map-scrubber::-webkit-slider-thumb {
+    width: 10px;
+    height: 10px;
+    margin-top: -4px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-a);
+    box-shadow: 0 0 6px var(--glow-a-strong);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.travel-map-scrubber::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-a);
+    box-shadow: 0 0 6px var(--glow-a-strong);
+}
+
+.travel-map-scrubber:focus {
+    outline: none;
+}
+
+.travel-map-scrubber:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--accent-a);
+    outline-offset: 2px;
+}
+
+.travel-map-scrubber:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--accent-a);
+    outline-offset: 2px;
+}
+
+.travel-map-date {
+    flex-shrink: 0;
+    min-width: 7.5em;
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.travel-map-btn {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--accent-a);
+    font: inherit;
+    font-size: var(--font-md);
+    cursor: pointer;
+}
+
+.travel-map-btn:hover {
+    text-decoration: underline;
+}
+
+.travel-card.is-highlighted {
+    border-color: var(--accent-a);
+    box-shadow: 0 0 20px var(--glow-a-strong);
+}
+
+/* Touch screens: bigger zoom buttons and replay handle */
+@media (pointer: coarse) {
+    .map-zoom-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .travel-map-scrubber {
+        height: 28px;
+    }
+
+    .travel-map-scrubber::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+        margin-top: -7px;
+    }
+
+    .travel-map-scrubber::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Photo Gallery */
+.gallery-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.gallery-filter-btn {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    color: var(--text-soft);
+    background: transparent;
+    cursor: pointer;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    transition: all var(--fade);
+}
+
+.gallery-filter-btn:hover {
+    border-color: var(--line-hover);
+    color: var(--accent-a);
+}
+
+.gallery-filter-btn.active {
+    background: var(--active-bg);
+    border-color: var(--accent-a);
+    color: var(--accent-a);
+    box-shadow: 0 0 8px var(--glow-subtle);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+}
+
+.gallery-cell {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all var(--fade);
+}
+
+.gallery-cell:hover {
+    border-color: var(--line-hover);
+    box-shadow: 0 0 14px var(--glow-a);
+}
+
+.gallery-cell:hover img {
+    transform: scale(1.08);
+}
+
+/* Lightbox */
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.lightbox-figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.lightbox-overlay img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 40px var(--glow-a);
+    cursor: default;
+}
+
+.lightbox-caption {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--font-md);
+    text-align: center;
+    cursor: default;
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-size: 2.2rem;
+    line-height: 1;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background var(--fade);
+}
+
+.lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-prev {
+    left: 16px;
+}
+
+.lightbox-next {
+    right: 16px;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 10px;
+}
+
+@media (max-width: 640px) {
+    .interests-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .travel-map-stats {
+        white-space: normal;
+    }
+
+    /* Side by side, so they cover less of the short map */
+    .map-zoom {
+        flex-direction: row;
+    }
+
+    .travel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .aviation-photos {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+/* Entry gate (js/gate.js): boarding pass in blue, terminal login in green */
+
+/* Cover the page until the gate is gone (a backdrop, so the page itself is left untouched) */
+html.gate-active body {
+    overflow: hidden;
+}
+
+html.gate-active::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: var(--bg-base);
+}
+
+.gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 20px;
+    background: var(--bg-base);
+    transition: opacity 0.5s ease;
+}
+
+.gate:focus {
+    outline: none;
+}
+
+.gate.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gate-hint {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+}
+
+/* Boarding pass */
+.pass {
+    display: flex;
+    width: min(640px, 100%);
+    border-radius: var(--radius-lg);
+    background: var(--card-grad);
+    border: 1px solid var(--line-hover);
+    box-shadow: 0 0 40px var(--glow-a);
+    color: var(--text-main);
+    animation: pass-in 0.6s ease-out;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.gate.is-leaving .pass {
+    transform: translateY(-40px) scale(0.97);
+}
+
+@keyframes pass-in {
+    from { transform: translateY(24px); opacity: 0; }
+}
+
+.pass-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 22px;
+}
+
+.pass-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.pass-airline {
+    color: var(--accent-a);
+}
+
+.pass-kind {
+    color: var(--text-muted);
+}
+
+.pass-route {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pass-place {
+    display: flex;
+    flex-direction: column;
+}
+
+.pass-place--to {
+    text-align: right;
+}
+
+.pass-code {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.02em;
+}
+
+.pass-city {
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+}
+
+/* Dotted flight path with a plane in the middle */
+.pass-path {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pass-path::before,
+.pass-path::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--accent-a) 0 6px, transparent 6px 12px);
+    opacity: 0.8;
+}
+
+.pass-path svg {
+    width: 22px;
+    height: 22px;
+    transform: rotate(90deg);
+    fill: var(--accent-a);
+    filter: drop-shadow(0 0 4px var(--accent-a));
+}
+
+.pass-fields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px 16px;
+}
+
+.pass-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pass-label {
+    color: var(--text-muted);
+    font-size: var(--font-2xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pass-value {
+    font-size: var(--font-base);
+    font-weight: 700;
+}
+
+/* Tear-off stub, split from the main part by a perforated line */
+.pass-stub {
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 18px;
+    border-left: 2px dashed var(--line-hover);
+}
+
+.pass-barcode {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    height: 64px;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.pass-bar {
+    flex-basis: 0;
+    background: #0b1128;
+}
+
+/* Laser line that sweeps across the barcode when scanned */
+.pass-scan {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -10%;
+    width: 3px;
+    background: #ff3b3b;
+    box-shadow: 0 0 8px 2px rgba(255, 59, 59, 0.7);
+    opacity: 0;
+}
+
+.gate.is-scanning .pass-scan {
+    animation: pass-scan 0.7s ease-in-out;
+}
+
+@keyframes pass-scan {
+    0% { left: -5%; opacity: 1; }
+    100% { left: 105%; opacity: 1; }
+}
+
+.pass-btn {
+    padding: 9px 12px;
+    border: 1px solid var(--accent-a);
+    border-radius: var(--radius-pill);
+    background: var(--active-bg);
+    color: var(--accent-a);
+    font: inherit;
+    font-size: var(--font-sm);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background var(--fade), color var(--fade);
+}
+
+.pass-btn:hover,
+.pass-btn:focus-visible,
+.gate.is-scanning .pass-btn {
+    background: var(--accent-a);
+    color: var(--bg-base);
+}
+
+@media (max-width: 640px) {
+    .pass {
+        flex-direction: column;
+    }
+
+    .pass-stub {
+        width: auto;
+        border-left: none;
+        border-top: 2px dashed var(--line-hover);
+    }
+
+    .pass-code {
+        font-size: 1.9rem;
+    }
+}
+
+/* Terminal login */
+.term {
+    width: min(640px, 100%);
+    border: 1px solid var(--line-hover);
+    border-radius: 2px;
+    background: #000000;
+    box-shadow: 0 0 30px var(--glow-a);
+}
+
+.term-bar {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: var(--font-xs);
+}
+
+.term-body {
+    min-height: 220px;
+    margin: 0;
+    padding: 14px 16px;
+    color: var(--text-main);
+    font-family: "Courier New", "Lucida Console", "Consolas", monospace;
+    font-size: var(--font-base);
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.term-granted {
+    color: #000000;
+    background: var(--accent-a);
+    padding: 0 4px;
+    text-shadow: none;
+}
+
+.term-cursor {
+    display: inline-block;
+    width: 0.6em;
+    background: var(--accent-a);
+    animation: term-blink 1s steps(1) infinite;
+}
+
+@keyframes term-blink {
+    50% { opacity: 0; }
+}
