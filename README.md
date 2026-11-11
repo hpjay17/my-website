@@ -13,66 +13,80 @@ Portfolio and travel/aviation pages, built as a static site. Live at https://hpj
 
 ## Tech stack
 
-- HTML, CSS and plain JavaScript, with no framework, build step or dependencies
-- SVG for the flat map, Canvas 2D for the globe
-- GitHub Pages hosting; pushing to `main` publishes the site
+- React, built with Vite; each page (`index.html`, `beyond.html`) is its own small React app
+- Plain CSS, shared by both pages through CSS variables for the two themes
+- The travel map, globe, replay and intro screen are plain JavaScript in `public/legacy/` that the React page calls into: SVG for the flat map, Canvas 2D for the globe
+- GitHub Pages hosting; pushing to `main` builds and publishes the site with GitHub Actions (`.github/workflows/deploy.yml`)
 - Python with Pillow for generating the map's dot grid (`tools/make-world-dots.py`)
 
 ## Project structure
 
 ```
-index.html              Portfolio page
-beyond.html             Beyond Work page
-favicon.svg             Tab icon, with favicon-32.png as a fallback and apple-touch-icon.png for phones
-css/
-  shared.css            Theme colors, page shell, top bar and pieces both pages use
-  portfolio.css         Portfolio page
-  beyond.css            Beyond Work page, travel map and intro screen
-data/
-  portfolio.js          Portfolio content
-  beyond.js             Beyond Work content: interests, aviation, trips, stops, routes, gallery, intro screen text
-  world-dots.js         Generated land grid for the map (don't edit by hand)
-js/
-  shared.js             Element helpers, theme switcher, scrolling, section fade-in, typing effect
-  portfolio.js          Renders the portfolio page
-  beyond.js             Renders the Beyond Work page sections, gallery and lightbox
-  travel-map.js         Flat travel map: routes, pins, stats, pan and zoom
-  map-controls.js       Zoom buttons and drag, flick and pinch handling for the map and globe
-  replay.js             Flight replay
-  globe.js              Globe view of the travel map
-  gate.js               Intro screen on Beyond Work (add ?gate to the URL to see it again)
-images/                 Photos and link-preview images
-files/                  Résumé and certificate PDFs
-tools/make-world-dots.py  Rebuilds data/world-dots.js from Natural Earth outlines
+index.html              Portfolio page: the <head>, plus an empty box React fills in
+beyond.html             Beyond Work page, the same way
+package.json            The libraries the project uses and its commands (dev, build, preview)
+vite.config.js          Build settings
+src/
+  data/
+    portfolio.js        Portfolio content
+    beyond.js           Beyond Work content: interests, aviation, trips, stops, routes, gallery, intro screen text
+  styles/
+    shared.css          Theme colors, page shell, top bar and pieces both pages use
+    portfolio.css       Portfolio page
+    beyond.css          Beyond Work page, travel map and intro screen
+  shared/               Components and helpers both pages use: TopBar, Footer, Section, Icon, useTheme, useTyping
+  portfolio/            Portfolio page: main.jsx starts it, App.jsx lays it out, one file per section
+  beyond/               Beyond Work page, the same way, plus the photo viewer (Lightbox) and TravelMap
+public/                 Files copied to the site as they are
+  images/               Photos and link-preview images
+  files/                Résumé and certificate PDFs
+  favicon.svg           Tab icon, with favicon-32.png as a fallback and apple-touch-icon.png for phones
+  legacy/
+    travel-map.js       Flat travel map: routes, pins, stats, pan and zoom
+    map-controls.js     Zoom buttons and drag, flick and pinch handling for the map and globe
+    replay.js           Flight replay
+    globe.js            Globe view of the travel map
+    gate.js             Intro screen on Beyond Work (add ?gate to the URL to see it again)
+    helpers.js          Small helpers those scripts share
+    world-dots.js       Generated land grid for the map (don't edit by hand)
+tools/make-world-dots.py  Rebuilds public/legacy/world-dots.js from Natural Earth outlines
 ```
 
-Content lives in `data/`. The scripts in `js/` read it and build the pages, so content edits don't touch the HTML or JavaScript.
+Content lives in `src/data/`. The components read it and build the pages, so content edits don't touch the components.
 
 ## Adding content
 
-**A trip:** add an entry to `travel` in `data/beyond.js` with `place`, `coords`, `date`, `image` and `note`, then add its flights to `routes`. The card, pin, tooltip, replay and stats update from that. Shrink new photos first:
+**A trip:** add an entry to `travel` in `src/data/beyond.js` with `place`, `coords`, `date`, `image` and `note`, then add its flights to `routes`. The card, pin, tooltip, replay and stats update from that. Shrink new photos first:
 
 ```bash
-sips -Z 1600 -s format jpeg -s formatOptions low images/beyond/NAME.jpeg
+sips -Z 1600 -s format jpeg -s formatOptions low public/images/beyond/NAME.jpeg
 ```
 
-**A flight:** add `["From place", "To place"]` to `routes` in `data/beyond.js`, in the order flown, using exact place names. A layover airport goes in `stops` first. A year on its own line (`"2027",`) starts that year in the replay.
+**A flight:** add `["From place", "To place"]` to `routes` in `src/data/beyond.js`, in the order flown, using exact place names. A layover airport goes in `stops` first. A year on its own line (`"2027",`) starts that year in the replay.
 
-**A stat:** the travel stats (places, countries, miles) are calculated from the data. Logbook tiles on the aviation section are the `logbook` list in `data/beyond.js`.
+**A stat:** the travel stats (places, countries, miles) are calculated from the data. Logbook tiles on the aviation section are the `logbook` list in `src/data/beyond.js`.
 
-The notes above each list in `data/beyond.js` cover the fields in detail. Map, replay and globe settings are the constants at the top of `js/travel-map.js`, `js/replay.js` and `js/globe.js`.
+The notes above each list in `src/data/beyond.js` cover the fields in detail. Map, replay and globe settings are the constants at the top of `travel-map.js`, `replay.js` and `globe.js` in `public/legacy/`.
 
-After editing a file, bump its `?v=` number in the HTML so browsers load the new version instead of a cached one.
+After editing a file in `public/legacy/`, bump its `?v=` number in `beyond.html` so browsers load the new version instead of a cached one. Everything in `src/` is handled automatically.
 
 ## Running locally
 
-From the project folder:
+Needs Node.js. The first time, from the project folder:
 
 ```bash
-python3 -m http.server 8000
+npm install
 ```
 
-Then open http://localhost:8000.
+Then, to preview while editing (the page updates as you save):
+
+```bash
+npm run dev
+```
+
+Open the address it prints, usually http://localhost:5173. Press Ctrl + C to stop.
+
+`npm run build` makes the finished site in `dist/`, and `npm run preview` serves that folder to check it. Opening `index.html` directly in a browser no longer works; the pages need one of these commands.
 
 ## Link previews
 

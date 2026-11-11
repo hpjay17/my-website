@@ -1,7 +1,7 @@
 /* Entry gate for beyond.html: a boarding pass in the blue theme, a terminal login in the green theme.
    Plays the first time Beyond Work opens in a browser tab, then again only after the theme changes,
    whether that happens on this page or on the portfolio.
-   Add ?gate to the URL to see it again (beyond.html?gate). The wording is in data/beyond.js (gate). */
+   Add ?gate to the URL to see it again (beyond.html?gate). The wording is in src/data/beyond.js (gate). */
 
 (function () {
     const PLANE_ICON =
@@ -217,7 +217,7 @@
         });
     }
 
-    // js/beyond.js calls this when the theme is switched on this page
+    // src/beyond/App.jsx calls this when the theme is switched on this page
     window.playGateIfThemeChanged = (theme) => {
         if (needsGate(theme)) playGate(theme);
     };

@@ -1,5 +1,5 @@
-// Content for index.html. Section headings and nav are in the HTML; everything else is here.
-const portfolioData = {
+// Content for the portfolio page. Section headings and nav are in src/portfolio/App.jsx; everything else is here.
+export const portfolioData = {
     profile: {
         name: "Jay Wang",
         title: "Finance, ISOM, & Data Science · Emory University",
@@ -17,7 +17,7 @@ const portfolioData = {
             { label: "Outside work", value: "Private Pilot", detail: "Licensed since 2023" },
         ],
     },
-    // icon: linkedin, github, email or document (drawn in js/portfolio.js)
+    // icon: linkedin, github, email or document (drawn in src/shared/Icon.jsx)
     socialLinks: [
         { label: "LinkedIn", href: "https://www.linkedin.com/in/wangjay17", icon: "linkedin" },
         { label: "GitHub", href: "https://github.com/hpjay17", icon: "github" },
@@ -131,7 +131,7 @@ const portfolioData = {
         },
     ],
 
-    // icon: database, code, lineChart, table, barChart or pieChart (drawn in js/portfolio.js)
+    // icon: database, code, lineChart, table, barChart or pieChart (drawn in src/shared/Icon.jsx)
     skills: [
         { name: "SQL", icon: "database" },
         { name: "Python", icon: "code" },

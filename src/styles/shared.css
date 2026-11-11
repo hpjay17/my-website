@@ -87,7 +87,7 @@
     outline-offset: 2px;
 }
 
-/* Theme switch crossfade (js/shared.js), a little slower than the browser's default */
+/* Theme switch crossfade (src/shared/useTheme.js), a little slower than the browser's default */
 ::view-transition-old(root),
 ::view-transition-new(root) {
     animation-duration: 0.35s;
@@ -398,7 +398,7 @@ h1 {
     border-radius: 0;
 }
 
-/* Typing effect (js/shared.js) */
+/* Typing effect (src/shared/useTheme.js) */
 
 @keyframes blink-cursor {
     0%, 100% { opacity: 1; }

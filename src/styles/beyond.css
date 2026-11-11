@@ -1,4 +1,4 @@
-/* Beyond Work page (beyond.html): interests, aviation, travel map, trip cards, gallery, lightbox and the entry gate */
+/* Beyond Work page (src/beyond): interests, aviation, travel map, trip cards, gallery, lightbox and the entry gate */
 
 .beyond-hero {
     text-align: center;
@@ -396,7 +396,7 @@
     box-shadow: 0 0 0 2px var(--accent-a);
 }
 
-/* --map-dot (js/travel-map.js) grows the dots more slowly than the zoom, so zoomed-in land stays airy */
+/* --map-dot (public/legacy/travel-map.js) grows the dots more slowly than the zoom, so zoomed-in land stays airy */
 .map-land {
     fill: none;
     stroke: var(--text-muted);
@@ -412,7 +412,7 @@
     opacity: 0.5;
     pointer-events: none;
     /* Hidden until the map scrolls into view. Each path holds four copies of its line
-       (ROUTE_COPIES in js/travel-map.js), so the dash pattern repeats every quarter. */
+       (ROUTE_COPIES in public/legacy/travel-map.js), so the dash pattern repeats every quarter. */
     stroke-dasharray: 0 0.25;
 }
 
@@ -430,7 +430,7 @@
     opacity: 0.12;
 }
 
-/* js/replay.js sets stroke-dasharray every frame. With the draw-in transition left on, each change would
+/* public/legacy/replay.js sets stroke-dasharray every frame. With the draw-in transition left on, each change would
    restart its delay and the lines would trail behind the plane. */
 .travel-map-svg.is-replaying .map-web {
     transition: opacity var(--fade), stroke-width var(--fade);
@@ -443,7 +443,7 @@
     stroke-width: calc(1.4px * var(--map-zoom));
 }
 
-/* Globe view (js/globe.js): the canvas takes the flat map's place */
+/* Globe view (public/legacy/globe.js): the canvas takes the flat map's place */
 .travel-map-globe-wrap {
     position: relative;
     display: none;
@@ -824,7 +824,7 @@
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 8px;
 }
 
@@ -951,7 +951,7 @@
     }
 }
 
-/* Entry gate (js/gate.js): boarding pass in blue, terminal login in green */
+/* Entry gate (public/legacy/gate.js): boarding pass in blue, terminal login in green */
 
 /* Cover the page until the gate is gone (a backdrop, so the page itself is left untouched) */
 html.gate-active body {

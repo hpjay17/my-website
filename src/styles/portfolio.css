@@ -1,4 +1,4 @@
-/* Portfolio page (index.html) */
+/* Portfolio page (src/portfolio) */
 
 .hero {
     border-top: 0;
@@ -252,9 +252,22 @@
     gap: 10px;
 }
 
-.career-panel.overlay-panel {
-    position: absolute;
-    inset: 0;
+/* A newly selected entry slides in from the direction the visitor moved in the list (TabSection.jsx) */
+.career-panel.from-below {
+    animation: panel-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    --panel-from: 26px;
+}
+
+.career-panel.from-above {
+    animation: panel-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    --panel-from: -26px;
+}
+
+@keyframes panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--panel-from));
+    }
 }
 
 .career-title {

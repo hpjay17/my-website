@@ -1,5 +1,5 @@
-// Content for beyond.html. Section headings, nav and the hero line are in the HTML; everything else is here.
-const beyondData = {
+// Content for the Beyond Work page. Section headings, nav and the hero line are in src/beyond/App.jsx; everything else is here.
+export const beyondData = {
     interests: [
         {
             name: "Duolingo",
@@ -269,7 +269,7 @@ const beyondData = {
         },
     ],
 
-    // Intro screen (js/gate.js): a boarding pass in the blue theme, a terminal login in the green one
+    // Intro screen (public/legacy/gate.js): a boarding pass in the blue theme, a terminal login in the green one
     gate: {
         boardingPass: {
             airline: "JAY AIR",
