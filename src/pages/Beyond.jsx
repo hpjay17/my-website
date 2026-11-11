@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
+import { Aviation } from "../components/Aviation.jsx";
+import { Footer } from "../components/Footer.jsx";
+import { Gallery } from "../components/Gallery.jsx";
+import { Lightbox } from "../components/Lightbox.jsx";
+import { Section } from "../components/Section.jsx";
+import { TopBar } from "../components/TopBar.jsx";
+import { Travel } from "../components/Travel.jsx";
 import { beyondData } from "../data/beyond.js";
-import { Footer } from "../shared/Footer.jsx";
-import { Section } from "../shared/Section.jsx";
-import { TopBar } from "../shared/TopBar.jsx";
-import { useTheme } from "../shared/useTheme.js";
-import { useTyping } from "../shared/useTyping.js";
-import { Aviation } from "./Aviation.jsx";
-import { Gallery } from "./Gallery.jsx";
-import { Interests } from "./Interests.jsx";
-import { Lightbox } from "./Lightbox.jsx";
-import { Travel } from "./Travel.jsx";
+import { useTheme } from "../hooks/useTheme.js";
+import { useTyping } from "../hooks/useTyping.js";
+import { newTabProps } from "../utils.js";
 
 const NAV_LINKS = [
     { label: "Portfolio", href: "./index.html" },
@@ -21,23 +21,21 @@ const NAV_LINKS = [
 
 const HERO_LINE = "When I'm not working with data, here's what keeps me going.";
 
-// The whole Beyond Work page
-export function App() {
+// The Beyond Work page
+export function Beyond() {
     const [theme, setTheme] = useTheme();
-    // The photo viewer: null when closed, or { photos, index } for the set being viewed.
-    // It lives here because three sections below can open it.
+    // The photo viewer, shared by three sections: null when closed, or { photos, index }
     const [lightbox, setLightbox] = useState(null);
     const openLightbox = (photos, index) => setLightbox({ photos, index });
 
-    // The green theme types out the hero line. The intro screen (public/legacy/gate.js) asks for it
-    // to be typed again once it has closed, by calling window.runHackerTyping().
+    // The green theme types the hero line; the intro screen (public/legacy/gate.js) replays it on closing
     const [typingRun, setTypingRun] = useState(0);
     const heroLine = useTyping(HERO_LINE, theme === "green", 25, typingRun);
     useEffect(() => {
         window.runHackerTyping = () => setTypingRun((run) => run + 1);
     }, []);
 
-    // Each theme has its own intro screen, so switching theme here plays the other one
+    // Each theme has its own intro screen, so switching theme plays the other one
     const changeTheme = (next) => setTheme(next, () => window.playGateIfThemeChanged(next));
 
     return (
@@ -62,7 +60,29 @@ export function App() {
                 </Section>
             </main>
             <Footer />
-            {lightbox && <Lightbox photos={lightbox.photos} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
+            {lightbox && (
+                <Lightbox photos={lightbox.photos} startIndex={lightbox.index} onClose={() => setLightbox(null)} />
+            )}
+        </div>
+    );
+}
+
+function Interests({ interests }) {
+    return (
+        <div className="interests-grid">
+            {interests.map((item) => (
+                <div key={item.name} className={`interest-card ${item.icon ? "" : "interest-card--no-icon"}`}>
+                    {/* Decorative: the name is right below it */}
+                    {item.icon && <img className="interest-icon" src={item.icon} alt="" loading="lazy" />}
+                    <h3 className="interest-name">{item.name}</h3>
+                    <p className="interest-note">{item.note}</p>
+                    {item.link && (
+                        <a className="interest-link" href={item.link} {...newTabProps(item.link)}>
+                            Learn more
+                        </a>
+                    )}
+                </div>
+            ))}
         </div>
     );
 }

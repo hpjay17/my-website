@@ -1,4 +1,4 @@
-// Content for the portfolio page. Section headings and nav are in src/portfolio/App.jsx; everything else is here.
+// Content for the portfolio page. Section headings and nav are in src/pages/Portfolio.jsx; everything else is here.
 export const portfolioData = {
     profile: {
         name: "Jay Wang",
@@ -17,7 +17,7 @@ export const portfolioData = {
             { label: "Outside work", value: "Private Pilot", detail: "Licensed since 2023" },
         ],
     },
-    // icon: linkedin, github, email or document (drawn in src/shared/Icon.jsx)
+    // icon: linkedin, github, email or document (drawn in src/components/Icon.jsx)
     socialLinks: [
         { label: "LinkedIn", href: "https://www.linkedin.com/in/wangjay17", icon: "linkedin" },
         { label: "GitHub", href: "https://github.com/hpjay17", icon: "github" },
@@ -132,7 +132,7 @@ export const portfolioData = {
     ],
 
     // One tab per group, most relevant first; within a group, the skills are in order of importance too.
-    // Each item is a name and an icon; the icon names are the list in src/shared/Icon.jsx
+    // Each item is a name and an icon; the icon names are the list in src/components/Icon.jsx
     skills: [
         {
             group: "Data",

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-// One section of a page: an optional heading, then whatever is placed inside it (`children`).
-// It fades in the first time it scrolls into view; pass startVisible for the one at the top.
+// A page section with an optional heading. Fades in the first time it scrolls into view.
 export function Section({ id, title, className = "", startVisible = false, children }) {
     const ref = useRef(null);
     const [visible, setVisible] = useState(startVisible);
@@ -12,7 +11,7 @@ export function Section({ id, title, className = "", startVisible = false, child
             ([entry]) => {
                 if (entry.isIntersecting) setVisible(true);
             },
-            { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+            { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
         );
         observer.observe(ref.current);
         return () => observer.disconnect();

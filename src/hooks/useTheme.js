@@ -1,24 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { flushSync } from "react-dom";
 
-export function prefersReducedMotion() {
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-// The visitor's last choice, remembered by the browser between visits
-function savedTheme() {
-    return localStorage.getItem("theme") === "green" ? "green" : "blue";
-}
-
-// A "hook": a function a component calls to get some state plus a way to change it.
-// Returns the current theme ("blue" or "green") and a function that switches it.
+// The current theme ("blue" or "green") and a function that switches it. The CSS takes its colors
+// from <html data-theme>, which an inline script in each HTML file sets before the page draws.
 export function useTheme() {
-    const [theme, setThemeState] = useState(savedTheme);
-
-    // The CSS picks its colors from <html data-theme="...">
-    useEffect(() => {
-        document.documentElement.setAttribute("data-theme", theme);
-    }, [theme]);
+    const [theme, setThemeState] = useState(() => (localStorage.getItem("theme") === "green" ? "green" : "blue"));
 
     // afterApply (optional) runs once the new theme is on screen
     function setTheme(next, afterApply) {
@@ -26,12 +12,13 @@ export function useTheme() {
         localStorage.setItem("theme", next);
         const apply = () => {
             document.documentElement.setAttribute("data-theme", next);
-            // flushSync redraws right now, so the crossfade below captures the new look
+            // Redraw at once, so the crossfade captures the new look
             flushSync(() => setThemeState(next));
             if (afterApply) afterApply();
         };
-        // Crossfade with View Transitions; browsers without them switch at once
-        if (!document.startViewTransition || prefersReducedMotion()) apply();
+        // Crossfade where the browser supports View Transitions and motion is welcome
+        const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!document.startViewTransition || still) apply();
         else document.startViewTransition(apply);
     }
 

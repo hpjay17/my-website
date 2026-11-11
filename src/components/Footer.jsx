@@ -1,21 +1,28 @@
-import { scrollToId } from "./helpers.js";
+import { Fragment } from "react";
+import { portfolioData } from "../data/portfolio.js";
+import { newTabProps, scrollToId } from "../utils.js";
 
-// Bottom of both pages: copyright on the left, contact links in the middle, back-to-top on the right
+// The contact links from the data file, without the CV
+const LINKS = portfolioData.socialLinks.filter((link) => link.icon !== "document");
+
+// Bottom of both pages: copyright, contact links, back-to-top
 export function Footer() {
-    // The dot between links; hidden from screen readers, which would otherwise read it aloud
-    const dot = <span aria-hidden="true">&middot;</span>;
-
     return (
         <footer className="site-footer">
             <p>&copy; {new Date().getFullYear()} Jay Wang &middot; Built by me with React and Claude Code</p>
             <nav className="footer-links" aria-label="Contact links">
-                <a href="https://www.linkedin.com/in/wangjay17" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                {dot}
-                <a href="https://github.com/hpjay17" target="_blank" rel="noopener noreferrer">GitHub</a>
-                {dot}
-                <a href="mailto:jay.wang@emory.edu">Email</a>
+                {LINKS.map((link, index) => (
+                    <Fragment key={link.label}>
+                        {index > 0 && <span aria-hidden="true">&middot;</span>}
+                        <a href={link.href} {...newTabProps(link.href)}>
+                            {link.label}
+                        </a>
+                    </Fragment>
+                ))}
             </nav>
-            <button className="footer-top" type="button" onClick={() => scrollToId("top")}>&uarr; back to top</button>
+            <button className="footer-top" type="button" onClick={() => scrollToId("top")}>
+                &uarr; back to top
+            </button>
         </footer>
     );
 }

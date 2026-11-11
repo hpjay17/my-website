@@ -41,13 +41,56 @@ const ROUTE_COPIES = [-1, 0, 1, 2];
 const ROUTE_COPY_LENGTH = 1 / ROUTE_COPIES.length;
 // The stats line counts places named "City, State" as the United States
 const US_STATES = new Set([
-    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
-    "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
-    "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-    "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
-    "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
-    "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
-    "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming",
+    "Alabama",
+    "Alaska",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "Florida",
+    "Georgia",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Pennsylvania",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming",
 ]);
 // Small airplane pointing right, centred on 0,0
 const PLANE_SHAPE =
@@ -56,23 +99,23 @@ const PLANE_SHAPE =
 const travelMap = {
     root: null,
     svg: null,
-    flat: null,         // the svg and its zoom buttons; hidden while the globe shows
+    flat: null, // the svg and its zoom buttons; hidden while the globe shows
     tooltip: null,
     planeLayer: null,
-    home: null,         // [x, y, width, height] of the starting view, which is also the furthest it zooms out
-    camera: null,       // [x, y, width, height] being shown; x stays within one world-width
-    glideTarget: null,  // where a glide is heading, while one runs
-    zoom: 1,            // camera width / home width; pins and lines are scaled by this to keep their size
+    home: null, // [x, y, width, height] of the starting view, which is also the furthest it zooms out
+    camera: null, // [x, y, width, height] being shown; x stays within one world-width
+    glideTarget: null, // where a glide is heading, while one runs
+    zoom: 1, // camera width / home width; pins and lines are scaled by this to keep their size
     cameraFrame: 0,
     zoomButtons: null,
     stats: null,
     mapButton: null,
     globeButton: null,
     coordsByPlace: null,
-    routes: [],         // { el, key, from, to, points, lengths, vectors, angle }, one per line drawn
-    totalMiles: 0,      // every flight in beyondData.routes, repeats included
-    pins: [],           // homes, then stops, then trips, so trips draw on top
-    tripPins: [],       // same order as beyondData.travel; null for trips without coords
+    routes: [], // { el, key, from, to, points, lengths, vectors, angle }, one per line drawn
+    totalMiles: 0, // every flight in beyondData.routes, repeats included
+    pins: [], // homes, then stops, then trips, so trips draw on top
+    tripPins: [], // same order as beyondData.travel; null for trips without coords
     planes: [],
     planeFrame: 0,
 };
@@ -214,7 +257,10 @@ function buildHomeView(coords) {
         Math.min(Math.max(...lats) + MAP_PADDING.lat, MAP_NORTH_EDGE),
         Math.max(Math.min(...lons) - MAP_PADDING.lon, -180),
     ]);
-    const [x2, y2] = projectToMap([Math.min(...lats) - MAP_PADDING.lat, Math.min(Math.max(...lons) + MAP_PADDING.lon, 180)]);
+    const [x2, y2] = projectToMap([
+        Math.min(...lats) - MAP_PADDING.lat,
+        Math.min(Math.max(...lons) + MAP_PADDING.lon, 180),
+    ]);
     let w = x2 - x1;
     let h = y2 - y1;
     const maxAspect = window.matchMedia("(max-width: 640px)").matches ? MAP_MAX_ASPECT_PHONE : MAP_MAX_ASPECT;
@@ -236,12 +282,14 @@ function drawLand() {
     const parts = [];
     worldDots.rows.forEach((row, r) => {
         const y = ((r + 0.5) * cell).toFixed(2);
-        row.split(" ").filter(Boolean).forEach((run) => {
-            const [start, length] = run.split(",").map(Number);
-            for (let c = start; c < start + length; c++) {
-                parts.push(`M${((c + 0.5) * cell).toFixed(2)} ${y}h0`);
-            }
-        });
+        row.split(" ")
+            .filter(Boolean)
+            .forEach((run) => {
+                const [start, length] = run.split(",").map(Number);
+                for (let c = start; c < start + length; c++) {
+                    parts.push(`M${((c + 0.5) * cell).toFixed(2)} ${y}h0`);
+                }
+            });
     });
     const defs = svgEl("defs", {});
     defs.appendChild(svgEl("path", { d: parts.join(""), id: "map-land-dots" }));
@@ -644,7 +692,12 @@ function wireMapMoving(svg) {
             const nextW = clamp(w / factor, travelMap.home[2] / MAP_MAX_ZOOM, WORLD_WIDTH);
             const nextH = (nextW * h) / w;
             const unitsPerPixel = nextW / svg.clientWidth;
-            setCamera([x + (w - nextW) * fx - dx * unitsPerPixel, y + (h - nextH) * fy - dy * unitsPerPixel, nextW, nextH]);
+            setCamera([
+                x + (w - nextW) * fx - dx * unitsPerPixel,
+                y + (h - nextH) * fy - dy * unitsPerPixel,
+                nextW,
+                nextH,
+            ]);
         },
         onOneFingerTouch: () => hint.show("Use two fingers to move the map"),
     });
@@ -694,7 +747,7 @@ function drawRoutesOnScroll(svg) {
                 else if (!entry.isIntersecting) entry.target.classList.remove("is-drawn");
             });
         },
-        { threshold: [0, 0.4] }
+        { threshold: [0, 0.4] },
     );
     observer.observe(svg);
 }

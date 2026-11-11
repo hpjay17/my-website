@@ -1,4 +1,4 @@
-// Content for the Beyond Work page. Section headings, nav and the hero line are in src/beyond/App.jsx; everything else is here.
+// Content for the Beyond Work page. Section headings, nav and the hero line are in src/pages/Beyond.jsx; everything else is here.
 export const beyondData = {
     interests: [
         {

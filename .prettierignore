@@ -1,0 +1,15 @@
+# Built output and downloads
+dist
+node_modules
+package-lock.json
+
+# Generated map data
+public/legacy/world-dots.js
+
+# Kept in a hand-edited shape, one entry per line
+src/data
+
+# Not code
+*.md
+*.html
+.github

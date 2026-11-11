@@ -1,4 +1,4 @@
-/* Portfolio page (src/portfolio) */
+/* Portfolio page (src/pages/Portfolio.jsx) */
 
 .hero {
     border-top: 0;
@@ -67,7 +67,9 @@
     border-radius: 50%;
     padding: 4px;
     border: 2px solid var(--line-hover);
-    box-shadow: 0 0 20px var(--glow-a), 0 0 40px var(--glow-subtle);
+    box-shadow:
+        0 0 20px var(--glow-a),
+        0 0 40px var(--glow-subtle);
     overflow: hidden;
 }
 
@@ -120,7 +122,9 @@
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 0 20px var(--glow-a-strong), 0 4px 16px var(--glow-a);
+    box-shadow:
+        0 0 20px var(--glow-a-strong),
+        0 4px 16px var(--glow-a);
 }
 
 .btn-ghost {
@@ -235,7 +239,9 @@
 .career-item.active {
     border-color: var(--line-hover);
     background: var(--active-bg);
-    box-shadow: inset 3px 0 0 var(--accent-a), 0 0 8px var(--glow-subtle);
+    box-shadow:
+        inset 3px 0 0 var(--accent-a),
+        0 0 8px var(--glow-subtle);
 }
 
 .career-details {
@@ -249,7 +255,7 @@
 /* Everything in the panel is 15% bigger than the same text elsewhere: the sizes below are the
    site's usual ones multiplied by --panel-scale, so the title, tags and bullets keep their proportions. */
 .career-panel {
-    --panel-scale: 1.25;
+    --panel-scale: 1.20;
     --font-2xs: calc(0.7rem * var(--panel-scale));
     --font-xs: calc(0.76rem * var(--panel-scale));
     --font-sm: calc(0.82rem * var(--panel-scale));
@@ -334,7 +340,9 @@
     font-size: var(--font-md);
     font-weight: 600;
     cursor: pointer;
-    transition: color var(--fade), border-color var(--fade);
+    transition:
+        color var(--fade),
+        border-color var(--fade);
 }
 
 .skill-tab:hover {

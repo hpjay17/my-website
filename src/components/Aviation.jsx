@@ -1,4 +1,4 @@
-// Text in the left column, photos in the right (stacked on small screens)
+// Pilot details beside photos (stacked on small screens)
 export function Aviation({ aviation, onOpenPhoto }) {
     const { logbook, aircraftFlown, milestones, goals, photos } = aviation;
 
@@ -28,7 +28,9 @@ export function Aviation({ aviation, onOpenPhoto }) {
                     <Subsection title="Aircraft Flown">
                         <div className="stack-row">
                             {aircraftFlown.map((plane) => (
-                                <span key={plane.name} className="stack-pill" title={plane.note}>{plane.name}</span>
+                                <span key={plane.name} className="stack-pill" title={plane.note}>
+                                    {plane.name}
+                                </span>
                             ))}
                         </div>
                     </Subsection>
@@ -63,7 +65,12 @@ export function Aviation({ aviation, onOpenPhoto }) {
             {photos.length > 0 && (
                 <div className="aviation-photos">
                     {photos.map((photo, index) => (
-                        <button key={photo.src} className="aviation-photo-wrap" type="button" onClick={() => onOpenPhoto(photos, index)}>
+                        <button
+                            key={photo.src}
+                            className="aviation-photo-wrap"
+                            type="button"
+                            onClick={() => onOpenPhoto(photos, index)}
+                        >
                             <img src={photo.src} alt={photo.alt} loading="lazy" />
                         </button>
                     ))}
@@ -73,7 +80,6 @@ export function Aviation({ aviation, onOpenPhoto }) {
     );
 }
 
-// A small titled block inside the aviation column. Only this file uses it, so it isn't exported.
 function Subsection({ title, children }) {
     return (
         <div className="aviation-subsection">

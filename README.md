@@ -27,6 +27,11 @@ beyond.html             Beyond Work page, the same way
 package.json            The libraries the project uses and its commands (dev, build, preview)
 vite.config.js          Build settings
 src/
+  portfolio.jsx         Starts the portfolio page (loaded by index.html)
+  beyond.jsx            Starts the Beyond Work page (loaded by beyond.html)
+  pages/                Portfolio.jsx and Beyond.jsx: each lays out one whole page
+  components/           The pieces the pages are built from: TopBar, Hero, Skills, Travel, Lightbox, Footer...
+  hooks/                useTheme (theme switching) and useTyping (the green theme's typing effect)
   data/
     portfolio.js        Portfolio content
     beyond.js           Beyond Work content: interests, aviation, trips, stops, routes, gallery, intro screen text
@@ -34,9 +39,6 @@ src/
     shared.css          Theme colors, page shell, top bar and pieces both pages use
     portfolio.css       Portfolio page
     beyond.css          Beyond Work page, travel map and intro screen
-  shared/               Components and helpers both pages use: TopBar, Footer, Section, Icon, useTheme, useTyping
-  portfolio/            Portfolio page: main.jsx starts it, App.jsx lays it out, one file per section
-  beyond/               Beyond Work page, the same way, plus the photo viewer (Lightbox) and TravelMap
 public/                 Files copied to the site as they are
   images/               Photos and link-preview images
   files/                Résumé and certificate PDFs
@@ -86,7 +88,7 @@ npm run dev
 
 Open the address it prints, usually http://localhost:5173. Press Ctrl + C to stop.
 
-`npm run build` makes the finished site in `dist/`, and `npm run preview` serves that folder to check it. Opening `index.html` directly in a browser no longer works; the pages need one of these commands.
+`npm run build` makes the finished site in `dist/`, and `npm run preview` serves that folder to check it. `npm run format` tidies the code's formatting with Prettier. Opening `index.html` directly in a browser no longer works; the pages need one of these commands.
 
 ## Link previews
 

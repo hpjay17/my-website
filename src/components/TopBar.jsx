@@ -1,32 +1,41 @@
-import { scrollToId } from "./helpers.js";
+import { scrollToId } from "../utils.js";
 
 const THEMES = [
     { id: "blue", label: "Sage" },
     { id: "green", label: "Terminal green" },
 ];
 
-// The bar at the top of both pages.
-// brandHref: where the name links to; without it, the name scrolls to the top.
-// links: each is { label, target } to scroll to a section, or { label, href } to open the other page.
+// The bar at the top of both pages. The name links to brandHref, or scrolls to the top without one.
+// Each link is { label, target } to scroll to a section, or { label, href } to open the other page.
 export function TopBar({ brandHref, links, theme, onThemeChange }) {
     return (
         <header className="top-bar">
             {brandHref ? (
-                <a className="brand" href={brandHref}>Jay Wang</a>
+                <a className="brand" href={brandHref}>
+                    Jay Wang
+                </a>
             ) : (
-                <button className="brand" type="button" onClick={() => scrollToId("top")}>Jay Wang</button>
+                <button className="brand" type="button" onClick={() => scrollToId("top")}>
+                    Jay Wang
+                </button>
             )}
             <nav className="top-nav" aria-label="Section navigation">
                 {links.map((link) =>
                     link.href ? (
-                        <a key={link.label} className="nav-link-page" href={link.href}>{link.label}</a>
+                        <a key={link.label} className="nav-link-page" href={link.href}>
+                            {link.label}
+                        </a>
                     ) : (
-                        <button key={link.label} type="button" onClick={() => scrollToId(link.target)}>{link.label}</button>
-                    )
+                        <button key={link.label} type="button" onClick={() => scrollToId(link.target)}>
+                            {link.label}
+                        </button>
+                    ),
                 )}
             </nav>
             <div className="theme-switcher" role="group" aria-label="Theme">
-                <span className="theme-switcher-label" aria-hidden="true">Theme</span>
+                <span className="theme-switcher-label" aria-hidden="true">
+                    Theme
+                </span>
                 {THEMES.map(({ id, label }) => (
                     <button
                         key={id}

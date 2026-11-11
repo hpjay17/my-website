@@ -26,24 +26,24 @@ const globe = {
     ctx: null,
     active: false,
     visible: true,
-    width: 0,       // canvas size in CSS pixels
+    width: 0, // canvas size in CSS pixels
     height: 0,
-    baseRadius: 0,  // radius at which the whole globe fits the canvas
-    radius: 0,      // baseRadius times zoom
+    baseRadius: 0, // radius at which the whole globe fits the canvas
+    radius: 0, // baseRadius times zoom
     zoom: 1,
-    zoomTarget: 1,  // zoom eases toward this
+    zoomTarget: 1, // zoom eases toward this
     zoomButtons: null,
-    lat: GLOBE_START[0],  // the point facing the viewer, in degrees
+    lat: GLOBE_START[0], // the point facing the viewer, in degrees
     lon: GLOBE_START[1],
-    spinLat: 0,     // degrees a second, from a flick or the arrow keys
+    spinLat: 0, // degrees a second, from a flick or the arrow keys
     spinLon: 0,
     autoSpin: true,
     pressed: false,
     pointerInside: false,
-    hover: null,    // the pin entry under the pointer
-    land: null,     // Float32Array of x, y, z for every land dot
+    hover: null, // the pin entry under the pointer
+    land: null, // Float32Array of x, y, z for every land dot
     pinVectors: null,
-    pinScreen: [],  // where each pin was drawn last frame: { entry, x, y, visible }
+    pinScreen: [], // where each pin was drawn last frame: { entry, x, y, visible }
     colors: {},
     frame: 0,
     lastFrame: 0,
@@ -56,7 +56,7 @@ function buildGlobe() {
     canvas.setAttribute("role", "img");
     canvas.setAttribute(
         "aria-label",
-        "Globe of places I've traveled. Drag, use two fingers on a touch screen, or use the arrow keys to turn it; pinch, scroll while holding Command or Control, or use + and - to zoom."
+        "Globe of places I've traveled. Drag, use two fingers on a touch screen, or use the arrow keys to turn it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
     );
     globe.canvas = canvas;
     globe.ctx = canvas.getContext("2d");
@@ -98,10 +98,12 @@ function buildGlobeLand() {
     const cols = Math.round(360 / step);
     const isLand = new Uint8Array(rows.length * cols);
     rows.forEach((row, r) => {
-        row.split(" ").filter(Boolean).forEach((run) => {
-            const [start, length] = run.split(",").map(Number);
-            isLand.fill(1, r * cols + start, r * cols + start + length);
-        });
+        row.split(" ")
+            .filter(Boolean)
+            .forEach((run) => {
+                const [start, length] = run.split(",").map(Number);
+                isLand.fill(1, r * cols + start, r * cols + start + length);
+            });
     });
 
     const deg = 180 / Math.PI;
@@ -354,7 +356,12 @@ function drawGlobeLand(project, p) {
         project(land[i], land[i + 1], land[i + 2], p);
         // Behind the globe, or off the canvas when zoomed in
         if (p[2] <= 0 || p[0] < -half || p[0] > width + half || p[1] < -half || p[1] > height + half) continue;
-        shades[Math.min(GLOBE_LAND_SHADES - 1, Math.floor(p[2] * GLOBE_LAND_SHADES))].rect(p[0] - half, p[1] - half, size, size);
+        shades[Math.min(GLOBE_LAND_SHADES - 1, Math.floor(p[2] * GLOBE_LAND_SHADES))].rect(
+            p[0] - half,
+            p[1] - half,
+            size,
+            size,
+        );
     }
     ctx.fillStyle = colors.land;
     shades.forEach((path, k) => {
@@ -433,7 +440,11 @@ function drawGlobePins(project, p) {
         if (!visible) return;
 
         const { classList } = entry.pin;
-        const kind = classList.contains("map-pin--stop") ? "stop" : classList.contains("map-pin--home") ? "home" : "trip";
+        const kind = classList.contains("map-pin--stop")
+            ? "stop"
+            : classList.contains("map-pin--home")
+              ? "home"
+              : "trip";
         const big = entry === globe.hover || classList.contains("is-active");
         const r = GLOBE_PIN_SIZES[kind] * (big ? 1.5 : 1);
         const color = kind === "home" ? colors.home : colors.trip;
@@ -527,7 +538,8 @@ function wireGlobeMoving(canvas) {
             if (click) {
                 // A trip pin opens its card, as on the flat map
                 const entry = pinAt(click);
-                if (entry && entry.pin.getAttribute("role") === "button") entry.pin.dispatchEvent(new MouseEvent("click"));
+                if (entry && entry.pin.getAttribute("role") === "button")
+                    entry.pin.dispatchEvent(new MouseEvent("click"));
             } else if (velocity && !prefersReducedMotion()) {
                 globe.spinLon = -velocity[0] * degreesPerPixel();
                 globe.spinLat = velocity[1] * degreesPerPixel();

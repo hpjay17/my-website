@@ -1,13 +1,13 @@
+import { Footer } from "../components/Footer.jsx";
+import { Hero } from "../components/Hero.jsx";
+import { Projects } from "../components/Projects.jsx";
+import { Section } from "../components/Section.jsx";
+import { Skills } from "../components/Skills.jsx";
+import { TabSection } from "../components/TabSection.jsx";
+import { TopBar } from "../components/TopBar.jsx";
 import { portfolioData } from "../data/portfolio.js";
-import { Footer } from "../shared/Footer.jsx";
-import { Section } from "../shared/Section.jsx";
-import { TopBar } from "../shared/TopBar.jsx";
-import { useTheme } from "../shared/useTheme.js";
-import { Certifications } from "./Certifications.jsx";
-import { Hero } from "./Hero.jsx";
-import { Projects } from "./Projects.jsx";
-import { Skills } from "./Skills.jsx";
-import { TabSection } from "./TabSection.jsx";
+import { useTheme } from "../hooks/useTheme.js";
+import { newTabProps } from "../utils.js";
 
 const NAV_LINKS = [
     { label: "Career", target: "career" },
@@ -18,9 +18,8 @@ const NAV_LINKS = [
     { label: "Beyond Work", href: "./beyond.html" },
 ];
 
-// The whole portfolio page. Each <Tag /> below is a component: a function in its own file that
-// returns a piece of the page. The values passed in (theme={theme}) are called props.
-export function App() {
+// The portfolio page
+export function Portfolio() {
     const [theme, setTheme] = useTheme();
 
     return (
@@ -45,6 +44,36 @@ export function App() {
                 </Section>
             </main>
             <Footer />
+        </div>
+    );
+}
+
+// Only rows with something to open are links
+function Certifications({ certifications }) {
+    return (
+        <div className="cert-list">
+            {certifications.map((cert) => {
+                const text = (
+                    <div>
+                        <h3>{cert.name}</h3>
+                        <p>
+                            {cert.issuer} · {cert.date}
+                        </p>
+                    </div>
+                );
+                return cert.href ? (
+                    <a key={cert.name} className="cert-row" href={cert.href} {...newTabProps(cert.href)}>
+                        {text}
+                        <span className="arrow" aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+                ) : (
+                    <div key={cert.name} className="cert-row">
+                        {text}
+                    </div>
+                );
+            })}
         </div>
     );
 }

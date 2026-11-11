@@ -93,7 +93,10 @@
         const fields = createEl("div", "pass-fields");
         text.fields.forEach(([label, value]) => {
             const field = createEl("div", "pass-field");
-            field.append(createEl("span", "pass-label", label), createEl("span", "pass-value", label === "Date" ? today : value));
+            field.append(
+                createEl("span", "pass-label", label),
+                createEl("span", "pass-value", label === "Date" ? today : value),
+            );
             fields.appendChild(field);
         });
 
@@ -176,8 +179,13 @@
     function terminalSteps(lines) {
         const stamp = new Date()
             .toLocaleString("en-US", {
-                weekday: "short", month: "short", day: "numeric",
-                hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
             })
             .replace(/,/g, "");
         return lines.map((line) => ({
@@ -217,7 +225,7 @@
         });
     }
 
-    // src/beyond/App.jsx calls this when the theme is switched on this page
+    // src/pages/Beyond.jsx calls this when the theme is switched on this page
     window.playGateIfThemeChanged = (theme) => {
         if (needsGate(theme)) playGate(theme);
     };

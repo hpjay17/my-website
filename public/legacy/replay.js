@@ -9,17 +9,17 @@ const REPLAY_YEAR_PAUSE = 2;
 const REPLAY_STEPS = 1000;
 
 const replay = {
-    legs: [],       // one per flight, in order: { from, to, miles, route, reverse, start, duration }
-    labels: [],     // { at, text, tripIndex } in time order: year markers, and trips as they're reached
-    span: "",       // date text shown when no replay is running, e.g. "2023 – 2026"
+    legs: [], // one per flight, in order: { from, to, miles, route, reverse, start, duration }
+    labels: [], // { at, text, tripIndex } in time order: year markers, and trips as they're reached
+    span: "", // date text shown when no replay is running, e.g. "2023 – 2026"
     time: 0,
-    active: false,  // the map shows a moment in the replay rather than the finished map
+    active: false, // the map shows a moment in the replay rather than the finished map
     playing: false,
     visible: true,
     frame: 0,
     lastFrame: 0,
-    trip: -1,       // index in beyondData.travel of the trip lit up now
-    current: null,  // { leg, progress } of the flight in the air, or null; the globe reads this too
+    trip: -1, // index in beyondData.travel of the trip lit up now
+    current: null, // { leg, progress } of the flight in the air, or null; the globe reads this too
     plane: null,
     button: null,
     scrubber: null,
@@ -94,7 +94,7 @@ function buildReplayTimeline() {
 // Play button, scrubber and date counter
 function buildReplayControls() {
     const button = createButton("gallery-filter-btn travel-map-replay-btn", "", () =>
-        replay.playing ? pauseReplay() : playReplay()
+        replay.playing ? pauseReplay() : playReplay(),
     );
 
     const scrubber = createEl("input", "travel-map-scrubber");

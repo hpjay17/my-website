@@ -1,31 +1,24 @@
 import { useEffect, useState } from "react";
 
-// Types `text` out one letter at a time while `active` is true (the green theme); otherwise shows it at once.
-// Changing `replayKey` types it again. Returns the letters shown so far and whether it is still typing.
+// Types `text` out a letter at a time while `active` (the green theme); otherwise shows it all.
+// Changing `replayKey` types it again.
 export function useTyping(text, active, speed, replayKey = 0) {
-    const [shown, setShown] = useState(active ? "" : text);
-    const [typing, setTyping] = useState(active);
+    const [count, setCount] = useState(active ? 0 : text.length);
 
     useEffect(() => {
         if (!active) {
-            setShown(text);
-            setTyping(false);
+            setCount(text.length);
             return;
         }
-        let count = 0;
-        setShown("");
-        setTyping(true);
+        let typed = 0;
+        setCount(0);
         const timer = setInterval(() => {
-            count += 1;
-            setShown(text.slice(0, count));
-            if (count >= text.length) {
-                clearInterval(timer);
-                setTyping(false);
-            }
+            typed += 1;
+            setCount(typed);
+            if (typed >= text.length) clearInterval(timer);
         }, speed);
-        // React runs this cleanup before the effect runs again, and when the component goes away
         return () => clearInterval(timer);
     }, [text, active, speed, replayKey]);
 
-    return { shown, typing };
+    return { shown: text.slice(0, count), typing: count < text.length };
 }

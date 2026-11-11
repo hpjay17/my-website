@@ -87,7 +87,7 @@
     outline-offset: 2px;
 }
 
-/* Theme switch crossfade (src/shared/useTheme.js), a little slower than the browser's default */
+/* Theme switch crossfade (src/hooks/useTheme.js), a little slower than the browser's default */
 ::view-transition-old(root),
 ::view-transition-new(root) {
     animation-duration: 0.35s;
@@ -266,7 +266,9 @@ body {
     scroll-margin-top: var(--top-bar-height);
     opacity: 0;
     transform: translateY(14px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
 }
 
 .section.is-visible {
@@ -417,11 +419,16 @@ h1 {
     border-radius: 0;
 }
 
-/* Typing effect (src/shared/useTheme.js) */
+/* Typing effect (src/hooks/useTyping.js) */
 
 @keyframes blink-cursor {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
 }
 
 [data-theme="green"] .typing-cursor::after {

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Icon } from "../shared/Icon.jsx";
+import { Icon } from "./Icon.jsx";
 
-// A row of tabs, one per group of skills; only the selected group's skills are shown
+// Tabs, one per group of skills, showing the selected group
 export function Skills({ skills }) {
     const [selected, setSelected] = useState(0);
     const { group, items } = skills[selected];
@@ -24,7 +24,7 @@ export function Skills({ skills }) {
                     </button>
                 ))}
             </div>
-            {/* key: switching groups builds a fresh row, which replays its fade-in */}
+            {/* A new key rebuilds the row, which replays its fade-in */}
             <div key={group} id="skills-panel" className="skills-grid" role="tabpanel" aria-label={`${group} skills`}>
                 {items.map((skill) => (
                     <span key={skill.name} className="skill-pill">

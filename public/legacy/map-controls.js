@@ -51,7 +51,7 @@ function wireWheelZoom(target, hint, onZoom) {
             }
             hint.show(`Hold ${key} and scroll to zoom`);
         },
-        { passive: false }
+        { passive: false },
     );
 }
 
@@ -75,7 +75,10 @@ function keyZoomFactor(key, step) {
 //                               when it started (as fractions across the target), and how many pixels
 //                               that point has moved
 //   onOneFingerTouch()          optional: one finger tried to drag, which does nothing here
-function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onPinchStart, onPinch, onOneFingerTouch }) {
+function wireDragAndPinch(
+    target,
+    { onPress, onDragStart, onDrag, onRelease, onPinchStart, onPinch, onOneFingerTouch },
+) {
     const pointers = new Map();
     let drag = null;
     let pinch = null;
@@ -114,7 +117,14 @@ function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onP
             onPinchStart();
         } else if (pointers.size === 1) {
             const { x, y } = pointers.get(e.pointerId);
-            drag = { id: e.pointerId, x, y, touch: e.pointerType === "touch", moved: false, samples: [{ time: performance.now(), x, y }] };
+            drag = {
+                id: e.pointerId,
+                x,
+                y,
+                touch: e.pointerType === "touch",
+                moved: false,
+                samples: [{ time: performance.now(), x, y }],
+            };
         }
     });
 

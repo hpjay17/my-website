@@ -39,17 +39,17 @@
         document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") === "green" ? "green" : "blue");
     </script>
     <!-- Plain scripts for the intro screen and the travel map. They are not React: the React page
-         calls into them (see src/beyond/TravelMap.jsx). Not deferred: gate.js hides the page before
+         calls into them (see src/components/Travel.jsx). Not deferred: gate.js hides the page before
          the first paint so the intro screen doesn't flash. Bump ?v= after editing one of these. -->
-    <script src="./legacy/helpers.js?v=1"></script>
-    <script src="./legacy/gate.js?v=1"></script>
-    <script defer src="./legacy/world-dots.js?v=1"></script>
-    <script defer src="./legacy/map-controls.js?v=3"></script>
-    <script defer src="./legacy/travel-map.js?v=5"></script>
-    <script defer src="./legacy/replay.js?v=1"></script>
-    <script defer src="./legacy/globe.js?v=3"></script>
+    <script src="./legacy/helpers.js?v=6"></script>
+    <script src="./legacy/gate.js?v=6"></script>
+    <script defer src="./legacy/world-dots.js?v=6"></script>
+    <script defer src="./legacy/map-controls.js?v=6"></script>
+    <script defer src="./legacy/travel-map.js?v=6"></script>
+    <script defer src="./legacy/replay.js?v=6"></script>
+    <script defer src="./legacy/globe.js?v=6"></script>
     <!-- The React app: Vite bundles this file and everything it imports -->
-    <script type="module" src="./src/beyond/main.jsx"></script>
+    <script type="module" src="./src/beyond.jsx"></script>
 </head>
 <body>
     <div id="root"></div>

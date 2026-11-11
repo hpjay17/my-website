@@ -24,7 +24,12 @@ export function Gallery({ photos, onOpenPhoto }) {
             </div>
             <div className="gallery-grid">
                 {shown.map((photo, index) => (
-                    <button key={photo.src} className="gallery-cell" type="button" onClick={() => onOpenPhoto(shown, index)}>
+                    <button
+                        key={photo.src}
+                        className="gallery-cell"
+                        type="button"
+                        onClick={() => onOpenPhoto(shown, index)}
+                    >
                         <img src={photo.src} alt={photo.alt} loading="lazy" />
                     </button>
                 ))}
