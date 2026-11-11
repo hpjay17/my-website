@@ -1,5 +1,5 @@
 /* Flat travel map on beyond.html: dot-grid land, great-circle routes, pins and stats.
-   Dragging with a mouse, or with two fingers on a touch screen, pans round the world without end;
+   Dragging with a mouse or a finger pans round the world without end;
    pinch, ⌘/Ctrl + wheel, keys or the + / − buttons zoom. */
 
 // Settings
@@ -139,7 +139,7 @@ function renderTravelMap() {
         "aria-label":
             "World map of places I've traveled: " +
             trips.map((t) => t.place).join(", ") +
-            ". Drag, use two fingers on a touch screen, or use the arrow keys to move it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
+            ". Drag or use the arrow keys to move it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
     });
     const planeLayer = svgEl("g", { class: "map-planes" });
     Object.assign(travelMap, {
@@ -699,7 +699,6 @@ function wireMapMoving(svg) {
                 nextH,
             ]);
         },
-        onOneFingerTouch: () => hint.show("Use two fingers to move the map"),
     });
 
     // Zooms toward the cursor; a plain scroll is left to the page (see wireWheelZoom)

@@ -62,23 +62,20 @@ function keyZoomFactor(key, step) {
     return 0;
 }
 
-// Drag, flick and pinch on `target`. A mouse drags with its button held. On a touch screen one finger
-// is left to the page, so it still scrolls, and two fingers move and zoom. A press only becomes a drag
+// Drag, flick and pinch on `target`. A mouse drags with its button held and one finger drags on a touch
+// screen; two fingers move and zoom. The target needs `touch-action: none` in CSS so the browser leaves
+// touches on it alone; touches anywhere else scroll the page as usual. A press only becomes a drag
 // once it moves a few pixels, so a plain click or tap still reaches what's under it. Callbacks:
 //   onPress()                   a pointer went down
-//   onDragStart()               a mouse drag began
+//   onDragStart()               a drag began
 //   onDrag(dx, dy)              pixels moved since onDragStart
 //   onRelease({ velocity, click })  the last pointer lifted. velocity is [x, y] pixels a second after a
-//                               mouse drag; click is the pointer event if it never moved. Otherwise null.
+//                               drag; click is the pointer event if it never moved. Otherwise null.
 //   onPinchStart()              two fingers are down
 //   onPinch(factor, fx, fy, dx, dy)  since onPinchStart: the zoom factor, the point between the fingers
 //                               when it started (as fractions across the target), and how many pixels
 //                               that point has moved
-//   onOneFingerTouch()          optional: one finger tried to drag, which does nothing here
-function wireDragAndPinch(
-    target,
-    { onPress, onDragStart, onDrag, onRelease, onPinchStart, onPinch, onOneFingerTouch },
-) {
+function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onPinchStart, onPinch }) {
     const pointers = new Map();
     let drag = null;
     let pinch = null;
@@ -142,17 +139,13 @@ function wireDragAndPinch(
         const dx = e.clientX - drag.x;
         const dy = e.clientY - drag.y;
         if (!drag.moved) {
-            if (Math.abs(dx) + Math.abs(dy) <= 4) return;
+            // A finger wobbles more than a mouse during a tap
+            if (Math.abs(dx) + Math.abs(dy) <= (drag.touch ? 8 : 4)) return;
             drag.moved = true;
-            if (drag.touch) {
-                if (onOneFingerTouch) onOneFingerTouch();
-                return;
-            }
             capture(e.pointerId);
             target.classList.add("is-dragging");
             onDragStart();
         }
-        if (drag.touch) return;
         onDrag(dx, dy);
         // The last tenth of a second of movement gives the flick speed
         const now = performance.now();
@@ -169,14 +162,12 @@ function wireDragAndPinch(
             return;
         }
         target.classList.remove("is-dragging");
-        const { moved, samples, touch } = drag;
+        const { moved, samples } = drag;
         drag = null;
-        // The browser cancels a one-finger touch when it starts scrolling the page with it
-        if (touch && cancelled && !moved && onOneFingerTouch) onOneFingerTouch();
         const first = samples[0];
         const last = samples[samples.length - 1];
         const seconds = (last.time - first.time) / 1000;
-        const flicked = moved && !touch && !cancelled && seconds > 0;
+        const flicked = moved && !cancelled && seconds > 0;
         onRelease({
             velocity: flicked ? [(last.x - first.x) / seconds, (last.y - first.y) / seconds] : null,
             click: moved || cancelled ? null : e,

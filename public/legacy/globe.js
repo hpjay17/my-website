@@ -56,7 +56,7 @@ function buildGlobe() {
     canvas.setAttribute("role", "img");
     canvas.setAttribute(
         "aria-label",
-        "Globe of places I've traveled. Drag, use two fingers on a touch screen, or use the arrow keys to turn it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
+        "Globe of places I've traveled. Drag or use the arrow keys to turn it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
     );
     globe.canvas = canvas;
     globe.ctx = canvas.getContext("2d");
@@ -560,7 +560,6 @@ function wireGlobeMoving(canvas) {
             updateGlobeZoomButtons();
             drawGlobe();
         },
-        onOneFingerTouch: () => globe.hint.show("Use two fingers to turn the globe"),
     });
 
     canvas.addEventListener("pointermove", (e) => {

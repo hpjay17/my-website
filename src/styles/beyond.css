@@ -373,7 +373,7 @@
     position: relative;
 }
 
-/* On phones, one finger scrolls the page as usual; two fingers reach the map to move and zoom it */
+/* On phones, a finger on the map moves it (two zoom); touches outside the map scroll the page */
 .travel-map-svg {
     --map-zoom: 1;
     display: block;
@@ -381,7 +381,7 @@
     height: auto;
     overflow: hidden;
     cursor: grab;
-    touch-action: pan-x pan-y;
+    touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     outline: none;
@@ -456,8 +456,8 @@
     width: 100%;
     height: min(460px, 80vw);
     cursor: grab;
-    /* One finger scrolls the page as usual; two fingers reach the globe to turn and zoom it */
-    touch-action: pan-x pan-y;
+    /* A finger on the globe turns it (two zoom); touches outside the globe scroll the page */
+    touch-action: none;
     outline: none;
 }
 

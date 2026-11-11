@@ -286,7 +286,7 @@ export const beyondData = {
             ],
             stub: "Seat 27A · Gate B12",
             button: "Scan boarding pass",
-            buttonDone: "Boarding ✓",
+            buttonDone: "Boarding",
             hint: "Press Enter to board",
             hintTouch: "Tap the button to board",
         },
