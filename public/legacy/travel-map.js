@@ -1,15 +1,11 @@
 /* Flat travel map on beyond.html: dot-grid land, great-circle routes, pins and stats.
-   Drag pans round the world without end; wheel, pinch, keys or the + / − buttons zoom. */
+   Drag pans round the world without end; pinch, ⌘/Ctrl + wheel, keys or the + / − buttons zoom. */
 
 // Settings
 
-// Degrees of space kept around the outermost pins in the starting view
-const MAP_PADDING = { lat: 10, lon: 18 };
-// Widest the map gets (width / height) before it adds space above and below; phones get a taller map
-const MAP_MAX_ASPECT = 3;
-const MAP_MAX_ASPECT_PHONE = 2;
-// Furthest north and south the map can be dragged. The dot grid covers both poles for the globe,
-// but on a flat map the far north is stretched too wide to be worth showing.
+// North and south edges of the flat map, which starts out showing the whole world between them.
+// The dot grid covers both poles for the globe, but on a flat map the far north is stretched too
+// wide to be worth showing, and Antarctica is left off.
 const MAP_NORTH_EDGE = 80;
 const MAP_SOUTH_EDGE = -60;
 // Closest zoom, as a multiple of the starting view, and how much each + / − click zooms
@@ -85,7 +81,7 @@ function renderTravelMap() {
     }
 
     const places = [...homes, ...stops, ...trips];
-    const home = buildHomeView(places.map((item) => item.coords));
+    const home = buildHomeView();
     const svg = svgEl("svg", {
         viewBox: home.join(" "),
         class: "travel-map-svg",
@@ -94,7 +90,7 @@ function renderTravelMap() {
         "aria-label":
             "World map of places I've traveled: " +
             trips.map((t) => t.place).join(", ") +
-            ". Drag or use the arrow keys to move it; scroll, pinch, or use + and - to zoom.",
+            ". Drag or use the arrow keys to move it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
     });
     const planeLayer = svgEl("g", { class: "map-planes" });
     Object.assign(travelMap, {
@@ -203,26 +199,11 @@ function svgEl(tag, attrs) {
 
 // Building the map
 
-// The world cropped to the pins, widened or heightened to an aspect between the pins' own and MAP_MAX_ASPECT
-function buildHomeView(coords) {
-    const lats = coords.map(([lat]) => lat);
-    const lons = coords.map(([, lon]) => lon);
-    const [x1, y1] = projectToMap([
-        Math.min(Math.max(...lats) + MAP_PADDING.lat, MAP_NORTH_EDGE),
-        Math.max(Math.min(...lons) - MAP_PADDING.lon, -180),
-    ]);
-    const [x2, y2] = projectToMap([Math.min(...lats) - MAP_PADDING.lat, Math.min(Math.max(...lons) + MAP_PADDING.lon, 180)]);
-    let w = x2 - x1;
-    let h = y2 - y1;
-    const maxAspect = window.matchMedia("(max-width: 640px)").matches ? MAP_MAX_ASPECT_PHONE : MAP_MAX_ASPECT;
-    const aspect = Math.min(w / h, maxAspect);
-    if (w / h < aspect) w = h * aspect;
-    else h = w / aspect;
-    // No taller than the map itself, from its north edge to its south
-    const northY = projectToMap([MAP_NORTH_EDGE, 0])[1];
-    h = Math.min(h, projectToMap([MAP_SOUTH_EDGE, 0])[1] - northY);
-    const top = Math.max((y1 + y2) / 2 - h / 2, northY);
-    return [(x1 + x2) / 2 - w / 2, top, w, h];
+// The starting view, and the furthest the map zooms out: the whole world, from the north edge to the south
+function buildHomeView() {
+    const top = projectToMap([MAP_NORTH_EDGE, 0])[1];
+    const bottom = projectToMap([MAP_SOUTH_EDGE, 0])[1];
+    return [0, top, WORLD_WIDTH, bottom - top];
 }
 
 // Each land cell is a zero-length line with round caps, which draws as a dot. The land is defined once
@@ -633,18 +614,13 @@ function wireMapMoving(svg) {
         onPinch: (factor, fx, fy) => zoomCamera(factor, fx, fy, false, start),
     });
 
-    // The page doesn't scroll while the cursor is over the map, even once it can't zoom further
-    svg.addEventListener(
-        "wheel",
-        (e) => {
-            e.preventDefault();
-            const box = svg.getBoundingClientRect();
-            const fx = (e.clientX - box.left) / box.width;
-            const fy = (e.clientY - box.top) / box.height;
-            zoomCamera(wheelZoomFactor(e), fx, fy, false, travelMap.camera);
-        },
-        { passive: false }
-    );
+    // Zooms toward the cursor; a plain scroll is left to the page (see wireWheelZoom)
+    wireWheelZoom(svg, travelMap.flat, (e) => {
+        const box = svg.getBoundingClientRect();
+        const fx = (e.clientX - box.left) / box.width;
+        const fy = (e.clientY - box.top) / box.height;
+        zoomCamera(wheelZoomFactor(e), fx, fy, false, travelMap.camera);
+    });
 
     svg.addEventListener("keydown", (e) => {
         const zoom = keyZoomFactor(e.key, MAP_ZOOM_STEP);

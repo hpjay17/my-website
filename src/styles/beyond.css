@@ -454,7 +454,8 @@
     width: 100%;
     height: min(460px, 80vw);
     cursor: grab;
-    touch-action: pan-y;
+    /* A finger on the globe always turns it, in any direction, and never scrolls the page */
+    touch-action: none;
     outline: none;
 }
 
@@ -477,6 +478,26 @@
 
 .travel-map.is-globe .travel-map-globe-wrap {
     display: block;
+}
+
+/* Flashes over the map or globe when someone scrolls the page across it (public/legacy/map-controls.js) */
+.map-scroll-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    color: #ffffff;
+    font-size: var(--font-lg);
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--fade);
+}
+
+.map-scroll-hint.is-visible {
+    opacity: 1;
 }
 
 /* Zoom buttons in the bottom-right corner of the flat map and the globe */

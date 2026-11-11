@@ -56,7 +56,7 @@ function buildGlobe() {
     canvas.setAttribute("role", "img");
     canvas.setAttribute(
         "aria-label",
-        "Globe of places I've traveled. Drag, or use the arrow keys, to turn it; scroll, pinch, or use + and - to zoom."
+        "Globe of places I've traveled. Drag, or use the arrow keys, to turn it; pinch, scroll while holding Command or Control, or use + and - to zoom."
     );
     globe.canvas = canvas;
     globe.ctx = canvas.getContext("2d");
@@ -84,6 +84,8 @@ function buildGlobe() {
     const wrap = createEl("div", "travel-map-globe-wrap");
     wrap.append(canvas, globe.zoomButtons.bar);
     travelMap.flat.after(wrap);
+    // A plain scroll is left to the page (see wireWheelZoom in map-controls.js)
+    wireWheelZoom(canvas, wrap, (e) => zoomGlobeBy(wheelZoomFactor(e)));
 }
 
 // The flat map's grid has as many dots near the poles as at the equator, so on a sphere they'd bunch
@@ -550,15 +552,6 @@ function wireGlobeMoving(canvas) {
         setGlobeHover(null);
         requestGlobeFrame();
     });
-    // The page doesn't scroll while the cursor is over the globe, even once it can't zoom further
-    canvas.addEventListener(
-        "wheel",
-        (e) => {
-            e.preventDefault();
-            zoomGlobeBy(wheelZoomFactor(e));
-        },
-        { passive: false }
-    );
     canvas.addEventListener("keydown", onGlobeKey);
 }
 

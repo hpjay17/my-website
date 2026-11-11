@@ -13,7 +13,34 @@ function buildZoomButtons(step, onZoom) {
 // Scrolling up zooms in. Trackpad pinches arrive as wheel events with ctrlKey and much smaller deltas.
 function wheelZoomFactor(e) {
     const lines = e.deltaMode === 1 ? 16 : 1;
-    return Math.exp(-e.deltaY * lines * (e.ctrlKey ? 0.01 : 0.002));
+    const pinch = e.ctrlKey && Math.abs(e.deltaY) < 40;
+    return Math.exp(-e.deltaY * lines * (pinch ? 0.01 : 0.002));
+}
+
+// Wheel zooming that doesn't trap the page. A plain scroll over `target` scrolls the page as usual and
+// flashes a hint inside `hintHost`; scrolling with ⌘ or Ctrl held zooms, as does a trackpad pinch
+// (which browsers report as a wheel event with ctrlKey). onZoom gets the wheel event.
+function wireWheelZoom(target, hintHost, onZoom) {
+    const key = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl";
+    const hint = createEl("div", "map-scroll-hint", `Hold ${key} and scroll to zoom`);
+    hint.setAttribute("aria-hidden", "true");
+    hintHost.appendChild(hint);
+    let hideTimer = 0;
+    target.addEventListener(
+        "wheel",
+        (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                hint.classList.remove("is-visible");
+                onZoom(e);
+                return;
+            }
+            hint.classList.add("is-visible");
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => hint.classList.remove("is-visible"), 1200);
+        },
+        { passive: false }
+    );
 }
 
 // + (or =, its unshifted key) zooms in by `step`, - zooms out; any other key gives 0
