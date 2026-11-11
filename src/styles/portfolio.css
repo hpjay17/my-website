@@ -186,14 +186,18 @@
 .career-layout {
     display: grid;
     gap: 12px;
-    align-items: start;
+    /* stretch: the details box is as tall as the list column beside it (see .career-list) */
+    align-items: stretch;
     grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
 }
 
+/* The empty space under the list is one entry tall. The details box stretches to the list's full
+   height including that space, so it always ends one entry's height below the last one. */
 .career-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    padding-bottom: 57px;
 }
 
 .career-item {
@@ -235,7 +239,6 @@
 }
 
 .career-details {
-    min-height: 280px;
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-md);
@@ -243,13 +246,21 @@
     background: var(--bg-card);
 }
 
+/* Everything in the panel is 15% bigger than the same text elsewhere: the sizes below are the
+   site's usual ones multiplied by --panel-scale, so the title, tags and bullets keep their proportions. */
 .career-panel {
+    --panel-scale: 1.25;
+    --font-2xs: calc(0.7rem * var(--panel-scale));
+    --font-xs: calc(0.76rem * var(--panel-scale));
+    --font-sm: calc(0.82rem * var(--panel-scale));
+    --font-md: calc(0.88rem * var(--panel-scale));
+    --font-lg: calc(1.15rem * var(--panel-scale));
     position: relative;
     height: 100%;
-    padding: 14px;
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 /* A newly selected entry slides in from the direction the visitor moved in the list (TabSection.jsx) */
@@ -295,10 +306,69 @@
     font-size: var(--font-md);
 }
 
+/* Skills: a row of tabs, then the selected group's skills */
+.skills {
+    display: grid;
+    gap: 14px;
+}
+
+.skill-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 22px;
+    border-bottom: 1px solid var(--line);
+}
+
+/* Text tabs with an underline on the selected one */
+.skill-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: -1px;
+    padding: 8px 0;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: var(--font-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--fade), border-color var(--fade);
+}
+
+.skill-tab:hover {
+    color: var(--text-main);
+}
+
+.skill-tab.active {
+    color: var(--text-main);
+    border-bottom-color: var(--accent-a);
+}
+
+/* How many skills are in the group */
+.skill-tab-count {
+    color: var(--text-muted);
+    font-size: var(--font-2xs);
+    font-weight: 600;
+}
+
+.skill-tab.active .skill-tab-count {
+    color: var(--accent-a);
+}
+
 .skills-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    animation: skills-in 0.25s ease;
+}
+
+@keyframes skills-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
 }
 
 .skill-pill {
@@ -584,8 +654,16 @@ a.cert-row:hover .arrow {
         grid-template-columns: 1fr;
     }
 
-    .career-details {
-        min-height: 0;
+    /* Stacked: no space needed under the list */
+    .career-list {
+        padding-bottom: 0;
+    }
+
+    /* Narrower screens have less spare room, so the panel's text stays at its usual size */
+    .career-panel {
+        --panel-scale: 1;
+        padding: 14px;
+        gap: 10px;
     }
 }
 

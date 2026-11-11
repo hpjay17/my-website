@@ -373,7 +373,7 @@
     position: relative;
 }
 
-/* On phones, vertical swipes still scroll the page; sideways ones pan the map */
+/* On phones, one finger scrolls the page as usual; two fingers reach the map to move and zoom it */
 .travel-map-svg {
     --map-zoom: 1;
     display: block;
@@ -381,7 +381,7 @@
     height: auto;
     overflow: hidden;
     cursor: grab;
-    touch-action: pan-y;
+    touch-action: pan-x pan-y;
     user-select: none;
     -webkit-user-select: none;
     outline: none;
@@ -454,8 +454,8 @@
     width: 100%;
     height: min(460px, 80vw);
     cursor: grab;
-    /* A finger on the globe always turns it, in any direction, and never scrolls the page */
-    touch-action: none;
+    /* One finger scrolls the page as usual; two fingers reach the globe to turn and zoom it */
+    touch-action: pan-x pan-y;
     outline: none;
 }
 
@@ -480,7 +480,7 @@
     display: block;
 }
 
-/* Flashes over the map or globe when someone scrolls the page across it (public/legacy/map-controls.js) */
+/* Flashes over the map or globe to say how to zoom or move it (buildMapHint in public/legacy/map-controls.js) */
 .map-scroll-hint {
     position: absolute;
     inset: 0;

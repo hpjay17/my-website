@@ -1,4 +1,4 @@
-/* Zoom buttons, wheel and key zooming, and drag, flick and pinch handling,
+/* Zoom buttons, hints, wheel and key zooming, and drag, flick and pinch handling,
    used by the flat map (js/travel-map.js) and the globe (js/globe.js). */
 
 // + and − buttons for the map's corner; onZoom gets the factor to zoom by
@@ -17,27 +17,39 @@ function wheelZoomFactor(e) {
     return Math.exp(-e.deltaY * lines * (pinch ? 0.01 : 0.002));
 }
 
-// Wheel zooming that doesn't trap the page. A plain scroll over `target` scrolls the page as usual and
-// flashes a hint inside `hintHost`; scrolling with ⌘ or Ctrl held zooms, as does a trackpad pinch
-// (which browsers report as a wheel event with ctrlKey). onZoom gets the wheel event.
-function wireWheelZoom(target, hintHost, onZoom) {
-    const key = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl";
-    const hint = createEl("div", "map-scroll-hint", `Hold ${key} and scroll to zoom`);
-    hint.setAttribute("aria-hidden", "true");
-    hintHost.appendChild(hint);
+// A message that flashes over the map for a moment. Returns { show(text), hide() }.
+function buildMapHint(host) {
+    const el = createEl("div", "map-scroll-hint");
+    el.setAttribute("aria-hidden", "true");
+    host.appendChild(el);
     let hideTimer = 0;
+    const hide = () => el.classList.remove("is-visible");
+    return {
+        show(text) {
+            el.textContent = text;
+            el.classList.add("is-visible");
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(hide, 1200);
+        },
+        hide,
+    };
+}
+
+// Wheel zooming that doesn't trap the page. A plain scroll over `target` scrolls the page as usual and
+// flashes `hint` (from buildMapHint); scrolling with ⌘ or Ctrl held zooms, as does a trackpad pinch
+// (which browsers report as a wheel event with ctrlKey). onZoom gets the wheel event.
+function wireWheelZoom(target, hint, onZoom) {
+    const key = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl";
     target.addEventListener(
         "wheel",
         (e) => {
             if (e.ctrlKey || e.metaKey) {
                 e.preventDefault();
-                hint.classList.remove("is-visible");
+                hint.hide();
                 onZoom(e);
                 return;
             }
-            hint.classList.add("is-visible");
-            clearTimeout(hideTimer);
-            hideTimer = setTimeout(() => hint.classList.remove("is-visible"), 1200);
+            hint.show(`Hold ${key} and scroll to zoom`);
         },
         { passive: false }
     );
@@ -50,32 +62,43 @@ function keyZoomFactor(key, step) {
     return 0;
 }
 
-// Drag, flick and pinch on `target`. A press only becomes a drag once it moves a few pixels, so a plain
-// click still reaches what's under it. Callbacks:
+// Drag, flick and pinch on `target`. A mouse drags with its button held. On a touch screen one finger
+// is left to the page, so it still scrolls, and two fingers move and zoom. A press only becomes a drag
+// once it moves a few pixels, so a plain click or tap still reaches what's under it. Callbacks:
 //   onPress()                   a pointer went down
-//   onDragStart()               a drag began, or a pinch ended with one finger still down
+//   onDragStart()               a mouse drag began
 //   onDrag(dx, dy)              pixels moved since onDragStart
-//   onRelease({ velocity, click })  the press ended. velocity is [x, y] pixels a second after a drag;
-//                               click is the pointer event if it never moved. Both are null if the
-//                               browser took the touch over to scroll the page.
-//   onPinchStart(), onPinch(factor, fx, fy)  two fingers: the zoom factor since onPinchStart, and the point
-//                               between the fingers when it started, as fractions across the target
-function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onPinchStart, onPinch }) {
+//   onRelease({ velocity, click })  the last pointer lifted. velocity is [x, y] pixels a second after a
+//                               mouse drag; click is the pointer event if it never moved. Otherwise null.
+//   onPinchStart()              two fingers are down
+//   onPinch(factor, fx, fy, dx, dy)  since onPinchStart: the zoom factor, the point between the fingers
+//                               when it started (as fractions across the target), and how many pixels
+//                               that point has moved
+//   onOneFingerTouch()          optional: one finger tried to drag, which does nothing here
+function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onPinchStart, onPinch, onOneFingerTouch }) {
     const pointers = new Map();
     let drag = null;
     let pinch = null;
 
-    const startDrag = (id, { x, y }, moved) => {
-        drag = { id, x, y, moved, samples: [{ time: performance.now(), x, y }] };
-        if (moved) onDragStart();
+    // Keeps a pointer's events coming here even if it slides off the target
+    const capture = (id) => {
+        try {
+            target.setPointerCapture(id);
+        } catch {
+            // The pointer has already gone; nothing to hold on to
+        }
     };
     const fingers = () => {
         const [a, b] = [...pointers.values()];
         const box = target.getBoundingClientRect();
+        const x = (a.x + b.x) / 2;
+        const y = (a.y + b.y) / 2;
         return {
             spread: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)),
-            fx: ((a.x + b.x) / 2 - box.left) / box.width,
-            fy: ((a.y + b.y) / 2 - box.top) / box.height,
+            x,
+            y,
+            fx: (x - box.left) / box.width,
+            fy: (y - box.top) / box.height,
         };
     };
 
@@ -86,10 +109,12 @@ function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onP
         if (pointers.size === 2) {
             drag = null;
             target.classList.remove("is-dragging");
+            pointers.forEach((_, id) => capture(id));
             pinch = fingers();
             onPinchStart();
         } else if (pointers.size === 1) {
-            startDrag(e.pointerId, pointers.get(e.pointerId), false);
+            const { x, y } = pointers.get(e.pointerId);
+            drag = { id: e.pointerId, x, y, touch: e.pointerType === "touch", moved: false, samples: [{ time: performance.now(), x, y }] };
         }
     });
 
@@ -97,7 +122,10 @@ function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onP
         if (!pointers.has(e.pointerId)) return;
         pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (pinch) {
-            if (pointers.size === 2) onPinch(fingers().spread / pinch.spread, pinch.fx, pinch.fy);
+            if (pointers.size === 2) {
+                const now = fingers();
+                onPinch(now.spread / pinch.spread, pinch.fx, pinch.fy, now.x - pinch.x, now.y - pinch.y);
+            }
             return;
         }
         if (!drag || drag.id !== e.pointerId) return;
@@ -106,10 +134,15 @@ function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onP
         if (!drag.moved) {
             if (Math.abs(dx) + Math.abs(dy) <= 4) return;
             drag.moved = true;
-            target.setPointerCapture(e.pointerId);
+            if (drag.touch) {
+                if (onOneFingerTouch) onOneFingerTouch();
+                return;
+            }
+            capture(e.pointerId);
             target.classList.add("is-dragging");
             onDragStart();
         }
+        if (drag.touch) return;
         onDrag(dx, dy);
         // The last tenth of a second of movement gives the flick speed
         const now = performance.now();
@@ -119,23 +152,21 @@ function wireDragAndPinch(target, { onPress, onDragStart, onDrag, onRelease, onP
 
     const release = (e, cancelled) => {
         if (!pointers.delete(e.pointerId)) return;
-        if (pinch) {
+        if (pinch || !drag || drag.id !== e.pointerId) {
+            // A two-finger gesture ends when either finger lifts; the one left behind does nothing more
             if (pointers.size < 2) pinch = null;
-            // Carry on dragging from where the remaining finger is, without a jump
-            if (pointers.size === 1) {
-                const [[id, point]] = pointers.entries();
-                startDrag(id, point, true);
-            }
+            if (pointers.size === 0) onRelease({ velocity: null, click: null });
             return;
         }
-        if (!drag || drag.id !== e.pointerId) return;
         target.classList.remove("is-dragging");
-        const { moved, samples } = drag;
+        const { moved, samples, touch } = drag;
         drag = null;
+        // The browser cancels a one-finger touch when it starts scrolling the page with it
+        if (touch && cancelled && !moved && onOneFingerTouch) onOneFingerTouch();
         const first = samples[0];
         const last = samples[samples.length - 1];
         const seconds = (last.time - first.time) / 1000;
-        const flicked = moved && !cancelled && seconds > 0;
+        const flicked = moved && !touch && !cancelled && seconds > 0;
         onRelease({
             velocity: flicked ? [(last.x - first.x) / seconds, (last.y - first.y) / seconds] : null,
             click: moved || cancelled ? null : e,

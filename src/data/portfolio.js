@@ -131,14 +131,57 @@ export const portfolioData = {
         },
     ],
 
-    // icon: database, code, lineChart, table, barChart or pieChart (drawn in src/shared/Icon.jsx)
+    // One tab per group, most relevant first; within a group, the skills are in order of importance too.
+    // Each item is a name and an icon; the icon names are the list in src/shared/Icon.jsx
     skills: [
-        { name: "SQL", icon: "database" },
-        { name: "Python", icon: "code" },
-        { name: "R", icon: "lineChart" },
-        { name: "Excel", icon: "table" },
-        { name: "Tableau", icon: "barChart" },
-        { name: "Power BI", icon: "pieChart" },
+        {
+            group: "Data",
+            items: [
+                { name: "SQL", icon: "database" },
+                { name: "Python", icon: "code" },
+                { name: "Excel", icon: "table" },
+                { name: "Tableau", icon: "barChart" },
+                { name: "Power BI", icon: "pieChart" },
+                { name: "R", icon: "lineChart" },
+                { name: "Pandas", icon: "rows" },
+                { name: "GeoPandas", icon: "globe" },
+                { name: "Matplotlib", icon: "scatter" },
+            ],
+        },
+        {
+            group: "Methods",
+            items: [
+                { name: "Data Cleaning", icon: "filter" },
+                { name: "Data Visualization", icon: "presentation" },
+                { name: "Regression Modeling", icon: "trendLine" },
+                { name: "Geospatial Analysis", icon: "mapPin" },
+            ],
+        },
+        {
+            group: "Business",
+            items: [
+                { name: "Financial Analysis", icon: "dollar" },
+                { name: "Business Strategy", icon: "target" },
+                { name: "Internal Audit", icon: "clipboardCheck" },
+                { name: "Market Research", icon: "search" },
+            ],
+        },
+        {
+            group: "Tools",
+            items: [
+                { name: "Git", icon: "gitBranch" },
+                { name: "GitHub", icon: "github" },
+                { name: "Claude Code", icon: "terminal" },
+            ],
+        },
+        {
+            group: "Languages",
+            items: [{ name: "Mandarin (Native)", icon: "languages" }, { name: "Japanese (Elementary)", icon: "languages" }],
+        },
+        {
+            group: "Web (Basics)",
+            items: [{ name: "HTML", icon: "fileCode" }, { name: "CSS", icon: "palette" }, { name: "React", icon: "atom" }],
+        },
     ],
     // href: a link to the code or write-up, or "" for none. The same goes for certifications.
     projects: [

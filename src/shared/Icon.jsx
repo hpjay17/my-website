@@ -14,6 +14,23 @@ const ICONS = {
     table: { filled: false, shapes: <><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M3 15h18M9 3v18" /></> },
     barChart: { filled: false, shapes: <><path d="M3 3v18h18" /><path d="M8 17v-5M13 17V7M18 17v-8" /></> },
     pieChart: { filled: false, shapes: <><path d="M21 12a9 9 0 11-9-9v9z" /><path d="M16 3.5A9 9 0 0120.5 8H16z" /></> },
+    rows: { filled: false, shapes: <><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M3 15h18" /></> },
+    globe: { filled: false, shapes: <><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3a14 14 0 010 18a14 14 0 010-18z" /></> },
+    scatter: { filled: false, shapes: <><path d="M3 3v18h18" /><circle cx="8" cy="15" r="1" /><circle cx="12" cy="10" r="1" /><circle cx="16" cy="13" r="1" /><circle cx="19" cy="6" r="1" /></> },
+    trendLine: { filled: false, shapes: <><path d="M3 3v18h18" /><path d="M6 17L20 6" /><circle cx="9" cy="11" r="1" /><circle cx="13" cy="14" r="1" /><circle cx="16" cy="6" r="1" /></> },
+    clipboardCheck: { filled: false, shapes: <><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4V3h6v1" /><path d="M9 13l2 2 4-4" /></> },
+    dollar: { filled: false, shapes: <><path d="M12 2v20" /><path d="M17 6H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></> },
+    search: { filled: false, shapes: <><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></> },
+    gitBranch: { filled: false, shapes: <><path d="M6 3v12" /><circle cx="18" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M18 9a9 9 0 01-9 9" /></> },
+    fileCode: { filled: false, shapes: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /><path d="M10 13l-2 2 2 2M14 13l2 2-2 2" /></> },
+    palette: { filled: false, shapes: <><path d="M12 3a9 9 0 100 18c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.4A3.6 3.6 0 0021 10.8C21 6.5 17 3 12 3z" /><circle cx="7.5" cy="11.5" r="1" /><circle cx="10" cy="7.5" r="1" /><circle cx="15" cy="7.5" r="1" /></> },
+    atom: { filled: false, shapes: <><circle cx="12" cy="12" r="1.5" /><ellipse cx="12" cy="12" rx="10" ry="4" /><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)" /><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)" /></> },
+    languages: { filled: false, shapes: <><path d="M5 8l6 6" /><path d="M4 14l6-6 2-3" /><path d="M2 5h12" /><path d="M7 2h1" /><path d="M22 22l-5-10-5 10" /><path d="M14 18h6" /></> },
+    terminal: { filled: false, shapes: <><path d="M4 17l6-6-6-6" /><path d="M12 19h8" /></> },
+    target: { filled: false, shapes: <><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1" /></> },
+    filter: { filled: false, shapes: <><path d="M3 4h18l-7 8v6l-4 2v-8z" /></> },
+    presentation: { filled: false, shapes: <><path d="M2 3h20" /><path d="M4 3v11a1 1 0 001 1h14a1 1 0 001-1V3" /><path d="M8 11l3-3 2 2 3-3" /><path d="M12 15v4M9 21l3-2 3 2" /></> },
+    mapPin: { filled: false, shapes: <><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></> },
 };
 
 // <Icon name="github" /> draws one icon

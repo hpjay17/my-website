@@ -56,7 +56,7 @@ function buildGlobe() {
     canvas.setAttribute("role", "img");
     canvas.setAttribute(
         "aria-label",
-        "Globe of places I've traveled. Drag, or use the arrow keys, to turn it; pinch, scroll while holding Command or Control, or use + and - to zoom."
+        "Globe of places I've traveled. Drag, use two fingers on a touch screen, or use the arrow keys to turn it; pinch, scroll while holding Command or Control, or use + and - to zoom."
     );
     globe.canvas = canvas;
     globe.ctx = canvas.getContext("2d");
@@ -85,7 +85,8 @@ function buildGlobe() {
     wrap.append(canvas, globe.zoomButtons.bar);
     travelMap.flat.after(wrap);
     // A plain scroll is left to the page (see wireWheelZoom in map-controls.js)
-    wireWheelZoom(canvas, wrap, (e) => zoomGlobeBy(wheelZoomFactor(e)));
+    globe.hint = buildMapHint(wrap);
+    wireWheelZoom(canvas, globe.hint, (e) => zoomGlobeBy(wheelZoomFactor(e)));
 }
 
 // The flat map's grid has as many dots near the poles as at the equator, so on a sphere they'd bunch
@@ -533,14 +534,21 @@ function wireGlobeMoving(canvas) {
             }
             requestGlobeFrame();
         },
-        onPinchStart: () => (pinchZoom = globe.zoom),
-        // Follows the fingers directly, with no easing
-        onPinch: (factor) => {
+        onPinchStart: () => {
+            pinchZoom = globe.zoom;
+            start = { lat: globe.lat, lon: globe.lon };
+            setGlobeHover(null);
+        },
+        // Two fingers zoom and turn the globe together, following the fingers directly with no easing
+        onPinch: (factor, fx, fy, dx, dy) => {
             globe.zoom = globe.zoomTarget = clampZoom(pinchZoom * factor);
             globe.radius = globe.baseRadius * globe.zoom;
+            globe.lon = start.lon - dx * degreesPerPixel();
+            globe.lat = clampTilt(start.lat + dy * degreesPerPixel());
             updateGlobeZoomButtons();
             drawGlobe();
         },
+        onOneFingerTouch: () => globe.hint.show("Use two fingers to turn the globe"),
     });
 
     canvas.addEventListener("pointermove", (e) => {

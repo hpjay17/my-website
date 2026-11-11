@@ -1,13 +1,19 @@
 /* Flat travel map on beyond.html: dot-grid land, great-circle routes, pins and stats.
-   Drag pans round the world without end; pinch, ⌘/Ctrl + wheel, keys or the + / − buttons zoom. */
+   Dragging with a mouse, or with two fingers on a touch screen, pans round the world without end;
+   pinch, ⌘/Ctrl + wheel, keys or the + / − buttons zoom. */
 
 // Settings
 
-// North and south edges of the flat map, which starts out showing the whole world between them.
-// The dot grid covers both poles for the globe, but on a flat map the far north is stretched too
-// wide to be worth showing, and Antarctica is left off.
+// Degrees of space kept around the outermost pins in the starting view
+const MAP_PADDING = { lat: 10, lon: 18 };
+// Furthest north and south the map can be dragged. The dot grid covers both poles for the globe,
+// but on a flat map the far north is stretched too wide to be worth showing.
 const MAP_NORTH_EDGE = 80;
 const MAP_SOUTH_EDGE = -60;
+// Shape of the map box (width / height): the shape of the whole world between those edges, so that
+// zooming all the way out shows all of it at once. Phones get a taller box.
+const MAP_MAX_ASPECT = 360 / (MAP_NORTH_EDGE - MAP_SOUTH_EDGE);
+const MAP_MAX_ASPECT_PHONE = 2;
 // Closest zoom, as a multiple of the starting view, and how much each + / − click zooms
 const MAP_MAX_ZOOM = 8;
 const MAP_ZOOM_STEP = 1.6;
@@ -81,7 +87,7 @@ function renderTravelMap() {
     }
 
     const places = [...homes, ...stops, ...trips];
-    const home = buildHomeView();
+    const home = buildHomeView(places.map((item) => item.coords));
     const svg = svgEl("svg", {
         viewBox: home.join(" "),
         class: "travel-map-svg",
@@ -90,7 +96,7 @@ function renderTravelMap() {
         "aria-label":
             "World map of places I've traveled: " +
             trips.map((t) => t.place).join(", ") +
-            ". Drag or use the arrow keys to move it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
+            ". Drag, use two fingers on a touch screen, or use the arrow keys to move it; pinch, scroll while holding Command or Control, or use + and - to zoom.",
     });
     const planeLayer = svgEl("g", { class: "map-planes" });
     Object.assign(travelMap, {
@@ -199,11 +205,27 @@ function svgEl(tag, attrs) {
 
 // Building the map
 
-// The starting view, and the furthest the map zooms out: the whole world, from the north edge to the south
-function buildHomeView() {
-    const top = projectToMap([MAP_NORTH_EDGE, 0])[1];
-    const bottom = projectToMap([MAP_SOUTH_EDGE, 0])[1];
-    return [0, top, WORLD_WIDTH, bottom - top];
+// The starting view: the world cropped to the pins, widened or heightened to an aspect between the pins'
+// own and MAP_MAX_ASPECT. Zooming out from it goes as far as the whole world's width.
+function buildHomeView(coords) {
+    const lats = coords.map(([lat]) => lat);
+    const lons = coords.map(([, lon]) => lon);
+    const [x1, y1] = projectToMap([
+        Math.min(Math.max(...lats) + MAP_PADDING.lat, MAP_NORTH_EDGE),
+        Math.max(Math.min(...lons) - MAP_PADDING.lon, -180),
+    ]);
+    const [x2, y2] = projectToMap([Math.min(...lats) - MAP_PADDING.lat, Math.min(Math.max(...lons) + MAP_PADDING.lon, 180)]);
+    let w = x2 - x1;
+    let h = y2 - y1;
+    const maxAspect = window.matchMedia("(max-width: 640px)").matches ? MAP_MAX_ASPECT_PHONE : MAP_MAX_ASPECT;
+    const aspect = Math.min(w / h, maxAspect);
+    if (w / h < aspect) w = h * aspect;
+    else h = w / aspect;
+    // No taller than the map itself, from its north edge to its south
+    const northY = projectToMap([MAP_NORTH_EDGE, 0])[1];
+    h = Math.min(h, projectToMap([MAP_SOUTH_EDGE, 0])[1] - northY);
+    const top = Math.max((y1 + y2) / 2 - h / 2, northY);
+    return [(x1 + x2) / 2 - w / 2, top, w, h];
 }
 
 // Each land cell is a zero-length line with round caps, which draws as a dot. The land is defined once
@@ -471,7 +493,7 @@ function showFlatMap() {
 // side and pins hop to whichever copy is in view, so panning never reaches an edge.
 function setCamera([x, y, w, h]) {
     const { svg, home } = travelMap;
-    w = clamp(w, home[2] / MAP_MAX_ZOOM, home[2]);
+    w = clamp(w, home[2] / MAP_MAX_ZOOM, WORLD_WIDTH);
     h = (w * home[3]) / home[2];
     const top = projectToMap([MAP_NORTH_EDGE, 0])[1];
     const bottom = projectToMap([MAP_SOUTH_EDGE, 0])[1];
@@ -554,7 +576,7 @@ function glideCamera(to, duration = MAP_ZOOM_MS) {
 function zoomCamera(factor, fx, fy, glide = false, from = travelMap.glideTarget || travelMap.camera) {
     const [x, y, w, h] = from;
     const { home } = travelMap;
-    const nextW = clamp(w / factor, home[2] / MAP_MAX_ZOOM, home[2]);
+    const nextW = clamp(w / factor, home[2] / MAP_MAX_ZOOM, WORLD_WIDTH);
     if (Math.abs(nextW - w) < 1e-6) return;
     const nextH = (nextW * h) / w;
     const next = [x + (w - nextW) * fx, y + (h - nextH) * fy, nextW, nextH];
@@ -591,11 +613,12 @@ function updateMapZoomButtons() {
     const { zoomButtons, home } = travelMap;
     const w = (travelMap.glideTarget || travelMap.camera)[2];
     zoomButtons.in.disabled = w <= home[2] / MAP_MAX_ZOOM + 1e-6;
-    zoomButtons.out.disabled = w >= home[2] - 1e-6;
+    zoomButtons.out.disabled = w >= WORLD_WIDTH - 1e-6;
 }
 
 function wireMapMoving(svg) {
     let start = null;
+    const hint = buildMapHint(travelMap.flat);
     const scale = () => travelMap.camera[2] / svg.clientWidth;
     wireDragAndPinch(svg, {
         onPress: stopCameraMotion,
@@ -610,12 +633,24 @@ function wireMapMoving(svg) {
         onRelease: ({ velocity }) => {
             if (velocity) coastCamera(-velocity[0] * scale(), -velocity[1] * scale());
         },
-        onPinchStart: () => (start = [...travelMap.camera]),
-        onPinch: (factor, fx, fy) => zoomCamera(factor, fx, fy, false, start),
+        onPinchStart: () => {
+            start = [...travelMap.camera];
+            stopCameraMotion();
+            hideMapPlace();
+        },
+        // Two fingers zoom about the point between them and carry the map along as they move
+        onPinch: (factor, fx, fy, dx, dy) => {
+            const [x, y, w, h] = start;
+            const nextW = clamp(w / factor, travelMap.home[2] / MAP_MAX_ZOOM, WORLD_WIDTH);
+            const nextH = (nextW * h) / w;
+            const unitsPerPixel = nextW / svg.clientWidth;
+            setCamera([x + (w - nextW) * fx - dx * unitsPerPixel, y + (h - nextH) * fy - dy * unitsPerPixel, nextW, nextH]);
+        },
+        onOneFingerTouch: () => hint.show("Use two fingers to move the map"),
     });
 
     // Zooms toward the cursor; a plain scroll is left to the page (see wireWheelZoom)
-    wireWheelZoom(svg, travelMap.flat, (e) => {
+    wireWheelZoom(svg, hint, (e) => {
         const box = svg.getBoundingClientRect();
         const fx = (e.clientX - box.left) / box.width;
         const fy = (e.clientY - box.top) / box.height;
