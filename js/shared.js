@@ -131,3 +131,8 @@ function typeText(element, text, speed) {
     };
     tick();
 }
+
+// Keep the footer's copyright year current
+document.querySelectorAll(".js-year").forEach((el) => {
+    el.textContent = new Date().getFullYear();
+});

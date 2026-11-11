@@ -2,7 +2,8 @@
 
 .beyond-hero {
     text-align: center;
-    padding: 40px 22px;
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 
 .beyond-hero h1 {
@@ -51,7 +52,8 @@
 /* Interests Grid */
 .interests-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    /* auto-fit: the cards stretch to fill the row instead of leaving empty columns */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 12px;
 }
 
@@ -120,8 +122,9 @@
 }
 
 @media (min-width: 860px) {
+    /* The photo column is capped so the two pictures don't tower over the text */
     .aviation-content {
-        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 400px);
         align-items: start;
     }
 
@@ -536,13 +539,12 @@
     fill: var(--accent-a);
     stroke: var(--bg-base);
     stroke-width: 1;
-    filter: drop-shadow(0 0 3px var(--accent-a));
+    filter: drop-shadow(0 0 3px var(--glow-a-strong));
     transition: transform var(--fade);
 }
 
 .map-pin--home .map-pin-dot {
     fill: var(--accent-b);
-    filter: drop-shadow(0 0 3px var(--accent-b));
 }
 
 /* Map-only stops: smaller hollow dots, not clickable */
@@ -577,7 +579,7 @@
 /* Plane that flies along a pin's routes on hover */
 .map-plane {
     fill: var(--text-main);
-    filter: drop-shadow(0 0 2px var(--accent-a));
+    filter: drop-shadow(0 0 2px var(--glow-a-strong));
     pointer-events: none;
 }
 
@@ -1087,7 +1089,7 @@ html.gate-active::after {
     height: 22px;
     transform: rotate(90deg);
     fill: var(--accent-a);
-    filter: drop-shadow(0 0 4px var(--accent-a));
+    filter: drop-shadow(0 0 4px var(--glow-a-strong));
 }
 
 .pass-fields {
@@ -1139,7 +1141,7 @@ html.gate-active::after {
 
 .pass-bar {
     flex-basis: 0;
-    background: #0b1128;
+    background: #181a19;
 }
 
 /* Laser line that sweeps across the barcode when scanned */

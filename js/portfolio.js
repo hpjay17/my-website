@@ -50,6 +50,15 @@ function applyProfile() {
     document.getElementById("profile-summary").textContent = profile.summary;
     document.getElementById("profile-meta").textContent = `${profile.availability} · ${profile.location}`;
     document.getElementById("email-link").href = `mailto:${profile.email}`;
+
+    const facts = document.getElementById("profile-facts");
+    profile.facts.forEach((fact) => {
+        const value = createEl("dd", "", fact.value);
+        if (fact.detail) value.appendChild(createEl("span", "", fact.detail));
+        const item = createEl("div", "hero-fact");
+        item.append(createEl("dt", "", fact.label), value);
+        facts.appendChild(item);
+    });
 }
 
 function renderSocialLinks() {

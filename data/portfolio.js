@@ -9,6 +9,13 @@ const portfolioData = {
         location: "Atlanta, GA",
         email: "jay.wang@emory.edu",
         profileImage: "./images/profile.jpeg",
+        // Short facts in the hero's right-hand column. detail is an optional second line.
+        facts: [
+            { label: "Next", value: "Capital One", detail: "Data Analyst Intern, Summer 2027" },
+            { label: "Last summer", value: "Hartsfield-Jackson Atlanta Airport", detail: "Internal Audit Intern" },
+            { label: "Studying", value: "Finance, ISOM & Data Science", detail: "Emory University, Goizueta Business School" },
+            { label: "Outside work", value: "Private Pilot", detail: "Licensed since 2023" },
+        ],
     },
     // icon: linkedin, github, email or document (drawn in js/portfolio.js)
     socialLinks: [

@@ -2,25 +2,33 @@
 
 :root,
 [data-theme="blue"] {
-    --bg-base: #0b1128;
-    --bg-panel: rgba(12, 20, 48, 0.94);
-    --bg-card: rgba(10, 18, 42, 0.7);
-    --bg-topbar: rgba(8, 14, 36, 0.95);
-    --text-main: #ffffff;
-    --text-soft: #c8daf5;
-    --text-muted: #7b93b8;
-    --line: rgba(0, 180, 255, 0.1);
-    --line-hover: rgba(0, 212, 255, 0.35);
-    --accent-a: #00c6fb;
-    --accent-b: #0ef6cc;
-    --accent-warm: #5ce8d4;
-    --glow-a: rgba(0, 198, 251, 0.25);
-    --glow-a-strong: rgba(0, 198, 251, 0.4);
-    --glow-warm: rgba(92, 232, 212, 0.25);
-    --glow-subtle: rgba(0, 198, 251, 0.1);
-    --pill-bg: rgba(0, 180, 255, 0.06);
-    --active-bg: rgba(0, 198, 251, 0.07);
-    --card-grad: linear-gradient(135deg, #0d1a3a, #122250, #163060, #1a3a5c);
+    --bg-base: #181a19;
+    --bg-panel: #181a19;
+    --bg-card: #212423;
+    --bg-topbar: rgba(24, 26, 25, 0.92);
+    --text-main: #f3f1ec;
+    --text-soft: #cdc9c0;
+    --text-muted: #a09c94;
+    --line: rgba(255, 255, 255, 0.11);
+    --line-hover: rgba(255, 255, 255, 0.28);
+    --accent-a: #a9c4a1;
+    --accent-b: #cfe0c9;
+    --accent-warm: #b4c4ae;
+    /* This theme has no glows; the green theme sets these to real colors */
+    --glow-a: transparent;
+    --glow-a-strong: transparent;
+    --glow-warm: transparent;
+    --glow-subtle: transparent;
+    --pill-bg: rgba(255, 255, 255, 0.04);
+    --active-bg: rgba(169, 196, 161, 0.1);
+    --card-grad: #212423;
+
+    /* Side margins. --bleed is the normal margin: 6% of the screen, between 22px and 112px.
+       --gutter is the same until the screen is wider than --content-width; past that the content
+       stops growing and centers. Dividing lines use --gutter too, so lines and content share one edge. */
+    --content-width: 1600px;
+    --bleed: clamp(22px, 6vw, 112px);
+    --gutter: max(var(--bleed), calc((100vw - var(--content-width)) / 2));
 
     --radius-sm: 6px;
     --radius-md: 8px;
@@ -102,31 +110,16 @@ body {
 .page {
     position: relative;
     min-height: 100vh;
-    padding: 14px 0 36px;
     background: var(--bg-base);
 }
 
+/* Full width on every screen. The top bar and sections center their own content with --gutter. */
 .shell {
-    width: min(1080px, calc(100% - 20px));
-    margin: 0 auto;
+    width: 100%;
     position: relative;
-    border: 1px solid var(--line);
     background: var(--bg-panel);
-    box-shadow: 0 0 40px var(--glow-a), 0 0 80px var(--glow-subtle);
     /* clip, not hidden: hidden would make this a scroll container and stop the top bar sticking */
     overflow: clip;
-    animation: reveal-shell 0.5s cubic-bezier(0.2, 0.7, 0.15, 1) both;
-}
-
-@keyframes reveal-shell {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .top-bar {
@@ -137,11 +130,21 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--line);
+    padding: 14px var(--gutter);
     background: var(--bg-topbar);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+}
+
+/* The line under the top bar, as wide as the content */
+.top-bar::after {
+    content: "";
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 0;
+    height: 1px;
+    background: var(--line);
 }
 
 .brand {
@@ -187,9 +190,60 @@ body {
     border-color: var(--line-hover);
 }
 
+/* Copyright line at the bottom of both pages */
+.site-footer {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 20px var(--gutter) 28px;
+    color: var(--text-muted);
+    font-size: var(--font-sm);
+}
+
+.site-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--gutter);
+    right: var(--gutter);
+    height: 1px;
+    background: var(--line);
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 20px;
+}
+
+.footer-links a,
+.footer-links button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--fade);
+}
+
+.footer-links a:hover,
+.footer-links button:hover {
+    color: var(--accent-a);
+}
+
 .section {
-    padding: 28px 22px 30px;
-    border-top: 1px solid var(--line);
+    position: relative;
+    padding: 36px var(--gutter) 40px;
     scroll-margin-top: var(--top-bar-height);
     opacity: 0;
     transform: translateY(14px);
@@ -199,6 +253,21 @@ body {
 .section.is-visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* The line between sections, as wide as the content. The first section sits under the top bar's line. */
+.section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--gutter);
+    right: var(--gutter);
+    height: 1px;
+    background: var(--line);
+}
+
+.top-bar + .section::before {
+    display: none;
 }
 
 .section-heading {
@@ -216,7 +285,7 @@ body {
     width: 32px;
     height: 3px;
     margin-bottom: 10px;
-    background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+    background: var(--accent-a);
     border-radius: 2px;
 }
 
@@ -306,11 +375,11 @@ h1 {
 }
 
 .theme-btn[data-set-theme="blue"] {
-    background: linear-gradient(135deg, #00c6fb, #0ef6cc);
+    background: #a9c4a1;
 }
 
 .theme-btn[data-set-theme="green"] {
-    background: linear-gradient(135deg, #39ff14, #00ff41);
+    background: #00e040;
 }
 
 /* Green theme: monospace type and a phosphor glow on text. Its square corners come from the --radius variables. */
@@ -323,10 +392,6 @@ h1 {
 
 [data-theme="green"] body {
     text-shadow: 0 0 4px rgba(0, 255, 65, 0.45);
-}
-
-[data-theme="green"] .shell {
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.12);
 }
 
 [data-theme="green"] .section-heading h2::before {
@@ -353,13 +418,17 @@ h1 {
 }
 
 @media (max-width: 640px) {
+    :root {
+        --bleed: 14px;
+    }
+
     /* Three rows tall on a phone, so it scrolls away with the page */
     .top-bar {
-        position: static;
+        position: relative;
         flex-wrap: wrap;
         justify-content: center;
         gap: 8px;
-        padding: 10px 14px;
+        padding: 10px var(--gutter);
     }
 
     .brand {
@@ -388,7 +457,7 @@ h1 {
     }
 
     .section {
-        padding: 22px 14px 24px;
+        padding: 22px var(--gutter) 24px;
         scroll-margin-top: 0;
     }
 }
